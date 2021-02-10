@@ -2,9 +2,10 @@
 ## Folder Structure
 ```
 docs        
- \ thesis       - A tényleges szakdolgozat
- \ planning     - Tervezési dokumentumok
+ \ formal-requirements  - Követelmények, hivatalos dokumentumok, segédletek
+ \ thesis               - A tényleges szakdolgozat
+ \ planning             - Tervezési dokumentumok
 src
- \ frontend     - Frontend
- \ backend
+ \ frontend             - Frontend kód
+ \ backend              - Backend kód
 ```
