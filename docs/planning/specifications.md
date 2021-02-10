@@ -12,6 +12,8 @@
 - Különböző időpont kategóriákat tud létrehozni
   - Embereket hozzárendelhet kategóriákhoz
   - Metaadatok (ár, leírás)
+- Lekérheti, hogy adott ügyfél adott időszakban milyen időpontokat foglalt
+  - kategória, több ügyfél
 
 ## Ügyfél
 - Regisztrálni tud, bejelentkezni
