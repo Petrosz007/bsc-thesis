@@ -1,0 +1,23 @@
+- Témabejelentő
+- Tartalomjegyzék
+- Bevezető
+  - Motiváció
+  - Probléma leírása
+  - Clean architecture, kedvhozó a technikai megvalósításhoz
+- Felhasználói dokumentáció
+  - Telepítés (release-ből, docker-el)
+  - Használat
+    - Use Case diagramm
+    - User guide
+- Fejlesztői dokumentáció
+  - Buildelés, környezet
+  - Rendszer áttekintés
+    - Kliens - REST API architektúra
+    - Összevetés MVC-kkel (Laravel, ASP.NET+Blazor)
+  - Osztályok, függőséged dokumentációja, UML-ek
+  - Tesztelés
+    - Unit
+    - Integration (end-to-end ?)
+  - CI/CD, Docker
+- Összefoglalás
+- További fejlesztési lehetőségek

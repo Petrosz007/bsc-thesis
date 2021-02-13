@@ -4,7 +4,7 @@
 - Van egy saját vállalkozói oldala
 - Időpontokat tud hirdetni
   - Meg tudja adni hogy kik láthatják (publikus, egy/több embernek, kategória)
-  - Lemondás 
+  - Lemondás pl 24 órával az időpont előtt nem lehetséges
 - Naptár nézet
   - Összesítve látja az időpontjait
   - Státuszukat (lefoglalták-e, ki foglalt)
