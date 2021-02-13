@@ -7,5 +7,5 @@ docs
  \ planning             - Tervezési dokumentumok
 src
  \ frontend             - Frontend kód
- \ backend              - Backend kód
+ \ IWA_Backend          - Backend kód
 ```
