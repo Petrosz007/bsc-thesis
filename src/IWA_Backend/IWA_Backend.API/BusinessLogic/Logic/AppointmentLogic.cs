@@ -27,9 +27,11 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             return appointment;
         }
 
-        private bool HasAccess(Appointment appointment, string? userName)
+        public static bool HasAccess(Appointment appointment, string? userName)
         {
             bool everyoneAllowed = appointment.Category.EveryoneAllowed;
+            // TODO: If owner.UserName == null and userName is null this condition is true
+            // Should not happen, because every user is registered with one
             bool isOwner = appointment.Owner.UserName == userName;
             bool isAttendee = appointment.Attendees.Any(user => user.UserName == userName);
             bool isInCategory = appointment.Category.AllowedCustomers.Any(user => user.UserName == userName);

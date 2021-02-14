@@ -1,6 +1,6 @@
 ﻿using IWA_Backend.API.BusinessLogic.Entities;
 using IWA_Backend.API.Repositories;
-using IWA_Backend.Tests.Mocks;
+using IWA_Backend.Tests.Mock;
 using Moq;
 using System;
 using System.Collections.Generic;
