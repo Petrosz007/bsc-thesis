@@ -1,5 +1,6 @@
 ﻿using IWA_Backend.API.BusinessLogic.Entities;
 using IWA_Backend.API.Contexts;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,24 +26,13 @@ namespace IWA_Backend.API.Repositories
             await Context.SaveChangesAsync();
         }
 
-        public IQueryable<Appointment> GetAllContractorsAppointments(string contractorUsername)
-        {
-            throw new NotImplementedException();
-        }
+        public IQueryable<Appointment> GetAllContractorsAppointments(string contractorUsername) =>
+            Context.Appointments
+                .Where(a => a.Owner.UserName == contractorUsername);
 
         public Appointment? GetAppointmentById(int appointmentId) =>
             Context.Appointments
                 .FirstOrDefault(appointment => appointment.Id == appointmentId);
-
-        public IQueryable<Appointment> GetContractorsAppointmentsVisibleToCustomer(string contractorUsername, string customerUserName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IQueryable<Appointment> GetPublicContractorsAppointments(string contractorUsername)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task UpdateAppointment(Appointment appointment)
         {
