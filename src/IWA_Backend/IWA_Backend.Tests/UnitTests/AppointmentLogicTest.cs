@@ -14,60 +14,196 @@ namespace IWA_Backend.Tests.UnitTests
 {
     public class AppointmentLogicTest
     {
-        [Fact]
-        public void TestGetAppointmentById()
+        public class TestGetAppointmentById
         {
-            // Arrange
-            var appointment = new Appointment 
-            { 
-                Attendees = new List<User>
+            [Fact]
+            public void ReturnsCorrect()
+            {
+                // Arrange
+                var appointment = new Appointment
                 {
-                    new User
+                    Attendees = new List<User>
                     {
-                        UserName = "TestUser",
+                        new User
+                        {
+                            UserName = "TestUser",
+                        },
                     },
-                },
-            };
+                };
 
-            var mockRepo = new Mock<IRepository>();
-            mockRepo.Setup(r => r.GetAppointmentById(It.IsAny<int>())).Returns(appointment);
-            var logic = new AppointmentLogic(mockRepo.Object);
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.GetAppointmentById(It.IsAny<int>())).Returns(appointment);
+                var logic = new AppointmentLogic(mockRepo.Object);
 
-            // Act
-            var result = logic.GetAppointmentById(0, "TestUser");
+                // Act
+                var result = logic.GetAppointmentById(0, "TestUser");
 
-            // Assert
-            Assert.Equal(appointment, result);
+                // Assert
+                Assert.Equal(appointment, result);
+            }
+
+            [Fact]
+            public void NotFound()
+            {
+                // Arrange
+                var appointment = new Appointment();
+
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.GetAppointmentById(It.IsAny<int>())).Returns((Appointment?)null);
+                var logic = new AppointmentLogic(mockRepo.Object);
+
+                // Act
+                // Assert
+                Assert.Throws<NotFoundException>(() => logic.GetAppointmentById(0, "TestUser"));
+            }
+
+            [Fact]
+            public void Unauthorised()
+            {
+                // Arrange
+                var appointment = new Appointment();
+
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.GetAppointmentById(It.IsAny<int>())).Returns(appointment);
+                var logic = new AppointmentLogic(mockRepo.Object);
+
+                // Act
+                // Assert
+                Assert.Throws<UnauthorisedException>(() => logic.GetAppointmentById(0, "Definitly not allowed user"));
+            }
         }
 
-        [Fact]
-        public void TestGetAppointmentByIdNotFound()
+        public class TestHasAccess
         {
-            // Arrange
-            var appointment = new Appointment();
+            [Fact]
+            public void CategoryEveryoneAllowed()
+            {
+                // Arrange
+                var appointment = new Appointment
+                {
+                    Category = new Category
+                    {
+                        EveryoneAllowed = true,
+                    },
+                };
 
-            var mockRepo = new Mock<IRepository>();
-            mockRepo.Setup(r => r.GetAppointmentById(It.IsAny<int>())).Returns((Appointment?)null);
-            var logic = new AppointmentLogic(mockRepo.Object);
+                // Act
+                var result = AppointmentLogic.HasAccess(appointment, "Test User");
 
-            // Act
-            // Assert
-            Assert.Throws<NotFoundException>(() => logic.GetAppointmentById(0, "TestUser"));
-        }
+                // Assert
+                Assert.True(result);
+            }
 
-        [Fact]
-        public void TestGetAppointmentByIdUnauthorised()
-        {
-            // Arrange
-            var appointment = new Appointment();
+            [Fact]
+            public void OwnerAllowed()
+            {
+                // Arrange
+                var user = new User
+                {
+                    UserName = "Owner",
+                };
 
-            var mockRepo = new Mock<IRepository>();
-            mockRepo.Setup(r => r.GetAppointmentById(It.IsAny<int>())).Returns(appointment);
-            var logic = new AppointmentLogic(mockRepo.Object);
+                var appointment = new Appointment
+                {
+                    Owner = user,
+                };
 
-            // Act
-            // Assert
-            Assert.Throws<UnauthorisedException>(() => logic.GetAppointmentById(0, "Definitly not allowed user"));
+                // Act
+                var result = AppointmentLogic.HasAccess(appointment, user.UserName);
+
+                // Assert
+                Assert.True(result);
+            }
+
+            [Fact]
+            public void AttendeeAllowed()
+            {
+                // Arrange
+                var user = new User
+                {
+                    UserName = "Attendee",
+                };
+
+                var appointment = new Appointment
+                {
+                    Attendees = new List<User> { user },
+                };
+
+                // Act
+                var result = AppointmentLogic.HasAccess(appointment, user.UserName);
+
+                // Assert
+                Assert.True(result);
+            }
+
+            [Fact]
+            public void CategoryAllowed()
+            {
+                // Arrange
+                var user = new User
+                {
+                    UserName = "Attendee",
+                };
+
+                var appointment = new Appointment
+                {
+                    Category = new Category
+                    {
+                        AllowedCustomers = new List<User> { user },
+                    },
+                };
+
+                // Act
+                var result = AppointmentLogic.HasAccess(appointment, user.UserName);
+
+                // Assert
+                Assert.True(result);
+            }
+
+            [Fact]
+            public void NullUserNotAllowed()
+            {
+                // Arrange
+                var appointment = new Appointment();
+
+                // Act
+                var result = AppointmentLogic.HasAccess(appointment, null);
+
+                // Assert
+                Assert.False(result);
+            }
+
+            [Fact]
+            public void NullUserCategoryAllowed()
+            {
+                // Arrange
+                var appointment = new Appointment
+                {
+                    Category = new Category
+                    {
+                        EveryoneAllowed = true,
+                    },
+                };
+
+                // Act
+                var result = AppointmentLogic.HasAccess(appointment, null);
+
+                // Assert
+                Assert.True(result);
+            }
+
+            [Fact]
+            public void NotAllowed()
+            {
+                // Arrange
+                var appointment = new Appointment();
+
+                // Act
+                var result = AppointmentLogic.HasAccess(appointment, "Not allowed User");
+
+                // Assert
+                Assert.False(result);
+            }
         }
     }
 }
