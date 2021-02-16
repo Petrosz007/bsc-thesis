@@ -9,9 +9,14 @@ namespace IWA_Backend.API.Repositories
     public interface IRepository
     {
         public IQueryable<Appointment> GetAllContractorsAppointments(string contractorUsername);
-        public Appointment? GetAppointmentById(int appointmentId);
+        public Appointment GetAppointmentById(int appointmentId);
         public Task CreateAppointment(Appointment appointment);
         public Task UpdateAppointment(Appointment appointment);
         public Task DeleteAppointment(Appointment appointment);
+        public bool AppointmentExists(int appointmentId);
+
+        public Category GetCategoryById(int categoryId);
+
+        public User GetUserByUserName(string userName);
     }
 }

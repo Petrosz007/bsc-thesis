@@ -1,4 +1,5 @@
 ﻿using IWA_Backend.API.BusinessLogic.Entities;
+using IWA_Backend.API.BusinessLogic.Exceptions;
 using IWA_Backend.API.Repositories;
 using IWA_Backend.Tests.Mock;
 using Moq;
@@ -102,8 +103,7 @@ namespace IWA_Backend.Tests.UnitTests
             [InlineData(0, 10)]
             [InlineData(1, 20)]
             [InlineData(2, 30)]
-            [InlineData(100, null)]
-            public void GetAppointmentById(int input, int? expected)
+            public void GetAppointmentById(int input, int expected)
             {
                 // Arrange
                 var appointments = new List<Appointment>
@@ -131,7 +131,37 @@ namespace IWA_Backend.Tests.UnitTests
                 var result = repo.GetAppointmentById(input);
 
                 // Assert
-                Assert.Equal(expected, result?.MaxAttendees);
+                Assert.Equal(expected, result.MaxAttendees);
+            }
+
+            [Fact]
+            public void GetAppointmentByIdNotFound()
+            {
+                // Arrange
+                var appointments = new List<Appointment>
+                {
+                    new Appointment
+                    {
+                        Id = 0,
+                        MaxAttendees = 10,
+                    },
+                    new Appointment
+                    {
+                        Id = 1,
+                        MaxAttendees = 20,
+                    },
+                    new Appointment
+                    {
+                        Id = 2,
+                        MaxAttendees = 30,
+                    },
+                };
+                var mockContext = new MockDbContextBuilder { Appointments = appointments }.Build();
+                var repo = new IWARepository(mockContext.Object);
+
+                // Act
+                // Assert
+                Assert.Throws<NotFoundException>(() => repo.GetAppointmentById(100));
             }
 
             [Fact]
@@ -157,17 +187,17 @@ namespace IWA_Backend.Tests.UnitTests
                     new Appointment
                     {
                         Id = 0,
-                        Owner = users[0],
+                        Category = new Category { Owner = users[0] },
                     },
                     new Appointment
                     {
                         Id = 1,
-                        Owner = users[0],
+                        Category = new Category { Owner = users[0] },
                     },
                     new Appointment
                     {
                         Id = 2,
-                        Owner = users[1],
+                        Category = new Category { Owner = users[1] },
                     },
                 };
                 var mockContext = new MockDbContextBuilder
@@ -182,8 +212,145 @@ namespace IWA_Backend.Tests.UnitTests
 
                 // Assert
                 Assert.Equal(2, result.Count);
-                Assert.True(result.All(a => a.Owner == users[0]));
+                Assert.True(result.All(a => a.Category.Owner == users[0]));
             }
+        }
+
+        public class TestCategory
+        {
+            [Theory]
+            [InlineData(0, 10)]
+            [InlineData(1, 20)]
+            [InlineData(2, 30)]
+            public void GetCategoryById(int input, int expected)
+            {
+                // Arrange
+                var categories = new List<Category>
+                {
+                    new Category
+                    {
+                        Id = 0,
+                        MaxAttendees = 10,
+                    },
+                    new Category
+                    {
+                        Id = 1,
+                        MaxAttendees = 20,
+                    },
+                    new Category
+                    {
+                        Id = 2,
+                        MaxAttendees = 30,
+                    },
+                };
+                var mockContext = new MockDbContextBuilder { Categories = categories }.Build();
+                var repo = new IWARepository(mockContext.Object);
+
+                // Act
+                var result = repo.GetCategoryById(input);
+
+                // Assert
+                Assert.Equal(expected, result.MaxAttendees);
+            }
+
+            [Fact]
+            public void GetCategoryByIdNotFound()
+            {
+                // Arrange
+                var categories = new List<Category>
+                {
+                    new Category
+                    {
+                        Id = 0,
+                        MaxAttendees = 10,
+                    },
+                    new Category
+                    {
+                        Id = 1,
+                        MaxAttendees = 20,
+                    },
+                    new Category
+                    {
+                        Id = 2,
+                        MaxAttendees = 30,
+                    },
+                };
+                var mockContext = new MockDbContextBuilder { Categories = categories }.Build();
+                var repo = new IWARepository(mockContext.Object);
+
+                // Act
+                // Assert
+                Assert.Throws<NotFoundException>(() => repo.GetCategoryById(100));
+            }
+        }
+
+        public class TestUser
+        {
+            [Theory]
+            [InlineData("test1", "email1")]
+            [InlineData("test2", "email2")]
+            [InlineData("test3", "email3")]
+            public void GetUserByUserName(string input, string expected)
+            {
+                // Arrange
+                var users = new List<User>
+                {
+                    new User
+                    {
+                        UserName = "test1",
+                        Email = "email1",
+                    },
+                    new User
+                    {
+                        UserName = "test2",
+                        Email = "email2",
+                    },
+                    new User
+                    {
+                        UserName = "test3",
+                        Email = "email3",
+                    },
+                };
+                var mockContext = new MockDbContextBuilder { Users = users }.Build();
+                var repo = new IWARepository(mockContext.Object);
+
+                // Act
+                var result = repo.GetUserByUserName(input);
+
+                // Assert
+                Assert.Equal(expected, result.Email);
+            }
+
+            [Fact]
+            public void GetUserByUserNameNotFound()
+            {
+                // Arrange
+                var users = new List<User>
+                {
+                    new User
+                    {
+                        UserName = "test1",
+                        Email = "email1",
+                    },
+                    new User
+                    {
+                        UserName = "test2",
+                        Email = "email2",
+                    },
+                    new User
+                    {
+                        UserName = "test3",
+                        Email = "email3",
+                    },
+                };
+                var mockContext = new MockDbContextBuilder { Users = users }.Build();
+                var repo = new IWARepository(mockContext.Object);
+
+                // Act
+                // Assert
+                Assert.Throws<NotFoundException>(() => repo.GetUserByUserName("Nonexistent"));
+            }
+
         }
     }
 }

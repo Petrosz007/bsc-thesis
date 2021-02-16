@@ -35,17 +35,12 @@ namespace IWA_Backend.API.Migrations
                     b.Property<int>("MaxAttendees")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OwnerId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("Appointments");
                 });
@@ -71,10 +66,15 @@ namespace IWA_Backend.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("OwnerId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Categories");
                 });
@@ -126,6 +126,7 @@ namespace IWA_Backend.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -166,6 +167,7 @@ namespace IWA_Backend.API.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -324,11 +326,14 @@ namespace IWA_Backend.API.Migrations
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Category", b =>
+                {
                     b.HasOne("IWA_Backend.API.BusinessLogic.Entities.User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");
-
-                    b.Navigation("Category");
 
                     b.Navigation("Owner");
                 });

@@ -1,6 +1,8 @@
-﻿using IWA_Backend.API.BusinessLogic.Entities;
+﻿using IWA_Backend.API.BusinessLogic.DTOs;
+using IWA_Backend.API.BusinessLogic.Entities;
 using IWA_Backend.API.BusinessLogic.Exceptions;
 using IWA_Backend.API.BusinessLogic.Logic;
+using IWA_Backend.API.BusinessLogic.Mappers;
 using IWA_Backend.API.Repositories;
 using Moq;
 using System;
@@ -29,6 +31,7 @@ namespace IWA_Backend.Tests.UnitTests
                             UserName = "TestUser",
                         },
                     },
+                    Category = new Category { Owner = new User { UserName = "OwnerUser" } }
                 };
 
                 var mockRepo = new Mock<IRepository>();
@@ -46,10 +49,8 @@ namespace IWA_Backend.Tests.UnitTests
             public void NotFound()
             {
                 // Arrange
-                var appointment = new Appointment();
-
                 var mockRepo = new Mock<IRepository>();
-                mockRepo.Setup(r => r.GetAppointmentById(It.IsAny<int>())).Returns((Appointment?)null);
+                mockRepo.Setup(r => r.GetAppointmentById(It.IsAny<int>())).Throws(new NotFoundException(""));
                 var logic = new AppointmentLogic(mockRepo.Object);
 
                 // Act
@@ -61,7 +62,10 @@ namespace IWA_Backend.Tests.UnitTests
             public void Unauthorised()
             {
                 // Arrange
-                var appointment = new Appointment();
+                var appointment = new Appointment
+                {
+                    Category = new Category { Owner = new User { UserName = "Owner User" } }
+                };
 
                 var mockRepo = new Mock<IRepository>();
                 mockRepo.Setup(r => r.GetAppointmentById(It.IsAny<int>())).Returns(appointment);
@@ -84,11 +88,12 @@ namespace IWA_Backend.Tests.UnitTests
                     Category = new Category
                     {
                         EveryoneAllowed = true,
+                        Owner = new User { UserName = "OwnerUser" }
                     },
                 };
 
                 // Act
-                var result = AppointmentLogic.HasAccess(appointment, "Test User");
+                var result = AppointmentLogic.HasReadAccess(appointment, "Test User");
 
                 // Assert
                 Assert.True(result);
@@ -105,11 +110,14 @@ namespace IWA_Backend.Tests.UnitTests
 
                 var appointment = new Appointment
                 {
-                    Owner = user,
+                    Category = new Category
+                    {
+                        Owner = user,
+                    },
                 };
 
                 // Act
-                var result = AppointmentLogic.HasAccess(appointment, user.UserName);
+                var result = AppointmentLogic.HasReadAccess(appointment, user.UserName);
 
                 // Assert
                 Assert.True(result);
@@ -127,10 +135,11 @@ namespace IWA_Backend.Tests.UnitTests
                 var appointment = new Appointment
                 {
                     Attendees = new List<User> { user },
+                    Category = new Category { Owner = new User { UserName = "OwnerUser" } },
                 };
 
                 // Act
-                var result = AppointmentLogic.HasAccess(appointment, user.UserName);
+                var result = AppointmentLogic.HasReadAccess(appointment, user.UserName);
 
                 // Assert
                 Assert.True(result);
@@ -150,11 +159,12 @@ namespace IWA_Backend.Tests.UnitTests
                     Category = new Category
                     {
                         AllowedCustomers = new List<User> { user },
+                        Owner = new User { UserName = "OwnerUser" },
                     },
                 };
 
                 // Act
-                var result = AppointmentLogic.HasAccess(appointment, user.UserName);
+                var result = AppointmentLogic.HasReadAccess(appointment, user.UserName);
 
                 // Assert
                 Assert.True(result);
@@ -164,10 +174,13 @@ namespace IWA_Backend.Tests.UnitTests
             public void NullUserNotAllowed()
             {
                 // Arrange
-                var appointment = new Appointment();
+                var appointment = new Appointment
+                {
+                    Category = new Category { Owner = new User { UserName = "OwnerUser" } },
+                };
 
                 // Act
-                var result = AppointmentLogic.HasAccess(appointment, null);
+                var result = AppointmentLogic.HasReadAccess(appointment, null);
 
                 // Assert
                 Assert.False(result);
@@ -182,11 +195,12 @@ namespace IWA_Backend.Tests.UnitTests
                     Category = new Category
                     {
                         EveryoneAllowed = true,
+                        Owner = new User { UserName = "OwnerUser" },
                     },
                 };
 
                 // Act
-                var result = AppointmentLogic.HasAccess(appointment, null);
+                var result = AppointmentLogic.HasReadAccess(appointment, null);
 
                 // Assert
                 Assert.True(result);
@@ -196,13 +210,59 @@ namespace IWA_Backend.Tests.UnitTests
             public void NotAllowed()
             {
                 // Arrange
-                var appointment = new Appointment();
+                var appointment = new Appointment
+                { 
+                    Category = new Category { Owner = new User { UserName = "OwnerUser" } },
+                };
 
                 // Act
-                var result = AppointmentLogic.HasAccess(appointment, "Not allowed User");
+                var result = AppointmentLogic.HasReadAccess(appointment, "Not allowed User");
 
                 // Assert
                 Assert.False(result);
+            }
+        }
+
+        public class TestUpdate
+        {
+            [Fact]
+            public async Task Successful()
+            {
+                // Arrange
+                var appointment = new Appointment
+                {
+                    Id = 10,
+                };
+
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.AppointmentExists(10)).Returns(true);
+                var logic = new AppointmentLogic(mockRepo.Object);
+
+                // Act
+                await logic.UpdateAppointment(appointment);
+
+                // Assert
+                mockRepo.Verify(r => r.UpdateAppointment(appointment), Times.Once());
+            }
+
+            [Fact]
+            public async Task DoesntExist()
+            {
+                // Arrange
+                var appointment = new Appointment
+                {
+                    Id = 10,
+                };
+
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.GetAppointmentById(10)).Throws(new NotFoundException(""));
+                var logic = new AppointmentLogic(mockRepo.Object);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<NotFoundException>(() => logic.UpdateAppointment(appointment));
+
+                mockRepo.Verify(r => r.UpdateAppointment(appointment), Times.Never());
             }
         }
     }

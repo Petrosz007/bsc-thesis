@@ -1,5 +1,7 @@
+using IWA_Backend.API.BusinessLogic.DTOs;
 using IWA_Backend.API.BusinessLogic.Entities;
 using IWA_Backend.API.BusinessLogic.Logic;
+using IWA_Backend.API.BusinessLogic.Mappers;
 using IWA_Backend.API.Contexts;
 using IWA_Backend.API.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -31,8 +33,9 @@ namespace IWA_Backend.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<IWAContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("SqlServer")));
+            services.AddDbContext<IWAContext>(options => options
+                .UseLazyLoadingProxies()
+                .UseSqlServer(Configuration.GetConnectionString("SqlServer")));
 
             services.AddIdentity<User, UserRole>(options =>
                 {
@@ -47,6 +50,8 @@ namespace IWA_Backend.API
 
             services.AddTransient<IRepository, IWARepository>();
             services.AddTransient<AppointmentLogic>();
+
+            services.AddTransient<IMapper<Appointment, AppointmentDTO>, AppointmentMapper>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

@@ -1,4 +1,5 @@
 ﻿using IWA_Backend.API.BusinessLogic.Entities;
+using IWA_Backend.API.BusinessLogic.Exceptions;
 using IWA_Backend.API.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,6 +15,10 @@ namespace IWA_Backend.API.Repositories
         public IWARepository(IWAContext context) =>
             Context = context;
 
+        public bool AppointmentExists(int appointmentId) =>
+            Context.Appointments
+                .Any(a => a.Id == appointmentId);
+
         public async Task CreateAppointment(Appointment appointment)
         {
             Context.Appointments.Add(appointment);
@@ -28,11 +33,22 @@ namespace IWA_Backend.API.Repositories
 
         public IQueryable<Appointment> GetAllContractorsAppointments(string contractorUsername) =>
             Context.Appointments
-                .Where(a => a.Owner.UserName == contractorUsername);
+                .Where(a => a.Category.Owner.UserName == contractorUsername);
 
-        public Appointment? GetAppointmentById(int appointmentId) =>
+        public Appointment GetAppointmentById(int appointmentId) =>
             Context.Appointments
-                .FirstOrDefault(appointment => appointment.Id == appointmentId);
+                .FirstOrDefault(appointment => appointment.Id == appointmentId)
+                ?? throw new NotFoundException($"Appointment with id '{appointmentId}' not found.");
+
+        public Category GetCategoryById(int categoryId) =>
+            Context.Categories
+                .FirstOrDefault(category => category.Id == categoryId)
+                ?? throw new NotFoundException($"Category with id '{categoryId}' not found.");
+
+        public User GetUserByUserName(string userName) =>
+            Context.Users
+                .FirstOrDefault(user => user.UserName == userName)
+                ?? throw new NotFoundException($"User with user name '{userName}' not found.");
 
         public async Task UpdateAppointment(Appointment appointment)
         {

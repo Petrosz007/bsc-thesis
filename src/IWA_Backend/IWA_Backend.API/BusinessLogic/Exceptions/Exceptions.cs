@@ -14,4 +14,9 @@ namespace IWA_Backend.API.BusinessLogic.Exceptions
     {
         public UnauthorisedException(string message) : base(message) { }
     }
+
+    public class InvalidEntityException : Exception
+    {
+        public InvalidEntityException(string message) : base(message) { }
+    }
 }
