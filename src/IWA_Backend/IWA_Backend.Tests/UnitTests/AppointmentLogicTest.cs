@@ -77,7 +77,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
         }
 
-        public class TestHasAccess
+        public class TestHasReadAccess
         {
             [Fact]
             public void CategoryEveryoneAllowed()
@@ -223,6 +223,49 @@ namespace IWA_Backend.Tests.UnitTests
             }
         }
 
+        public class TestHasWriteAccess
+        {
+            [Fact]
+            public void Allowed()
+            {
+                // Arrange
+                var category = new Category
+                {
+                    Id = 10,
+                    Owner = new User { UserName = "OwnerUser" },
+                };
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.GetCategoryById(10)).Returns(category);
+                var logic = new AppointmentLogic(mockRepo.Object);
+
+                // Act
+                var result = logic.HasWriteAccess(10, "OwnerUser");
+
+                // Assert
+                Assert.True(result);
+            }
+
+            [Fact]
+            public void NotAllowed()
+            {
+                // Arrange
+                var category = new Category
+                {
+                    Id = 10,
+                    Owner = new User { UserName = "OwnerUser" },
+                };
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.GetCategoryById(10)).Returns(category);
+                var logic = new AppointmentLogic(mockRepo.Object);
+
+                // Act
+                var result = logic.HasWriteAccess(10, "Not allowed User");
+
+                // Assert
+                Assert.False(result);
+            }
+        }
+
         public class TestUpdate
         {
             [Fact]
@@ -232,14 +275,16 @@ namespace IWA_Backend.Tests.UnitTests
                 var appointment = new Appointment
                 {
                     Id = 10,
+                    Category = new Category { Id = 2, Owner = new User { UserName = "Owner" } },
                 };
 
                 var mockRepo = new Mock<IRepository>();
                 mockRepo.Setup(r => r.AppointmentExists(10)).Returns(true);
+                mockRepo.Setup(r => r.GetCategoryById(2)).Returns(appointment.Category);
                 var logic = new AppointmentLogic(mockRepo.Object);
 
                 // Act
-                await logic.UpdateAppointment(appointment);
+                await logic.UpdateAppointment(appointment, "Owner");
 
                 // Assert
                 mockRepo.Verify(r => r.UpdateAppointment(appointment), Times.Once());
@@ -252,17 +297,156 @@ namespace IWA_Backend.Tests.UnitTests
                 var appointment = new Appointment
                 {
                     Id = 10,
+                    Category = new Category { Id = 2, Owner = new User { UserName = "Owner" } },
                 };
 
                 var mockRepo = new Mock<IRepository>();
                 mockRepo.Setup(r => r.GetAppointmentById(10)).Throws(new NotFoundException(""));
+                mockRepo.Setup(r => r.GetCategoryById(2)).Returns(appointment.Category);
                 var logic = new AppointmentLogic(mockRepo.Object);
 
                 // Act
                 // Assert
-                await Assert.ThrowsAsync<NotFoundException>(() => logic.UpdateAppointment(appointment));
+                await Assert.ThrowsAsync<NotFoundException>(() => logic.UpdateAppointment(appointment, "Owner"));
 
                 mockRepo.Verify(r => r.UpdateAppointment(appointment), Times.Never());
+            }
+
+            [Fact]
+            public async Task Unauthorised()
+            {
+                // Arrange
+                var appointment = new Appointment
+                {
+                    Id = 10,
+                    Category = new Category { Id = 2, Owner = new User { UserName = "Owner" } },
+                };
+
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.GetAppointmentById(10)).Returns(appointment);
+                mockRepo.Setup(r => r.GetCategoryById(2)).Returns(appointment.Category);
+                var logic = new AppointmentLogic(mockRepo.Object);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UpdateAppointment(appointment, "NotOwner"));
+
+                mockRepo.Verify(r => r.UpdateAppointment(appointment), Times.Never());
+            }
+        }
+
+        public class TestCreate
+        {
+            [Fact]
+            public async Task Successful()
+            {
+                // Arrange
+                var appointment = new Appointment
+                {
+                    Id = 10,
+                    Category = new Category { Id = 2, Owner = new User { UserName = "Owner" } },
+                };
+
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.AppointmentExists(10)).Returns(true);
+                mockRepo.Setup(r => r.GetCategoryById(2)).Returns(appointment.Category);
+                var logic = new AppointmentLogic(mockRepo.Object);
+
+                // Act
+                await logic.CreateAppointment(appointment, "Owner");
+
+                // Assert
+                mockRepo.Verify(r => r.CreateAppointment(appointment), Times.Once());
+            }
+
+            [Fact]
+            public async Task Unauthorised()
+            {
+                // Arrange
+                var appointment = new Appointment
+                {
+                    Id = 10,
+                    Category = new Category { Id = 2, Owner = new User { UserName = "Owner" } },
+                };
+
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.GetAppointmentById(10)).Returns(appointment);
+                mockRepo.Setup(r => r.GetCategoryById(2)).Returns(appointment.Category);
+                var logic = new AppointmentLogic(mockRepo.Object);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.CreateAppointment(appointment, "NotOwner"));
+
+                mockRepo.Verify(r => r.CreateAppointment(appointment), Times.Never());
+            }
+        }
+
+        public class TestDelete
+        {
+            [Fact]
+            public async Task Successful()
+            {
+                // Arrange
+                var appointment = new Appointment
+                {
+                    Id = 10,
+                    Category = new Category { Id = 2, Owner = new User { UserName = "Owner" } },
+                };
+
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.GetAppointmentById(10)).Returns(appointment);
+                mockRepo.Setup(r => r.GetCategoryById(2)).Returns(appointment.Category);
+                var logic = new AppointmentLogic(mockRepo.Object);
+
+                // Act
+                await logic.DeleteAppointment(10, "Owner");
+
+                // Assert
+                mockRepo.Verify(r => r.DeleteAppointment(appointment), Times.Once());
+            }
+
+            [Fact]
+            public async Task Unauthorised()
+            {
+                // Arrange
+                var appointment = new Appointment
+                {
+                    Id = 10,
+                    Category = new Category { Id = 2, Owner = new User { UserName = "Owner" } },
+                };
+
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.GetAppointmentById(10)).Returns(appointment);
+                mockRepo.Setup(r => r.GetCategoryById(2)).Returns(appointment.Category);
+                var logic = new AppointmentLogic(mockRepo.Object);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.DeleteAppointment(10, "NotOwner"));
+
+                mockRepo.Verify(r => r.DeleteAppointment(appointment), Times.Never());
+            }
+
+            [Fact]
+            public async Task DoesntExist()
+            {
+                // Arrange
+                var appointment = new Appointment
+                {
+                    Id = 10,
+                    Category = new Category { Id = 2, Owner = new User { UserName = "Owner" } },
+                };
+
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.GetAppointmentById(100)).Throws(new NotFoundException(""));
+                var logic = new AppointmentLogic(mockRepo.Object);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<NotFoundException>(() => logic.DeleteAppointment(100, "Owner"));
+
+                mockRepo.Verify(r => r.DeleteAppointment(appointment), Times.Never());
             }
         }
     }

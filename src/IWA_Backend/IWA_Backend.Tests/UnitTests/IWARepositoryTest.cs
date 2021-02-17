@@ -134,6 +134,42 @@ namespace IWA_Backend.Tests.UnitTests
                 Assert.Equal(expected, result.MaxAttendees);
             }
 
+            [Theory]
+            [InlineData(0, true)]
+            [InlineData(1, true)]
+            [InlineData(2, true)]
+            [InlineData(100, false)]
+            public void AppointmentExists(int input, bool expected)
+            {
+                // Arrange
+                var appointments = new List<Appointment>
+                {
+                    new Appointment
+                    {
+                        Id = 0,
+                        MaxAttendees = 10,
+                    },
+                    new Appointment
+                    {
+                        Id = 1,
+                        MaxAttendees = 20,
+                    },
+                    new Appointment
+                    {
+                        Id = 2,
+                        MaxAttendees = 30,
+                    },
+                };
+                var mockContext = new MockDbContextBuilder { Appointments = appointments }.Build();
+                var repo = new IWARepository(mockContext.Object);
+
+                // Act
+                var result = repo.AppointmentExists(input);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
             [Fact]
             public void GetAppointmentByIdNotFound()
             {
@@ -350,7 +386,6 @@ namespace IWA_Backend.Tests.UnitTests
                 // Assert
                 Assert.Throws<NotFoundException>(() => repo.GetUserByUserName("Nonexistent"));
             }
-
         }
     }
 }

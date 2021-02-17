@@ -76,13 +76,12 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             await Repository.UpdateAppointment(appointment);
         }
 
-        public async Task DeleteAppointment(Appointment appointment, string? userName)
+        public async Task DeleteAppointment(int appointmentId, string? userName)
         {
+            var appointment = Repository.GetAppointmentById(appointmentId);
+
             if (!HasWriteAccess(appointment.Category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to delete this appointment");
-
-            if (!Repository.AppointmentExists(appointment.Id))
-                throw new NotFoundException($"Appointment with id '{appointment.Id}' doesn't exist.");
 
             await Repository.DeleteAppointment(appointment);
         }

@@ -77,15 +77,11 @@ namespace IWA_Backend.API.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Contractor")]
-        public async Task<ActionResult> DeleteAppointment(int id, [FromBody] AppointmentDTO appointmentDTO)
+        public async Task<ActionResult> DeleteAppointment(int id)
         {
             try
             {
-                if (id != appointmentDTO.Id)
-                    return BadRequest($"URL path id '{id}' is not equal to the appointment id '{appointmentDTO.Id}'");
-
-                var appointment = Mapper.ToEntity(appointmentDTO);
-                await Logic.UpdateAppointment(appointment);
+                await Logic.DeleteAppointment(id, CurrentUserName);
                 return NoContent();
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
