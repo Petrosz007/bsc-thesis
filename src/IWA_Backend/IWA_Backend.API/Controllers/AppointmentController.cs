@@ -29,7 +29,6 @@ namespace IWA_Backend.API.Controllers
 
         private string? CurrentUserName { get => User.Identity?.Name; }
 
-
         [HttpGet("{id}")]
         public ActionResult<AppointmentDTO> GetAppointmentById(int id)
         {

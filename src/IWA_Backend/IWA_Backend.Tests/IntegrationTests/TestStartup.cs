@@ -1,8 +1,9 @@
-using IWA_Backend.API.BusinessLogic.DTOs;
+﻿using IWA_Backend.API.BusinessLogic.DTOs;
 using IWA_Backend.API.BusinessLogic.Entities;
 using IWA_Backend.API.BusinessLogic.Logic;
 using IWA_Backend.API.BusinessLogic.Mappers;
 using IWA_Backend.API.Contexts;
+using IWA_Backend.API.Controllers;
 using IWA_Backend.API.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,14 +19,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
-namespace IWA_Backend.API
+namespace IWA_Backend.Tests.IntegrationTests
 {
-    [ExcludeFromCodeCoverage]
-    public class Startup
+    public class TestStartup
     {
-        public Startup(IConfiguration configuration)
+        public TestStartup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -37,17 +38,17 @@ namespace IWA_Backend.API
         {
             services.AddDbContext<IWAContext>(options => options
                 .UseLazyLoadingProxies()
-                .UseSqlServer(Configuration.GetConnectionString("SqlServer")));
+                .UseInMemoryDatabase("TestInMemoryDb"));
 
             services.AddIdentity<User, UserRole>(options =>
-                {
-                    options.Password.RequireDigit = false;
-                    options.Password.RequiredLength = 3;
-                    options.Password.RequiredUniqueChars = 0;
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = false;
-                })
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+            })
                 .AddEntityFrameworkStores<IWAContext>();
 
             services.AddTransient<IRepository, IWARepository>();
@@ -55,11 +56,13 @@ namespace IWA_Backend.API
 
             services.AddTransient<IMapper<Appointment, AppointmentDTO>, AppointmentMapper>();
 
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IWA_Backend.API", Version = "v1" });
-            });
+            services.AddControllers()
+                .AddApplicationPart(typeof(AccountController).Assembly)
+                .AddApplicationPart(typeof(Appointment).Assembly);
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "IWA_Backend.API", Version = "v1" });
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,7 +72,7 @@ namespace IWA_Backend.API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IWA_Backend.API v1"));
+                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IWA_Backend.API v1"));
             }
 
             app.UseHttpsRedirection();
@@ -84,7 +87,8 @@ namespace IWA_Backend.API
                 endpoints.MapControllers();
             });
 
-            //DbInitialiser.Initialise(serviceProvider);
+            DbInitialiser.Initialise(serviceProvider);
+            //DbInitialiser.SeedDataAsync(serviceProvider).GetAwaiter().GetResult();
         }
     }
 }

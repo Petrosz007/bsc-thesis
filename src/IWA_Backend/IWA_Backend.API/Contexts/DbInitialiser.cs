@@ -17,7 +17,14 @@ namespace IWA_Backend.API.Contexts
         {
             var context = serviceProvider.GetRequiredService<IWAContext>();
 
-            context.Database.Migrate();
+            if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                context.Database.EnsureCreated();
+            }
+            else
+            {
+                context.Database.Migrate();
+            }
 
             context.SaveChanges();
         }
