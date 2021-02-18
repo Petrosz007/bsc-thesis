@@ -16,8 +16,27 @@ namespace IWA_Backend.API.BusinessLogic.DTOs
         [Required]
         public int CategoryId { get; init; }
         [Required]
-        public IEnumerable<string> AttendeeUserNames { get; init; }  = new List<string>();
+        public IEnumerable<string> AttendeeUserNames { get; init; } = new List<string>();
         [Required]
         public int MaxAttendees { get; init; }
+
+        // Checks 
+        public bool ValuesEqual(object? obj)
+        {
+            if(obj is AppointmentDTO other)
+            {
+                var userNamesEqual = this.AttendeeUserNames.SequenceEqual(other.AttendeeUserNames);
+
+                // The list will be to the same reference, so they are equal
+                // We already checked if the sequences are equal
+                var list = new List<string>();
+                var left = this with { AttendeeUserNames = list };
+                var right = other with { AttendeeUserNames = list };
+
+                return userNamesEqual && left.Equals(right);
+            }
+
+            return false;
+        }
     }
 }

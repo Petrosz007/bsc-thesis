@@ -10,34 +10,46 @@ using System.Threading.Tasks;
 
 namespace IWA_Backend.API.Contexts
 {
-    [ExcludeFromCodeCoverage]
-    public static class DbInitialiser
+    public class DbInitialiser
     {
-        public static void Initialise(IServiceProvider serviceProvider)
-        {
-            var context = serviceProvider.GetRequiredService<IWAContext>();
+        private readonly IWAContext Context;
+        private readonly UserManager<User> UserManager;
+        private readonly RoleManager<UserRole> RoleManager;
 
-            if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+        public DbInitialiser(IWAContext context, UserManager<User> userManager, RoleManager<UserRole> roleManager)
+        {
+            Context = context;
+            UserManager = userManager;
+            RoleManager = roleManager;
+        }
+
+        public void Initialise()
+        {
+            if (Context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
             {
-                context.Database.EnsureCreated();
+                Context.Database.EnsureCreated();
             }
             else
             {
-                context.Database.Migrate();
+                Context.Database.Migrate();
             }
 
-            context.SaveChanges();
+            Context.SaveChanges();
         }
 
-        public static bool AnyCategories(IServiceProvider serviceProvider) =>
-            serviceProvider.GetRequiredService<IWAContext>().Categories.Any() ;
+        public bool AnyCategories() =>
+            Context.Categories.Any();
 
-        public static async Task SeedDataAsync(IServiceProvider serviceProvider)
+        public async Task ReseedDataAsync()
         {
-            var context = serviceProvider.GetRequiredService<IWAContext>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<UserRole>>();
+            Context.Database.EnsureDeleted();
+            await Context.SaveChangesAsync();
+            Initialise();
+            await SeedDataAsync();
+        }
 
+        public async Task SeedDataAsync()
+        {
             var users = new List<User>
             {
                 new User
@@ -84,17 +96,17 @@ namespace IWA_Backend.API.Contexts
 
             foreach(var user in users)
             {
-                await userManager.CreateAsync(user, "kebab");
+                await UserManager.CreateAsync(user, "kebab");
             }
 
             var role = new UserRole
             {
                 Name = "Contractor",
             };
-            await roleManager.CreateAsync(role);
+            await RoleManager.CreateAsync(role);
 
-            await userManager.AddToRoleAsync(users[0], "Contractor");
-            await userManager.AddToRoleAsync(users[1], "Contractor");
+            await UserManager.AddToRoleAsync(users[0], "Contractor");
+            await UserManager.AddToRoleAsync(users[1], "Contractor");
 
 
             var categories = new List<Category>
@@ -140,15 +152,78 @@ namespace IWA_Backend.API.Contexts
                     Owner = users[1],
                 },
             };
-            context.Categories.AddRange(categories);
+            Context.Categories.AddRange(categories);
 
             var appointments = new List<Appointment>
             {
-
+                new Appointment
+                {
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now.AddHours(1),
+                    Category = categories[0],
+                    Attendees = new List<User>{ },
+                    MaxAttendees = categories[0].MaxAttendees,
+                },
+                new Appointment
+                {
+                    StartTime = DateTime.Now.AddHours(1),
+                    EndTime = DateTime.Now.AddHours(2),
+                    Category = categories[0],
+                    Attendees = new List<User>{ },
+                    MaxAttendees = categories[0].MaxAttendees,
+                },
+                new Appointment
+                {
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now.AddHours(1),
+                    Category = categories[1],
+                    Attendees = new List<User>{ },
+                    MaxAttendees = categories[1].MaxAttendees,
+                },
+                new Appointment
+                {
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now.AddHours(1),
+                    Category = categories[1],
+                    Attendees = new List<User>{ users[3] },
+                    MaxAttendees = categories[1].MaxAttendees,
+                },
+                new Appointment
+                {
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now.AddHours(1),
+                    Category = categories[2],
+                    Attendees = new List<User>{ },
+                    MaxAttendees = categories[2].MaxAttendees,
+                },
+                new Appointment
+                {
+                    StartTime = DateTime.Now.AddHours(1),
+                    EndTime = DateTime.Now.AddHours(2),
+                    Category = categories[2],
+                    Attendees = new List<User>{ },
+                    MaxAttendees = categories[2].MaxAttendees,
+                },
+                new Appointment
+                {
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now.AddHours(1),
+                    Category = categories[3],
+                    Attendees = new List<User>{ },
+                    MaxAttendees = categories[3].MaxAttendees,
+                },
+                new Appointment
+                {
+                    StartTime = DateTime.Now.AddHours(1),
+                    EndTime = DateTime.Now.AddHours(2),
+                    Category = categories[3],
+                    Attendees = new List<User>{ },
+                    MaxAttendees = categories[3].MaxAttendees,
+                },
             };
-            context.Appointments.AddRange(appointments);
+            Context.Appointments.AddRange(appointments);
 
-            await context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
     }
 }

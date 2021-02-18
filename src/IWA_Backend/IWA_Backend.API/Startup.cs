@@ -35,9 +35,7 @@ namespace IWA_Backend.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<IWAContext>(options => options
-                .UseLazyLoadingProxies()
-                .UseSqlServer(Configuration.GetConnectionString("SqlServer")));
+            ConfigureDb(services);
 
             services.AddIdentity<User, UserRole>(options =>
                 {
@@ -50,20 +48,35 @@ namespace IWA_Backend.API
                 })
                 .AddEntityFrameworkStores<IWAContext>();
 
+            services.AddTransient<DbInitialiser>();
+
             services.AddTransient<IRepository, IWARepository>();
             services.AddTransient<AppointmentLogic>();
 
             services.AddTransient<IMapper<Appointment, AppointmentDTO>, AppointmentMapper>();
 
-            services.AddControllers();
+            ConfigureControllers(services);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IWA_Backend.API", Version = "v1" });
             });
         }
 
+        protected virtual void ConfigureDb(IServiceCollection services)
+        {
+            services.AddDbContext<IWAContext>(options => options
+                .UseLazyLoadingProxies()
+                .UseSqlServer(Configuration.GetConnectionString("SqlServer")));
+        }
+
+        protected virtual void ConfigureControllers(IServiceCollection services)
+        {
+            services.AddControllers();
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbInitialiser dbInitialiser)
         {
             if (env.IsDevelopment())
             {
@@ -84,7 +97,7 @@ namespace IWA_Backend.API
                 endpoints.MapControllers();
             });
 
-            //DbInitialiser.Initialise(serviceProvider);
+            dbInitialiser.Initialise();
         }
     }
 }

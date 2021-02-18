@@ -34,12 +34,13 @@ namespace IWA_Backend.API.Controllers
         {
             try
             {
+                var asd = User.Identity?.Name;
                 var appointment = Logic.GetAppointmentById(id, CurrentUserName);
                 var appointmentDTO = Mapper.ToDTO(appointment);
                 return Ok(appointmentDTO);
             }
-            catch (NotFoundException) { return NotFound(); }
-            catch (UnauthorisedException) { return NotFound(); }
+            catch (NotFoundException ex) { return NotFound(ex.Message); }
+            catch (UnauthorisedException) { return Unauthorized(); }
         }
 
         [HttpPost]
@@ -53,7 +54,8 @@ namespace IWA_Backend.API.Controllers
                 var createdAppointmentDTO = Mapper.ToDTO(appointment);
                 return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, createdAppointmentDTO);
             }
-            catch(NotFoundException ex) { return BadRequest(ex.Message); }
+            catch(NotFoundException ex) { return NotFound(ex.Message); }
+            catch (UnauthorisedException) { return Unauthorized(); }
             catch(InvalidEntityException ex) { return BadRequest(ex.Message); }
         }
 
@@ -71,6 +73,7 @@ namespace IWA_Backend.API.Controllers
                 return NoContent();
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
+            catch (UnauthorisedException) { return Unauthorized(); }
             catch (InvalidEntityException ex) { return BadRequest(ex.Message); }
         }
 
@@ -84,6 +87,7 @@ namespace IWA_Backend.API.Controllers
                 return NoContent();
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
+            catch (UnauthorisedException) { return Unauthorized(); }
             catch (InvalidEntityException ex) { return BadRequest(ex.Message); }
         }
     }

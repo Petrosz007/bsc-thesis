@@ -35,7 +35,7 @@ namespace IWA_Backend.Tests.UnitTests
                 };
 
                 var mockRepo = new Mock<IRepository>();
-                mockRepo.Setup(r => r.GetAppointmentById(It.IsAny<int>())).Returns(appointment);
+                mockRepo.Setup(r => r.GetAppointmentById(0)).Returns(appointment);
                 var logic = new AppointmentLogic(mockRepo.Object);
 
                 // Act
