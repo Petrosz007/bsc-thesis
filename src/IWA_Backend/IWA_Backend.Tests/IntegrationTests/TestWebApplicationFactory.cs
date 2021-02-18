@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,25 +18,19 @@ namespace IWA_Backend.Tests.IntegrationTests
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            //base.ConfigureWebHost(builder);
-
-            builder.ConfigureServices(services =>
+            builder.ConfigureServices(async services =>
             {
-                var descriptor = services.SingleOrDefault(d => 
-                    d.ServiceType == typeof(DbContextOptions<IWAContext>));
-
-                services.Remove(descriptor);
-
-                services.AddDbContext<IWAContext>(options =>
-                    options.UseInMemoryDatabase("TestInMemoryDb"));
-
                 var serviceProvider = services.BuildServiceProvider();
-
                 using var scope = serviceProvider.CreateScope();
-                var scopedServices = scope.ServiceProvider;
+                var dbInitialiser = scope.ServiceProvider.GetRequiredService<DbInitialiser>();
 
-                //DbInitialiser.SeedDataAsync(serviceProvider).GetAwaiter().GetResult();
+                await dbInitialiser.SeedDataAsync();
             });
         }
+
+        protected override IHostBuilder CreateHostBuilder() =>
+            Host.CreateDefaultBuilder()
+                .ConfigureWebHostDefaults(builder =>
+                    builder.UseStartup<TStartup>());
     }
 }

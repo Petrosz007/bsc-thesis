@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,44 +21,27 @@ using Xunit;
 
 namespace IWA_Backend.Tests.IntegrationTests
 {
-    public class AppointmentControllerTest
+    public class AppointmentControllerTest : IClassFixture<TestWebApplicationFactory<TestStartup>>
     {
-        protected readonly TestServer testServer;
-        protected IWAContext Context => testServer.Services.GetRequiredService<IWAContext>();
-        protected IMapper<Appointment, AppointmentDTO> AppointmentMapper => testServer.Services.GetRequiredService<IMapper<Appointment, AppointmentDTO>>();
+        protected readonly TestWebApplicationFactory<TestStartup> Factory;
+        protected IWAContext Context => 
+            Factory.Services.GetRequiredService<IWAContext>();
+        protected IMapper<Appointment, AppointmentDTO> AppointmentMapper => 
+            Factory.Services.GetRequiredService<IMapper<Appointment, AppointmentDTO>>();
 
-        public AppointmentControllerTest()
-        {
-            testServer = new TestServer(new WebHostBuilder()
-                .UseStartup<TestStartup>());
-        }
+        public AppointmentControllerTest(TestWebApplicationFactory<TestStartup> factory) =>
+            Factory = factory;
 
-        protected async Task InitialiseDb() =>
-            await testServer.Services.GetRequiredService<DbInitialiser>().ReseedDataAsync();
-
-        [Fact]
-        public async Task IntegrationTestsWork()
-        {
-            // Arrange
-            var client = testServer.CreateClient();
-
-            // Act
-            var response = await client.GetAsync("/api/Account/asd");
-
-            // Assert
-            Assert.True(response.IsSuccessStatusCode);
-            var result = await response.Content.ReadAsStringAsync();
-            Assert.Equal("10", result);
-        }
-
+        [Collection("Sequential")]
         public class GetById : AppointmentControllerTest
         {
+            public GetById(TestWebApplicationFactory<TestStartup> factory) : base(factory) { }
+
             [Fact]
             public async Task Successful()
             {
                 // Arrange
-                var client = testServer.CreateClient();
-                await InitialiseDb();
+                var client = Factory.CreateClient();
                 var testAppointment = AppointmentMapper.ToDTO(Context.Appointments.First(a => a.Id == 1));
 
                 // Act
@@ -73,8 +57,7 @@ namespace IWA_Backend.Tests.IntegrationTests
             public async Task NotFound()
             {
                 // Arrange
-                var client = testServer.CreateClient();
-                await InitialiseDb();
+                var client = Factory.CreateClient();
                 var testAppointment = AppointmentMapper.ToDTO(Context.Appointments.First(a => a.Id == 1));
 
                 // Act
@@ -88,8 +71,7 @@ namespace IWA_Backend.Tests.IntegrationTests
             public async Task UnauthorizedLoggedOut()
             {
                 // Arrange
-                var client = testServer.CreateClient();
-                await InitialiseDb();
+                var client = Factory.CreateClient();
                 var testAppointment = AppointmentMapper.ToDTO(Context.Appointments.First(a => a.Id == 3));
 
                 // Act
@@ -103,8 +85,7 @@ namespace IWA_Backend.Tests.IntegrationTests
             public async Task UnauthorizedLoggedIn()
             {
                 // Arrange
-                var client = testServer.CreateClient();
-                await InitialiseDb();
+                var client = Factory.CreateClient();
                 var testAppointment = AppointmentMapper.ToDTO(Context.Appointments.First(a => a.Id == 3));
 
                 // Act
@@ -115,13 +96,11 @@ namespace IWA_Backend.Tests.IntegrationTests
                 Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
             }
 
-            // TODO: Authentication doesn't work, cookie issue?
             [Fact]
             public async Task AuthorizedLoggedIn()
             {
                 // Arrange
-                var client = testServer.CreateClient();
-                await InitialiseDb();
+                var client = Factory.CreateClient();
                 var testAppointment = AppointmentMapper.ToDTO(Context.Appointments.First(a => a.Id == 3));
 
                 // Act
@@ -133,6 +112,38 @@ namespace IWA_Backend.Tests.IntegrationTests
                 Assert.True(response.IsSuccessStatusCode);
                 var appointment = await response.Content.ReadAsAsync<AppointmentDTO>();
                 Assert.True(testAppointment.ValuesEqual(appointment));
+            }
+        }
+
+        [Collection("Sequential")]
+        public class Create : AppointmentControllerTest
+        {
+            public Create(TestWebApplicationFactory<TestStartup> factory) : base(factory) { }
+
+            [Fact]
+            public async Task Successful()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                var appointment = new AppointmentDTO
+                {
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now.AddHours(1),
+                    CategoryId = 1,
+                    AttendeeUserNames = new string[] { "customer1" },
+                    MaxAttendees = 1,
+                };
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/api/Account/Login", new LoginDTO { UserName = "contractor1", Password = "kebab" });
+                var response = await client.PostAsJsonAsync("/api/Appointment", appointment);
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.True(response.IsSuccessStatusCode);
+                var responseAppointment = await response.Content.ReadAsAsync<AppointmentDTO>();
+                var dbAppointment = AppointmentMapper.ToDTO(Context.Appointments.First(a => a.Id == responseAppointment.Id));
+                Assert.True(dbAppointment.ValuesEqual(appointment with { Id = responseAppointment.Id }));
             }
         }
     }
