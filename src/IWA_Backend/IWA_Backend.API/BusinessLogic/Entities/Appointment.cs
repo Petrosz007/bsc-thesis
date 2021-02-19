@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IWA_Backend.API.BusinessLogic.Entities
 {
-    public class Appointment
+    public record Appointment
     {
         [Key]
         public int Id { get; set; }

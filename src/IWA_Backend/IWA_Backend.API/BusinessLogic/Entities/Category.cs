@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IWA_Backend.API.BusinessLogic.Entities
 {
-    public class Category
+    public record Category
     {
         [Key]
         [Required]

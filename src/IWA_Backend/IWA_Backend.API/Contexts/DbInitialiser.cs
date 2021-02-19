@@ -29,6 +29,10 @@ namespace IWA_Backend.API.Contexts
             {
                 Context.Database.EnsureCreated();
             }
+            else if (Context.Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+            {
+                Context.Database.EnsureCreated();
+            }
             else
             {
                 Context.Database.Migrate();
@@ -94,7 +98,7 @@ namespace IWA_Backend.API.Contexts
                 },
             };
 
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 await UserManager.CreateAsync(user, "kebab");
             }
@@ -113,6 +117,7 @@ namespace IWA_Backend.API.Contexts
             {
                 new Category
                 {
+                    Id = 1,
                     Name = "Kézműves Kisegítés",
                     Description = "Karcsi segít mindenféle kézműves dologban!",
                     AllowedCustomers = new List<User>(),
@@ -123,6 +128,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Category
                 {
+                    Id = 2,
                     Name = "Korai Kőműves Kajakozás",
                     Description = "Karcsi kajakja kajak jó!",
                     AllowedCustomers = new List<User>{ users[2] },
@@ -133,6 +139,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Category
                 {
+                    Id = 3,
                     Name = "Angol C1 felkészítés",
                     Description = "Felkészítés az Angol C1 nyelvvizsgára",
                     AllowedCustomers = new List<User>(),
@@ -143,6 +150,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Category
                 {
+                    Id = 4,
                     Name = "Privát angol Konrádnak",
                     Description = "Karcsi kajakja kajak jó!",
                     AllowedCustomers = new List<User>{ users[3] },
@@ -152,12 +160,14 @@ namespace IWA_Backend.API.Contexts
                     Owner = users[1],
                 },
             };
-            Context.Categories.AddRange(categories);
+            foreach (var category in categories)
+                Context.Categories.Add(category);
 
             var appointments = new List<Appointment>
             {
                 new Appointment
                 {
+                    Id = 1,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
                     Category = categories[0],
@@ -166,6 +176,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
+                    Id = 2,
                     StartTime = DateTime.Now.AddHours(1),
                     EndTime = DateTime.Now.AddHours(2),
                     Category = categories[0],
@@ -174,6 +185,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
+                    Id = 3,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
                     Category = categories[1],
@@ -182,6 +194,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
+                    Id = 4,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
                     Category = categories[1],
@@ -190,6 +203,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
+                    Id = 5,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
                     Category = categories[2],
@@ -198,6 +212,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
+                    Id = 6,
                     StartTime = DateTime.Now.AddHours(1),
                     EndTime = DateTime.Now.AddHours(2),
                     Category = categories[2],
@@ -206,6 +221,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
+                    Id = 7,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
                     Category = categories[3],
@@ -214,6 +230,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
+                    Id = 8,
                     StartTime = DateTime.Now.AddHours(1),
                     EndTime = DateTime.Now.AddHours(2),
                     Category = categories[3],
@@ -221,7 +238,8 @@ namespace IWA_Backend.API.Contexts
                     MaxAttendees = categories[3].MaxAttendees,
                 },
             };
-            Context.Appointments.AddRange(appointments);
+            foreach(var appointment in appointments)
+                Context.Appointments.Add(appointment);
 
             await Context.SaveChangesAsync();
         }

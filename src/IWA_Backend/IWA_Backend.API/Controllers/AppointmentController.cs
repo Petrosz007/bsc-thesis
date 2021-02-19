@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace IWA_Backend.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
 
     public class AppointmentController : ControllerBase
@@ -27,14 +27,13 @@ namespace IWA_Backend.API.Controllers
             Mapper = mapper;
         }
 
-        private string? CurrentUserName { get => User.Identity?.Name; }
+        private string? CurrentUserName => User.Identity?.Name;
 
         [HttpGet("{id}")]
         public ActionResult<AppointmentDTO> GetAppointmentById(int id)
         {
             try
             {
-                var asd = User.Identity?.Name;
                 var appointment = Logic.GetAppointmentById(id, CurrentUserName);
                 var appointmentDTO = Mapper.ToDTO(appointment);
                 return Ok(appointmentDTO);
