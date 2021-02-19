@@ -22,13 +22,13 @@ using Xunit;
 
 namespace IWA_Backend.Tests.IntegrationTests
 {
-    public class AppointmentControllerTest
+    public class AppointmentControllerTest : IntegrationTestBase
     {
-        protected readonly TestWebApplicationFactory<TestStartup> Factory = new();
-        protected IWAContext Context =>
-            Factory.Services.GetRequiredService<IWAContext>();
-        protected IMapper<Appointment, AppointmentDTO> AppointmentMapper =>
-            Factory.Services.GetRequiredService<IMapper<Appointment, AppointmentDTO>>();
+        //protected readonly TestWebApplicationFactory<TestStartup> Factory = new();
+        //protected IWAContext Context =>
+        //    Factory.Services.GetRequiredService<IWAContext>();
+        //protected IMapper<Appointment, AppointmentDTO> AppointmentMapper =>
+        //    Factory.Services.GetRequiredService<IMapper<Appointment, AppointmentDTO>>();
 
         [Collection("Sequential")]
         public class GetById : AppointmentControllerTest

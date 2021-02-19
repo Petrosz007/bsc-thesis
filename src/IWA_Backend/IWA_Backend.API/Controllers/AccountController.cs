@@ -23,12 +23,6 @@ namespace IWA_Backend.API.Controllers
             this.userManager = userManager;
         }
 
-        [HttpGet("asd")]
-        public ActionResult<int> Get()
-        {
-            return Ok(10);
-        }
-
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO login)
         {
