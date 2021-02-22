@@ -1,5 +1,7 @@
+using IWA_Backend.API.BusinessLogic.DTOs;
 using IWA_Backend.API.BusinessLogic.Entities;
 using IWA_Backend.API.BusinessLogic.Logic;
+using IWA_Backend.API.BusinessLogic.Mappers;
 using IWA_Backend.API.Contexts;
 using IWA_Backend.API.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -14,11 +16,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace IWA_Backend.API
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -31,8 +35,7 @@ namespace IWA_Backend.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<IWAContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("SqlServer")));
+            ConfigureDb(services);
 
             services.AddIdentity<User, UserRole>(options =>
                 {
@@ -45,18 +48,35 @@ namespace IWA_Backend.API
                 })
                 .AddEntityFrameworkStores<IWAContext>();
 
+            services.AddTransient<DbInitialiser>();
+
             services.AddTransient<IRepository, IWARepository>();
             services.AddTransient<AppointmentLogic>();
 
-            services.AddControllers();
+            services.AddTransient<IMapper<Appointment, AppointmentDTO>, AppointmentMapper>();
+
+            ConfigureControllers(services);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IWA_Backend.API", Version = "v1" });
             });
         }
 
+        protected virtual void ConfigureDb(IServiceCollection services)
+        {
+            services.AddDbContext<IWAContext>(options => options
+                .UseLazyLoadingProxies()
+                .UseSqlServer(Configuration.GetConnectionString("SqlServer")));
+        }
+
+        protected virtual void ConfigureControllers(IServiceCollection services)
+        {
+            services.AddControllers();
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbInitialiser dbInitialiser)
         {
             if (env.IsDevelopment())
             {
@@ -77,7 +97,7 @@ namespace IWA_Backend.API
                 endpoints.MapControllers();
             });
 
-            DbInitialiser.Initialise(serviceProvider);
+            dbInitialiser.Initialise();
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IWA_Backend.API.Migrations
 {
+    [ExcludeFromCodeCoverage]
     public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,23 +22,6 @@ namespace IWA_Backend.API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Categories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EveryoneAllowed = table.Column<bool>(type: "bit", nullable: false),
-                    MaxAttendees = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -80,14 +65,14 @@ namespace IWA_Backend.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Avatar = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     ContractorPageId = table.Column<int>(type: "int", nullable: true),
                     AppointmentId = table.Column<int>(type: "int", nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -104,44 +89,9 @@ namespace IWA_Backend.API.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_AspNetUsers_ContractorPages_ContractorPageId",
                         column: x => x.ContractorPageId,
                         principalTable: "ContractorPages",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Appointments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: true),
-                    OwnerId = table.Column<int>(type: "int", nullable: true),
-                    MaxAttendees = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Appointments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Appointments_AspNetUsers_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Appointments_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -231,15 +181,56 @@ namespace IWA_Backend.API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EveryoneAllowed = table.Column<bool>(type: "bit", nullable: false),
+                    OwnerId = table.Column<int>(type: "int", nullable: true),
+                    MaxAttendees = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Categories_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Appointments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: true),
+                    MaxAttendees = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Appointments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Appointments_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_CategoryId",
                 table: "Appointments",
                 column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Appointments_OwnerId",
-                table: "Appointments",
-                column: "OwnerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -295,6 +286,11 @@ namespace IWA_Backend.API.Migrations
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_Categories_OwnerId",
+                table: "Categories",
+                column: "OwnerId");
+
             migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUsers_Appointments_AppointmentId",
                 table: "AspNetUsers",
@@ -302,13 +298,25 @@ namespace IWA_Backend.API.Migrations
                 principalTable: "Appointments",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_Categories_CategoryId",
+                table: "AspNetUsers",
+                column: "CategoryId",
+                principalTable: "Categories",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Appointments_AspNetUsers_OwnerId",
+                name: "FK_Appointments_Categories_CategoryId",
                 table: "Appointments");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_AspNetUsers_Categories_CategoryId",
+                table: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -329,6 +337,9 @@ namespace IWA_Backend.API.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
@@ -336,9 +347,6 @@ namespace IWA_Backend.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "ContractorPages");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
         }
     }
 }
