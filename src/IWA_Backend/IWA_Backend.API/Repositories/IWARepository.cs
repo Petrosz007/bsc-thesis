@@ -19,10 +19,9 @@ namespace IWA_Backend.API.Repositories
             Context.Appointments
                 .Any(a => a.Id == appointmentId);
 
-        public bool CategoryExists(int categoryId)
-        {
-            throw new NotImplementedException();
-        }
+        public bool CategoryExists(int categoryId) =>
+            Context.Categories
+                .Any(c => c.Id == categoryId);
 
         public async Task CreateAppointment(Appointment appointment)
         {
@@ -30,9 +29,10 @@ namespace IWA_Backend.API.Repositories
             await Context.SaveChangesAsync();
         }
 
-        public Task CreateCategory(Category category)
+        public async Task CreateCategory(Category category)
         {
-            throw new NotImplementedException();
+            Context.Categories.Add(category);
+            await Context.SaveChangesAsync();
         }
 
         public async Task DeleteAppointment(Appointment appointment)
@@ -41,9 +41,10 @@ namespace IWA_Backend.API.Repositories
             await Context.SaveChangesAsync();
         }
 
-        public Task DeleteCategory(Category category)
+        public async Task DeleteCategory(Category category)
         {
-            throw new NotImplementedException();
+            Context.Categories.Remove(category);
+            await Context.SaveChangesAsync();
         }
 
         public IQueryable<Appointment> GetAllContractorsAppointments(string contractorUsername) =>
@@ -71,9 +72,10 @@ namespace IWA_Backend.API.Repositories
             await Context.SaveChangesAsync();
         }
 
-        public Task UpdateCategory(Category category)
+        public async Task UpdateCategory(Category category)
         {
-            throw new NotImplementedException();
+            Context.Update(category);
+            await Context.SaveChangesAsync();
         }
     }
 }
