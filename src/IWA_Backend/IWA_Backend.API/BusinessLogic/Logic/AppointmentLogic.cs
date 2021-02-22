@@ -53,17 +53,17 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             if (!HasWriteAccess(appointment.Category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to create this appointment.");
 
-            if(!IsValid(appointment))
-                throw new InvalidEntityException($"Appointment is not valid.");
+            //if(!IsValid(appointment))
+            //    throw new InvalidEntityException($"Appointment is not valid.");
 
             await Repository.CreateAppointment(appointment);
         }
 
-        public bool IsValid(Appointment appointment)
-        {
-            // TODO: Fix
-            return true;
-        }
+        //public bool IsValid(Appointment appointment)
+        //{
+        //    // TODO: Fix
+        //    return true;
+        //}
 
         public async Task UpdateAppointment(Appointment appointment, string? userName)
         {

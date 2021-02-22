@@ -16,6 +16,10 @@ namespace IWA_Backend.API.Repositories
         public bool AppointmentExists(int appointmentId);
 
         public Category GetCategoryById(int categoryId);
+        public Task CreateCategory(Category category);
+        public Task UpdateCategory(Category category);
+        public Task DeleteCategory(Category category);
+        public bool CategoryExists(int categoryId);
 
         public User GetUserByUserName(string userName);
     }

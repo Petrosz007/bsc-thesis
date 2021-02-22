@@ -348,7 +348,6 @@ namespace IWA_Backend.Tests.UnitTests
                 };
 
                 var mockRepo = new Mock<IRepository>();
-                mockRepo.Setup(r => r.AppointmentExists(10)).Returns(true);
                 mockRepo.Setup(r => r.GetCategoryById(2)).Returns(appointment.Category);
                 var logic = new AppointmentLogic(mockRepo.Object);
 
@@ -370,7 +369,6 @@ namespace IWA_Backend.Tests.UnitTests
                 };
 
                 var mockRepo = new Mock<IRepository>();
-                mockRepo.Setup(r => r.GetAppointmentById(10)).Returns(appointment);
                 mockRepo.Setup(r => r.GetCategoryById(2)).Returns(appointment.Category);
                 var logic = new AppointmentLogic(mockRepo.Object);
 
