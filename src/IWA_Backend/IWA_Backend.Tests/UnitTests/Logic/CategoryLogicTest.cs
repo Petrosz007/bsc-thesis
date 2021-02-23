@@ -135,6 +135,27 @@ namespace IWA_Backend.Tests.UnitTests
                 await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UpdateCategory(category, "Not Owner"));
                 mockRepo.Verify(r => r.UpdateCategory(category), Times.Never());
             }
+
+            [Fact]
+            public async Task UnauthorisedNewowner()
+            {
+                // Arrange
+                var category = new Category
+                {
+                    Id = 2,
+                    Owner = new User { UserName = "Owner" }
+                };
+
+                var mockRepo = new Mock<IRepository>();
+                mockRepo.Setup(r => r.CategoryExists(2)).Returns(true);
+                mockRepo.Setup(r => r.GetCategoryById(2)).Returns(category);
+                var logic = new CategoryLogic(mockRepo.Object);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UpdateCategory(category, "Not Owner"));
+                mockRepo.Verify(r => r.UpdateCategory(category), Times.Never());
+            }
         }
 
         public class TestCreate
@@ -157,25 +178,6 @@ namespace IWA_Backend.Tests.UnitTests
 
                 // Assert
                 mockRepo.Verify(r => r.CreateCategory(category), Times.Once());
-            }
-
-            [Fact]
-            public async Task Unauthorised()
-            {
-                // Arrange
-                var category = new Category
-                {
-                    Id = 2,
-                    Owner = new User { UserName = "Owner" }
-                };
-
-                var mockRepo = new Mock<IRepository>();
-                var logic = new CategoryLogic(mockRepo.Object);
-
-                // Act
-                // Assert
-                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.CreateCategory(category, "Not Owner"));
-                mockRepo.Verify(r => r.CreateCategory(category), Times.Never());
             }
         }
 

@@ -35,7 +35,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             // Should not happen, because every user is registered with one
             bool isOwner = appointment.Category.Owner.UserName == userName;
             bool isAttendee = appointment.Attendees.Any(user => user.UserName == userName);
-            bool isInCategory = appointment.Category.AllowedCustomers.Any(user => user.UserName == userName);
+            bool isInCategory = appointment.Category.AllowedUsers.Any(user => user.UserName == userName);
 
             return everyoneAllowed || isOwner || isAttendee || isInCategory ;
         }

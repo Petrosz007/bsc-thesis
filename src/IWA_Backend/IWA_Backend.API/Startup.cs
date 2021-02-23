@@ -52,8 +52,10 @@ namespace IWA_Backend.API
 
             services.AddTransient<IRepository, IWARepository>();
             services.AddTransient<AppointmentLogic>();
+            services.AddTransient<CategoryLogic>();
 
             services.AddTransient<IMapper<Appointment, AppointmentDTO>, AppointmentMapper>();
+            services.AddTransient<IMapper<Category, CategoryDTO>, CategoryMapper>();
 
             ConfigureControllers(services);
 

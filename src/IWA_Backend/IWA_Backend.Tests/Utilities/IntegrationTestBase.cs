@@ -18,5 +18,7 @@ namespace IWA_Backend.Tests.IntegrationTests
             Factory.Services.GetRequiredService<IWAContext>();
         protected IMapper<Appointment, AppointmentDTO> AppointmentMapper =>
             Factory.Services.GetRequiredService<IMapper<Appointment, AppointmentDTO>>();
+        protected IMapper<Category, CategoryDTO> CategoryMapper =>
+            Factory.Services.GetRequiredService<IMapper<Category, CategoryDTO>>();
     }
 }

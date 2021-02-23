@@ -22,7 +22,6 @@ namespace IWA_Backend.API.Repositories
         public bool CategoryExists(int categoryId) =>
             Context.Categories
                 .Any(c => c.Id == categoryId);
-
         public async Task CreateAppointment(Appointment appointment)
         {
             Context.Appointments.Add(appointment);
@@ -43,6 +42,8 @@ namespace IWA_Backend.API.Repositories
 
         public async Task DeleteCategory(Category category)
         {
+            Context.Appointments.RemoveRange(Context.Appointments
+                .Where(a => a.Category.Id == category.Id));
             Context.Categories.Remove(category);
             await Context.SaveChangesAsync();
         }
@@ -68,14 +69,34 @@ namespace IWA_Backend.API.Repositories
 
         public async Task UpdateAppointment(Appointment appointment)
         {
+            Context.DetachLocal(appointment);
             Context.Update(appointment);
             await Context.SaveChangesAsync();
         }
 
         public async Task UpdateCategory(Category category)
         {
+            Context.DetachLocal(category);
             Context.Update(category);
             await Context.SaveChangesAsync();
+        }
+    }
+
+    public static class IWAContextExtensions
+    {
+        public static void DetachLocal<T>(this DbContext context, T t)
+            where T : class
+        {
+            static object? GetId(T t) => typeof(T).GetProperty("Id")?.GetValue(t);
+
+            var local = context.Set<T>()?
+                .Local?
+                .FirstOrDefault(entry => GetId(entry)?.Equals(GetId(t)) ?? false);
+
+            if (local is not null)
+            {
+                context.Entry(local).State = EntityState.Detached;
+            }
         }
     }
 }
