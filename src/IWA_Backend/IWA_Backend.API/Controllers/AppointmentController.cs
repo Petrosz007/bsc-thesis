@@ -16,7 +16,6 @@ namespace IWA_Backend.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-
     public class AppointmentController : ControllerBase
     {
         private readonly AppointmentLogic Logic;

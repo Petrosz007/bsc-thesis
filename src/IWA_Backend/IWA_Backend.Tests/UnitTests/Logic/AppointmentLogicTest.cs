@@ -158,7 +158,7 @@ namespace IWA_Backend.Tests.UnitTests
                 {
                     Category = new Category
                     {
-                        AllowedCustomers = new List<User> { user },
+                        AllowedUsers = new List<User> { user },
                         Owner = new User { UserName = "OwnerUser" },
                     },
                 };

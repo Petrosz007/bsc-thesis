@@ -23,7 +23,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             // TODO: If owner.UserName == null and userName is null this condition is true
             // Should not happen, because every user is registered with one
             bool isOwner = category.Owner.UserName == userName;
-            bool isInCategory = category.AllowedCustomers.Any(user => user.UserName == userName);
+            bool isInCategory = category.AllowedUsers.Any(user => user.UserName == userName);
 
             return everyoneAllowed || isOwner || isInCategory;
         }
@@ -48,9 +48,6 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 
         public async Task CreateCategory(Category category, string? userName)
         {
-            if (category.Owner.UserName != userName)
-                throw new UnauthorisedException("Unauthorised to create this category.");
-
             await Repository.CreateCategory(category);
         }
 
@@ -58,9 +55,6 @@ namespace IWA_Backend.API.BusinessLogic.Logic
         {
             if (!HasWriteAccess(category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to update this appointment");
-
-            //if (!Repository.CategoryExists(category.Id))
-            //    throw new NotFoundException($"Category with id '{category.Id}' doesn't exist.");
 
             await Repository.UpdateCategory(category);
         }
