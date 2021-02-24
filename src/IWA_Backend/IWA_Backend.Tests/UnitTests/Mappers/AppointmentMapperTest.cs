@@ -22,8 +22,9 @@ namespace IWA_Backend.Tests.UnitTests.Mappers
             var owner = new User { UserName = "owner" };
             var attendees = new List<User> { new User { UserName = "test1" }, new User { UserName = "test2" } };
 
-            var mockRepo = new Mock<IRepository>();
-            var mapper = new AppointmentMapper(mockRepo.Object);
+            var mockCategoryRepo = new Mock<ICategoryRepository>();
+            var mockUserRepo = new Mock<IUserRepository>();
+            var mapper = new AppointmentMapper(mockCategoryRepo.Object, mockUserRepo.Object);
 
             var data = new Appointment
             {
@@ -57,12 +58,13 @@ namespace IWA_Backend.Tests.UnitTests.Mappers
             var owner = new User { UserName = "owner" };
             var attendees = new List<User> { new User { UserName = "test1" }, new User { UserName = "test2" } };
 
-            var mockRepo = new Mock<IRepository>();
-            mockRepo.Setup(r => r.GetCategoryById(20)).Returns(category);
-            mockRepo.Setup(r => r.GetUserByUserName("owner")).Returns(owner);
-            mockRepo.Setup(r => r.GetUserByUserName("test1")).Returns(attendees[0]);
-            mockRepo.Setup(r => r.GetUserByUserName("test2")).Returns(attendees[1]);
-            var mapper = new AppointmentMapper(mockRepo.Object);
+            var mockCategoryRepo = new Mock<ICategoryRepository>();
+            var mockUserRepo = new Mock<IUserRepository>();
+            mockCategoryRepo.Setup(r => r.GetById(20)).Returns(category);
+            mockUserRepo.Setup(r => r.GetByUserName("owner")).Returns(owner);
+            mockUserRepo.Setup(r => r.GetByUserName("test1")).Returns(attendees[0]);
+            mockUserRepo.Setup(r => r.GetByUserName("test2")).Returns(attendees[1]);
+            var mapper = new AppointmentMapper(mockCategoryRepo.Object, mockUserRepo.Object);
 
             var data = new AppointmentDTO
             {

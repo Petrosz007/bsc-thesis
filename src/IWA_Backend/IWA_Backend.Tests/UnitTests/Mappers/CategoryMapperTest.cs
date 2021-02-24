@@ -22,7 +22,7 @@ namespace IWA_Backend.Tests.UnitTests.Mappers
             var owner = new User { UserName = "owner" };
             var allowedUsers = new List<User> { new User { UserName = "test1" }, new User { UserName = "test2" } };
 
-            var mockRepo = new Mock<IRepository>();
+            var mockRepo = new Mock<IUserRepository>();
             var mapper = new CategoryMapper(mockRepo.Object);
 
             var data = new Category
@@ -60,10 +60,10 @@ namespace IWA_Backend.Tests.UnitTests.Mappers
             var owner = new User { UserName = "owner" };
             var allowedCustomers = new List<User> { new User { UserName = "test1" }, new User { UserName = "test2" } };
 
-            var mockRepo = new Mock<IRepository>();
-            mockRepo.Setup(r => r.GetUserByUserName("owner")).Returns(owner);
-            mockRepo.Setup(r => r.GetUserByUserName("test1")).Returns(allowedCustomers[0]);
-            mockRepo.Setup(r => r.GetUserByUserName("test2")).Returns(allowedCustomers[1]);
+            var mockRepo = new Mock<IUserRepository>();
+            mockRepo.Setup(r => r.GetByUserName("owner")).Returns(owner);
+            mockRepo.Setup(r => r.GetByUserName("test1")).Returns(allowedCustomers[0]);
+            mockRepo.Setup(r => r.GetByUserName("test2")).Returns(allowedCustomers[1]);
             var mapper = new CategoryMapper(mockRepo.Object);
 
             var data = new CategoryDTO

@@ -12,15 +12,17 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 {
     public class AppointmentLogic
     {
-        private readonly IRepository Repository;
-        public AppointmentLogic(IRepository repository)
+        private readonly IAppointmentRepository AppointmentRepository;
+        private readonly ICategoryRepository CategoryRepository;
+        public AppointmentLogic(IAppointmentRepository appointmentRepository, ICategoryRepository categoryRepository)
         {
-            Repository = repository;
+            AppointmentRepository = appointmentRepository;
+            CategoryRepository = categoryRepository;
         }
 
         public Appointment GetAppointmentById(int id, string? userName)
         {
-            var appointment = Repository.GetAppointmentById(id);
+            var appointment = AppointmentRepository.GetById(id);
 
             if(!HasReadAccess(appointment, userName))
                 throw new UnauthorisedException($"You are unauthorized to view this appointment.");
@@ -42,7 +44,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 
         public bool HasWriteAccess(int categoryId, string? userName)
         {
-            var category = Repository.GetCategoryById(categoryId);
+            var category = CategoryRepository.GetById(categoryId);
             var isOwner = category.Owner.UserName == userName;
 
             return isOwner;
@@ -53,37 +55,28 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             if (!HasWriteAccess(appointment.Category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to create this appointment.");
 
-            //if(!IsValid(appointment))
-            //    throw new InvalidEntityException($"Appointment is not valid.");
-
-            await Repository.CreateAppointment(appointment);
+            await AppointmentRepository.CreateAsync(appointment);
         }
-
-        //public bool IsValid(Appointment appointment)
-        //{
-        //    // TODO: Fix
-        //    return true;
-        //}
 
         public async Task UpdateAppointment(Appointment appointment, string? userName)
         {
             if (!HasWriteAccess(appointment.Category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to update this appointment");
 
-            if (!Repository.AppointmentExists(appointment.Id))
+            if (!AppointmentRepository.Exists(appointment.Id))
                 throw new NotFoundException($"Appointment with id '{appointment.Id}' doesn't exist.");
 
-            await Repository.UpdateAppointment(appointment);
+            await AppointmentRepository.UpdateAsync(appointment);
         }
 
         public async Task DeleteAppointment(int appointmentId, string? userName)
         {
-            var appointment = Repository.GetAppointmentById(appointmentId);
+            var appointment = AppointmentRepository.GetById(appointmentId);
 
             if (!HasWriteAccess(appointment.Category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to delete this appointment");
 
-            await Repository.DeleteAppointment(appointment);
+            await AppointmentRepository.DeleteAsync(appointment);
         }
     }
 }

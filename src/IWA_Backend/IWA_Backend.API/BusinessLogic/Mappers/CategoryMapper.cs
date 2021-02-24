@@ -10,9 +10,11 @@ namespace IWA_Backend.API.BusinessLogic.Mappers
 {
     public class CategoryMapper : IMapper<Category, CategoryDTO>
     {
-        private readonly IRepository Repository;
-        public CategoryMapper(IRepository repository) =>
-            Repository = repository;
+        private readonly IUserRepository UserRepository;
+        public CategoryMapper(IUserRepository userRepository)
+        {
+            UserRepository = userRepository;
+        }
 
         public CategoryDTO ToDTO(Category entity) =>
             new CategoryDTO
@@ -33,9 +35,9 @@ namespace IWA_Backend.API.BusinessLogic.Mappers
                 Id = dto.Id,
                 Name = dto.Name,
                 Description = dto.Description,
-                AllowedUsers = dto.AllowedUserNames.Select(Repository.GetUserByUserName).ToList(),
+                AllowedUsers = dto.AllowedUserNames.Select(UserRepository.GetByUserName).ToList(),
                 EveryoneAllowed = dto.EveryoneAllowed,
-                Owner = Repository.GetUserByUserName(dto.OwnerUserName),
+                Owner = UserRepository.GetByUserName(dto.OwnerUserName),
                 MaxAttendees = dto.MaxAttendees,
                 Price = dto.Price,
             };

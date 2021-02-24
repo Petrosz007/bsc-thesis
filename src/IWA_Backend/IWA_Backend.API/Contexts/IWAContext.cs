@@ -21,4 +21,22 @@ namespace IWA_Backend.API.Contexts
         {
         }
     }
+
+    public static class IWAContextExtensions
+    {
+        public static void DetachLocal<T>(this DbContext context, T t)
+            where T : class
+        {
+            static object? GetId(T t) => typeof(T).GetProperty("Id")?.GetValue(t);
+
+            var local = context.Set<T>()?
+                .Local?
+                .FirstOrDefault(entry => GetId(entry)?.Equals(GetId(t)) ?? false);
+
+            if (local is not null)
+            {
+                context.Entry(local).State = EntityState.Detached;
+            }
+        }
+    }
 }

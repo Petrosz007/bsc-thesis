@@ -10,9 +10,13 @@ namespace IWA_Backend.API.BusinessLogic.Mappers
 {
     public class AppointmentMapper : IMapper<Appointment, AppointmentDTO>
     {
-        private readonly IRepository Repository;
-        public AppointmentMapper(IRepository repository) =>
-            Repository = repository;
+        private readonly ICategoryRepository CategoryRepository;
+        private readonly IUserRepository UserRepository;
+        public AppointmentMapper(ICategoryRepository categoryRepository, IUserRepository userRepository)
+        {
+            CategoryRepository = categoryRepository;
+            UserRepository = userRepository;
+        }
 
         public AppointmentDTO ToDTO(Appointment entity) =>
             new AppointmentDTO
@@ -31,8 +35,8 @@ namespace IWA_Backend.API.BusinessLogic.Mappers
                 Id = dto.Id,
                 StartTime = dto.StartTime,
                 EndTime = dto.EndTime,
-                Category = Repository.GetCategoryById(dto.CategoryId),
-                Attendees = dto.AttendeeUserNames.Select(Repository.GetUserByUserName).ToList(),
+                Category = CategoryRepository.GetById(dto.CategoryId),
+                Attendees = dto.AttendeeUserNames.Select(UserRepository.GetByUserName).ToList(),
                 MaxAttendees = dto.MaxAttendees,
             };
     }

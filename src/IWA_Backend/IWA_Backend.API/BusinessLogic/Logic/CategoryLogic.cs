@@ -10,9 +10,9 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 {
     public class CategoryLogic
     {
-        private readonly IRepository Repository;
+        private readonly ICategoryRepository Repository;
 
-        public CategoryLogic(IRepository repository)
+        public CategoryLogic(ICategoryRepository repository)
         {
             Repository = repository;
         }
@@ -30,7 +30,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 
         public bool HasWriteAccess(int categoryId, string? userName)
         {
-            var category = Repository.GetCategoryById(categoryId);
+            var category = Repository.GetById(categoryId);
             var isOwner = category.Owner.UserName == userName;
 
             return isOwner;
@@ -38,7 +38,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 
         public Category GetCategoryById(int id, string? userName)
         {
-            var category = Repository.GetCategoryById(id);
+            var category = Repository.GetById(id);
 
             if (!HasReadAccess(category, userName))
                 throw new UnauthorisedException($"You are unauthorized to view this category.");
@@ -48,7 +48,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 
         public async Task CreateCategory(Category category, string? userName)
         {
-            await Repository.CreateCategory(category);
+            await Repository.CreateAsync(category);
         }
 
         public async Task UpdateCategory(Category category, string? userName)
@@ -56,17 +56,17 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             if (!HasWriteAccess(category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to update this appointment");
 
-            await Repository.UpdateCategory(category);
+            await Repository.UpdateAsync(category);
         }
 
         public async Task DeleteCategory(int categoryId, string? userName)
         {
-            var category = Repository.GetCategoryById(categoryId);
+            var category = Repository.GetById(categoryId);
 
             if (!HasWriteAccess(category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to delete this category.");
 
-            await Repository.DeleteCategory(category);
+            await Repository.DeleteAsync(category);
         }
     }
 }
