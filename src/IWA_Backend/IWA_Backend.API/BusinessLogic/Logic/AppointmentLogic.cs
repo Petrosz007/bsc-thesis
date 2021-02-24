@@ -50,7 +50,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             return isOwner;
         }
 
-        public async Task CreateAppointment(Appointment appointment, string? userName)
+        public async Task CreateAppointmentAsync(Appointment appointment, string? userName)
         {
             if (!HasWriteAccess(appointment.Category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to create this appointment.");
@@ -58,7 +58,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             await AppointmentRepository.CreateAsync(appointment);
         }
 
-        public async Task UpdateAppointment(Appointment appointment, string? userName)
+        public async Task UpdateAppointmentAsync(Appointment appointment, string? userName)
         {
             if (!HasWriteAccess(appointment.Category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to update this appointment");
@@ -69,7 +69,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             await AppointmentRepository.UpdateAsync(appointment);
         }
 
-        public async Task DeleteAppointment(int appointmentId, string? userName)
+        public async Task DeleteAppointmentAsync(int appointmentId, string? userName)
         {
             var appointment = AppointmentRepository.GetById(appointmentId);
 

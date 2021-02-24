@@ -88,7 +88,7 @@ namespace IWA_Backend.Tests.UnitTests
                 var logic = new CategoryLogic(mockRepo.Object);
 
                 // Act
-                await logic.UpdateCategory(category, "Owner");
+                await logic.UpdateCategoryAsync(category, "Owner");
 
                 // Assert
                 mockRepo.Verify(r => r.UpdateAsync(category), Times.Once());
@@ -111,7 +111,7 @@ namespace IWA_Backend.Tests.UnitTests
 
                 // Act
                 // Assert
-                await Assert.ThrowsAsync<NotFoundException>(() => logic.UpdateCategory(category, "Owner"));
+                await Assert.ThrowsAsync<NotFoundException>(() => logic.UpdateCategoryAsync(category, "Owner"));
                 mockRepo.Verify(r => r.UpdateAsync(category), Times.Never());
             }
 
@@ -132,7 +132,7 @@ namespace IWA_Backend.Tests.UnitTests
 
                 // Act
                 // Assert
-                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UpdateCategory(category, "Not Owner"));
+                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UpdateCategoryAsync(category, "Not Owner"));
                 mockRepo.Verify(r => r.UpdateAsync(category), Times.Never());
             }
 
@@ -153,7 +153,7 @@ namespace IWA_Backend.Tests.UnitTests
 
                 // Act
                 // Assert
-                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UpdateCategory(category, "Not Owner"));
+                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UpdateCategoryAsync(category, "Not Owner"));
                 mockRepo.Verify(r => r.UpdateAsync(category), Times.Never());
             }
         }
@@ -174,7 +174,7 @@ namespace IWA_Backend.Tests.UnitTests
                 var logic = new CategoryLogic(mockRepo.Object);
 
                 // Act
-                await logic.CreateCategory(category, "Owner");
+                await logic.CreateCategoryAsync(category, "Owner");
 
                 // Assert
                 mockRepo.Verify(r => r.CreateAsync(category), Times.Once());
@@ -198,7 +198,7 @@ namespace IWA_Backend.Tests.UnitTests
                 var logic = new CategoryLogic(mockRepo.Object);
 
                 // Act
-                await logic.DeleteCategory(2, "Owner");
+                await logic.DeleteCategoryAsync(2, "Owner");
 
                 // Assert
                 mockRepo.Verify(r => r.DeleteAsync(category), Times.Once());
@@ -220,7 +220,7 @@ namespace IWA_Backend.Tests.UnitTests
 
                 // Act
                 // Assert
-                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.DeleteCategory(2, "Not Owner"));
+                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.DeleteCategoryAsync(2, "Not Owner"));
                 mockRepo.Verify(r => r.DeleteAsync(category), Times.Never());
             }
 
@@ -234,7 +234,7 @@ namespace IWA_Backend.Tests.UnitTests
 
                 // Act
                 // Assert
-                await Assert.ThrowsAsync<NotFoundException>(() => logic.DeleteCategory(2, "Not Owner"));
+                await Assert.ThrowsAsync<NotFoundException>(() => logic.DeleteCategoryAsync(2, "Not Owner"));
                 mockRepo.Verify(r => r.DeleteAsync(It.IsAny<Category>()), Times.Never());
             }
         }

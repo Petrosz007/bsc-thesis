@@ -53,7 +53,7 @@ namespace IWA_Backend.API.Controllers
                     OwnerUserName = CurrentUserName,
                 };
                 var category = Mapper.ToEntity(dto);
-                await Logic.CreateCategory(category, CurrentUserName);
+                await Logic.CreateCategoryAsync(category, CurrentUserName);
                 var createdCategory = Mapper.ToDTO(category);
                 return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, createdCategory);
             }
@@ -73,7 +73,7 @@ namespace IWA_Backend.API.Controllers
                 };
 
                 var category = Mapper.ToEntity(categoryDTO);
-                await Logic.UpdateCategory(category, CurrentUserName);
+                await Logic.UpdateCategoryAsync(category, CurrentUserName);
                 return NoContent();
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
@@ -86,7 +86,7 @@ namespace IWA_Backend.API.Controllers
         {
             try
             {
-                await Logic.DeleteCategory(id, CurrentUserName);
+                await Logic.DeleteCategoryAsync(id, CurrentUserName);
                 return NoContent();
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }

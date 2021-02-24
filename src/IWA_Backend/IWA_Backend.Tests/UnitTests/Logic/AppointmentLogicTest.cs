@@ -290,7 +290,7 @@ namespace IWA_Backend.Tests.UnitTests
                 var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
 
                 // Act
-                await logic.UpdateAppointment(appointment, "Owner");
+                await logic.UpdateAppointmentAsync(appointment, "Owner");
 
                 // Assert
                 mockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Once());
@@ -314,7 +314,7 @@ namespace IWA_Backend.Tests.UnitTests
 
                 // Act
                 // Assert
-                await Assert.ThrowsAsync<NotFoundException>(() => logic.UpdateAppointment(appointment, "Owner"));
+                await Assert.ThrowsAsync<NotFoundException>(() => logic.UpdateAppointmentAsync(appointment, "Owner"));
 
                 mockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Never());
             }
@@ -337,7 +337,7 @@ namespace IWA_Backend.Tests.UnitTests
 
                 // Act
                 // Assert
-                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UpdateAppointment(appointment, "NotOwner"));
+                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UpdateAppointmentAsync(appointment, "NotOwner"));
 
                 mockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Never());
             }
@@ -361,7 +361,7 @@ namespace IWA_Backend.Tests.UnitTests
                 var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
 
                 // Act
-                await logic.CreateAppointment(appointment, "Owner");
+                await logic.CreateAppointmentAsync(appointment, "Owner");
 
                 // Assert
                 mockAppointmentRepo.Verify(r => r.CreateAsync(appointment), Times.Once());
@@ -384,7 +384,7 @@ namespace IWA_Backend.Tests.UnitTests
 
                 // Act
                 // Assert
-                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.CreateAppointment(appointment, "NotOwner"));
+                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.CreateAppointmentAsync(appointment, "NotOwner"));
 
                 mockAppointmentRepo.Verify(r => r.CreateAsync(appointment), Times.Never());
             }
@@ -409,7 +409,7 @@ namespace IWA_Backend.Tests.UnitTests
                 var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
 
                 // Act
-                await logic.DeleteAppointment(10, "Owner");
+                await logic.DeleteAppointmentAsync(10, "Owner");
 
                 // Assert
                 mockAppointmentRepo.Verify(r => r.DeleteAsync(appointment), Times.Once());
@@ -433,7 +433,7 @@ namespace IWA_Backend.Tests.UnitTests
 
                 // Act
                 // Assert
-                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.DeleteAppointment(10, "NotOwner"));
+                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.DeleteAppointmentAsync(10, "NotOwner"));
 
                 mockAppointmentRepo.Verify(r => r.DeleteAsync(appointment), Times.Never());
             }
@@ -455,7 +455,7 @@ namespace IWA_Backend.Tests.UnitTests
 
                 // Act
                 // Assert
-                await Assert.ThrowsAsync<NotFoundException>(() => logic.DeleteAppointment(100, "Owner"));
+                await Assert.ThrowsAsync<NotFoundException>(() => logic.DeleteAppointmentAsync(100, "Owner"));
 
                 mockAppointmentRepo.Verify(r => r.DeleteAsync(appointment), Times.Never());
             }

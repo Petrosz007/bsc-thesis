@@ -46,12 +46,12 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             return category;
         }
 
-        public async Task CreateCategory(Category category, string? userName)
+        public async Task CreateCategoryAsync(Category category, string? userName)
         {
             await Repository.CreateAsync(category);
         }
 
-        public async Task UpdateCategory(Category category, string? userName)
+        public async Task UpdateCategoryAsync(Category category, string? userName)
         {
             if (!HasWriteAccess(category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to update this appointment");
@@ -59,7 +59,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             await Repository.UpdateAsync(category);
         }
 
-        public async Task DeleteCategory(int categoryId, string? userName)
+        public async Task DeleteCategoryAsync(int categoryId, string? userName)
         {
             var category = Repository.GetById(categoryId);
 
