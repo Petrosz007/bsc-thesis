@@ -12,8 +12,8 @@ namespace IWA_Backend.API.BusinessLogic.Entities
         [Required]
         public int Id { get; set; }
         [Required]
-        public string Title { get; set; } = "";
+        public string Title { get; set; } = null!;
         [Required]
-        public string Bio { get; set; } = "";
+        public string Bio { get; set; } = null!;
     }
 }
