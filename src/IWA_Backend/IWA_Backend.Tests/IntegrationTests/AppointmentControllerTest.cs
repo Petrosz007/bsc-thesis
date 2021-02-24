@@ -39,7 +39,6 @@ namespace IWA_Backend.Tests.IntegrationTests
                 // Arrange
                 var client = Factory.CreateClient();
                 int id = 1;
-                var apps = Context.Appointments.ToList().Select(a => (a.Id, a.Category.Id, a.Category.Name)).ToList();
                 var testAppointment = AppointmentMapper.ToDTO(Context.Appointments.First(a => a.Id == id));
 
                 // Act

@@ -35,7 +35,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             // Should not happen, because every user is registered with one
             bool isOwner = appointment.Category.Owner.UserName == userName;
             bool isAttendee = appointment.Attendees.Any(user => user.UserName == userName);
-            bool isInCategory = appointment.Category.AllowedCustomers.Any(user => user.UserName == userName);
+            bool isInCategory = appointment.Category.AllowedUsers.Any(user => user.UserName == userName);
 
             return everyoneAllowed || isOwner || isAttendee || isInCategory ;
         }
@@ -53,17 +53,17 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             if (!HasWriteAccess(appointment.Category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to create this appointment.");
 
-            if(!IsValid(appointment))
-                throw new InvalidEntityException($"Appointment is not valid.");
+            //if(!IsValid(appointment))
+            //    throw new InvalidEntityException($"Appointment is not valid.");
 
             await Repository.CreateAppointment(appointment);
         }
 
-        public bool IsValid(Appointment appointment)
-        {
-            // TODO: Fix
-            return true;
-        }
+        //public bool IsValid(Appointment appointment)
+        //{
+        //    // TODO: Fix
+        //    return true;
+        //}
 
         public async Task UpdateAppointment(Appointment appointment, string? userName)
         {

@@ -14,10 +14,10 @@ namespace IWA_Backend.Tests.UnitTests
 {
     public class IWARepositoryTest
     {
-        public class TestAppointment
+        public class AppointmentTest
         {
             [Fact]
-            public async Task CreateAppointment()
+            public async Task Create()
             {
                 // Arrange
                 var appointments = new List<Appointment>();
@@ -35,7 +35,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
 
             [Fact]
-            public async Task DeleteAppointment()
+            public async Task Delete()
             {
                 // Arrange
                 var appointments = new List<Appointment>
@@ -67,7 +67,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
 
             [Fact]
-            public async Task UpdateAppointment()
+            public async Task Update()
             {
                 // Arrange
                 var appointments = new List<Appointment>
@@ -103,7 +103,7 @@ namespace IWA_Backend.Tests.UnitTests
             [InlineData(0, 10)]
             [InlineData(1, 20)]
             [InlineData(2, 30)]
-            public void GetAppointmentById(int input, int expected)
+            public void GetById(int input, int expected)
             {
                 // Arrange
                 var appointments = new List<Appointment>
@@ -139,7 +139,7 @@ namespace IWA_Backend.Tests.UnitTests
             [InlineData(1, true)]
             [InlineData(2, true)]
             [InlineData(100, false)]
-            public void AppointmentExists(int input, bool expected)
+            public void Exists(int input, bool expected)
             {
                 // Arrange
                 var appointments = new List<Appointment>
@@ -171,7 +171,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
 
             [Fact]
-            public void GetAppointmentByIdNotFound()
+            public void GetByIdNotFound()
             {
                 // Arrange
                 var appointments = new List<Appointment>
@@ -252,13 +252,97 @@ namespace IWA_Backend.Tests.UnitTests
             }
         }
 
-        public class TestCategory
+        public class CategoryTest
         {
+            [Fact]
+            public async Task Create()
+            {
+                // Arrange
+                var categories = new List<Category>();
+                var mockContext = new MockDbContextBuilder { Categories = categories }.Build();
+                var repo = new IWARepository(mockContext.Object);
+
+                // Act
+                var category = new Category();
+                await repo.CreateCategory(category);
+
+                // Assert
+                Assert.Single(categories);
+                Assert.Equal(category, categories.First());
+                mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
+            }
+
+            [Fact]
+            public async Task Delete()
+            {
+                // Arrange
+                var appointments = new List<Appointment>
+                {
+                    new Appointment
+                    {
+                        Id = 0,
+                    },
+                    new Appointment
+                    {
+                        Id = 1,
+                    },
+                    new Appointment
+                    {
+                        Id = 2,
+                    },
+                };
+                var mockContext = new MockDbContextBuilder { Appointments = appointments }.Build();
+                var repo = new IWARepository(mockContext.Object);
+
+                // Act
+                await repo.DeleteAppointment(appointments[1]);
+
+                // Assert
+                mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
+                mockContext.Verify(c => c.Appointments.Remove(appointments[0]), Times.Never());
+                mockContext.Verify(c => c.Appointments.Remove(appointments[1]), Times.Once());
+                mockContext.Verify(c => c.Appointments.Remove(appointments[2]), Times.Never());
+            }
+
+            [Fact]
+            public async Task Update()
+            {
+                // Arrange
+                var categories = new List<Category>
+                {
+                    new Category
+                    {
+                        Id = 0,
+                    },
+                    new Category
+                    {
+                        Id = 1,
+                    },
+                    new Category
+                    {
+                        Id = 2,
+                    },
+                };
+                var mockContext = new MockDbContextBuilder { Categories = categories }.Build();
+                var repo = new IWARepository(mockContext.Object);
+
+                // Act
+                categories[1].Id = 10;
+                await repo.UpdateCategory(categories[1]);
+
+                // Assert
+                mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
+                mockContext.Verify(c => c.Update(categories[0]), Times.Never());
+                mockContext.Verify(c => c.Update(categories[1]), Times.Once());
+                mockContext.Verify(c => c.Update(categories[2]), Times.Never());
+            }
+
+
             [Theory]
             [InlineData(0, 10)]
             [InlineData(1, 20)]
             [InlineData(2, 30)]
-            public void GetCategoryById(int input, int expected)
+            public void GetById(int input, int expected)
             {
                 // Arrange
                 var categories = new List<Category>
@@ -290,7 +374,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
 
             [Fact]
-            public void GetCategoryByIdNotFound()
+            public void GetByIdNotFound()
             {
                 // Arrange
                 var categories = new List<Category>
@@ -318,6 +402,40 @@ namespace IWA_Backend.Tests.UnitTests
                 // Assert
                 Assert.Throws<NotFoundException>(() => repo.GetCategoryById(100));
             }
+
+            [Theory]
+            [InlineData(0, true)]
+            [InlineData(1, true)]
+            [InlineData(2, true)]
+            [InlineData(100, false)]
+            public void Exists(int input, bool expected)
+            {
+                // Arrange
+                var categories = new List<Category>
+                {
+                    new Category
+                    {
+                        Id = 0,
+                    },
+                    new Category
+                    {
+                        Id = 1,
+                    },
+                    new Category
+                    {
+                        Id = 2,
+                    },
+                };
+                var mockContext = new MockDbContextBuilder { Categories = categories }.Build();
+                var repo = new IWARepository(mockContext.Object);
+
+                // Act
+                var result = repo.CategoryExists(input);
+
+                // Assert
+                Assert.Equal(expected, result);
+            }
+
         }
 
         public class TestUser

@@ -20,7 +20,6 @@ namespace IWA_Backend.API.BusinessLogic.DTOs
         [Required]
         public int MaxAttendees { get; init; }
 
-        // Checks 
         public bool ValuesEqual(object? obj)
         {
             if(obj is AppointmentDTO other)
