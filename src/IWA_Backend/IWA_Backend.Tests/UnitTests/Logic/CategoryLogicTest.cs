@@ -14,7 +14,7 @@ namespace IWA_Backend.Tests.UnitTests
 {
     public class CategoryLogicTest
     {
-        public class TestGetById
+        public class GetById
         {
             [Fact]
             public void ReturnsCorrect()
@@ -70,7 +70,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
         }
 
-        public class TestUpdate
+        public class Update
         {
             [Fact]
             public async Task Successful()
@@ -158,7 +158,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
         }
 
-        public class TestCreate
+        public class Create
         {
             [Fact]
             public async Task Successful()
@@ -181,7 +181,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
         }
 
-        public class TestDelete
+        public class Delete
         {
             [Fact]
             public async Task Successful()

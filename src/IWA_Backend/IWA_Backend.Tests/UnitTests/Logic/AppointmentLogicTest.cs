@@ -16,7 +16,7 @@ namespace IWA_Backend.Tests.UnitTests
 {
     public class AppointmentLogicTest
     {
-        public class TestGetAppointmentById
+        public class GetById
         {
             [Fact]
             public void ReturnsCorrect()
@@ -80,7 +80,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
         }
 
-        public class TestHasReadAccess
+        public class HasReadAccess
         {
             [Fact]
             public void CategoryEveryoneAllowed()
@@ -226,7 +226,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
         }
 
-        public class TestHasWriteAccess
+        public class HasWriteAccess
         {
             [Fact]
             public void Allowed()
@@ -271,7 +271,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
         }
 
-        public class TestUpdate
+        public class Update
         {
             [Fact]
             public async Task Successful()
@@ -343,7 +343,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
         }
 
-        public class TestCreate
+        public class Create
         {
             [Fact]
             public async Task Successful()
@@ -390,7 +390,7 @@ namespace IWA_Backend.Tests.UnitTests
             }
         }
 
-        public class TestDelete
+        public class Delete
         {
             [Fact]
             public async Task Successful()
