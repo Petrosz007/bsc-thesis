@@ -50,7 +50,10 @@ namespace IWA_Backend.API
 
             services.AddTransient<DbInitialiser>();
 
-            services.AddTransient<IRepository, IWARepository>();
+            services.AddTransient<IAppointmentRepository, AppointmentRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+
             services.AddTransient<AppointmentLogic>();
             services.AddTransient<CategoryLogic>();
 

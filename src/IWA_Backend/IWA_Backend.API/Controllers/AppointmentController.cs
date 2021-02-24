@@ -48,7 +48,7 @@ namespace IWA_Backend.API.Controllers
             try
             {
                 var appointment = Mapper.ToEntity(appointmentDTO);
-                await Logic.CreateAppointment(appointment, CurrentUserName);
+                await Logic.CreateAppointmentAsync(appointment, CurrentUserName);
                 var createdAppointmentDTO = Mapper.ToDTO(appointment);
                 return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, createdAppointmentDTO);
             }
@@ -67,7 +67,7 @@ namespace IWA_Backend.API.Controllers
                     return BadRequest($"URL path id '{id}' is not equal to the appointment id '{appointmentDTO.Id}'");
 
                 var appointment = Mapper.ToEntity(appointmentDTO);
-                await Logic.UpdateAppointment(appointment, CurrentUserName);
+                await Logic.UpdateAppointmentAsync(appointment, CurrentUserName);
                 return NoContent();
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
@@ -81,7 +81,7 @@ namespace IWA_Backend.API.Controllers
         {
             try
             {
-                await Logic.DeleteAppointment(id, CurrentUserName);
+                await Logic.DeleteAppointmentAsync(id, CurrentUserName);
                 return NoContent();
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
