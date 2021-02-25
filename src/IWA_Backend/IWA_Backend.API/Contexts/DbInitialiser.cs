@@ -61,7 +61,6 @@ namespace IWA_Backend.API.Contexts
                     UserName = "contractor1",
                     Email = "contractor1@example.com",
                     Name = "Kézműves Károly",
-                    Avatar = null,
                     ContractorPage = new ContractorPage
                     {
                         Title = "Kézműves mester",
@@ -73,7 +72,6 @@ namespace IWA_Backend.API.Contexts
                     UserName = "contractor2",
                     Email = "contractor2@example.com",
                     Name = "Angoltanár András",
-                    Avatar = null,
                     ContractorPage = new ContractorPage
                     {
                         Title = "Angol tanár",
@@ -85,7 +83,6 @@ namespace IWA_Backend.API.Contexts
                     UserName = "customer1",
                     Email = "customer1@example.com",
                     Name = "Fogyasztó Feri",
-                    Avatar = null,
                     ContractorPage = null
                 },
                 new User
@@ -93,7 +90,6 @@ namespace IWA_Backend.API.Contexts
                     UserName = "customer2",
                     Email = "customer2@example.com",
                     Name = "Konszúmer Konrád",
-                    Avatar = null,
                     ContractorPage = null
                 },
             };

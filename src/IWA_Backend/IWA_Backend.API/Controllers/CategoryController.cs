@@ -19,8 +19,8 @@ namespace IWA_Backend.API.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly CategoryLogic Logic;
-        private readonly IMapper<Category, CategoryDTO> Mapper;
-        public CategoryController(CategoryLogic logic, IMapper<Category, CategoryDTO> mapper)
+        private readonly IDTOMapper<Category, CategoryDTO> Mapper;
+        public CategoryController(CategoryLogic logic, IDTOMapper<Category, CategoryDTO> mapper)
         {
             Logic = logic;
             Mapper = mapper;
@@ -50,7 +50,7 @@ namespace IWA_Backend.API.Controllers
                 var dto = categoryDTO with
                 {
                     Id = 0,
-                    OwnerUserName = CurrentUserName,
+                    OwnerUserName = CurrentUserName!,
                 };
                 var category = Mapper.ToEntity(dto);
                 await Logic.CreateCategoryAsync(category, CurrentUserName);
@@ -69,7 +69,7 @@ namespace IWA_Backend.API.Controllers
                 var dto = categoryDTO with
                 {
                     Id = id,
-                    OwnerUserName = CurrentUserName,
+                    OwnerUserName = CurrentUserName!,
                 };
 
                 var category = Mapper.ToEntity(categoryDTO);

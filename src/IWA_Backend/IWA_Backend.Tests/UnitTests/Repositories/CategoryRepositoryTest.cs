@@ -1,7 +1,7 @@
 ﻿using IWA_Backend.API.BusinessLogic.Entities;
 using IWA_Backend.API.BusinessLogic.Exceptions;
 using IWA_Backend.API.Repositories;
-using IWA_Backend.Tests.Mock;
+using IWA_Backend.Tests.Utilities;
 using Moq;
 using System;
 using System.Collections.Generic;

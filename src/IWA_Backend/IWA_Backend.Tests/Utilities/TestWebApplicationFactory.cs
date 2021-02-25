@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IWA_Backend.Tests.IntegrationTests
+namespace IWA_Backend.Tests.Utilities
 {
     public class TestWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup>
         where TStartup : class
@@ -22,7 +22,7 @@ namespace IWA_Backend.Tests.IntegrationTests
         {
             builder.ConfigureServices(async services =>
             {
-                var descriptor = services.SingleOrDefault(
+                var descriptor = services.Single(
                 d => d.ServiceType ==
                     typeof(DbContextOptions<IWAContext>));
 

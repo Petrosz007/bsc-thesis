@@ -43,8 +43,6 @@ namespace IWA_Backend.API.Controllers
                 Name = register.Name,
                 UserName = register.UserName,
                 Email = register.Email,
-                // TODO: Add avatar support
-                Avatar = null,
                 // TODO: Add contractor page support
                 ContractorPage = null,
             };

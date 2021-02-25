@@ -1,4 +1,5 @@
 ﻿using IWA_Backend.API.BusinessLogic.DTOs;
+using IWA_Backend.Tests.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,7 +57,7 @@ namespace IWA_Backend.Tests.IntegrationTests
 
                 // Act
                 var loginResponse = await client.PostAsJsonAsync("/Account/Login", login);
-                var logoutResponse = await client.PostAsync("/Account/Logout", null);
+                var logoutResponse = await client.PostAsync("/Account/Logout", null!);
 
                 // Assert
                 Assert.True(loginResponse.IsSuccessStatusCode);
@@ -71,7 +72,6 @@ namespace IWA_Backend.Tests.IntegrationTests
                 {
                     AllowAutoRedirect = false,
                 });
-                var login = new LoginDTO { UserName = "contractor1", Password = "kebab" };
 
                 // Act
                 var response = await client.PostAsync("/Account/Logout", null!);

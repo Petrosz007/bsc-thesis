@@ -19,8 +19,8 @@ namespace IWA_Backend.API.Controllers
     public class AppointmentController : ControllerBase
     {
         private readonly AppointmentLogic Logic;
-        private readonly IMapper<Appointment, AppointmentDTO> Mapper;
-        public AppointmentController(AppointmentLogic logic, IMapper<Appointment, AppointmentDTO> mapper)
+        private readonly IDTOMapper<Appointment, AppointmentDTO> Mapper;
+        public AppointmentController(AppointmentLogic logic, IDTOMapper<Appointment, AppointmentDTO> mapper)
         {
             Logic = logic;
             Mapper = mapper;

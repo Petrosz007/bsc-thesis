@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IWA_Backend.API.BusinessLogic.Mappers
 {
-    public class CategoryMapper : IMapper<Category, CategoryDTO>
+    public class CategoryMapper : IDTOMapper<Category, CategoryDTO>
     {
         private readonly IUserRepository UserRepository;
         public CategoryMapper(IUserRepository userRepository)
