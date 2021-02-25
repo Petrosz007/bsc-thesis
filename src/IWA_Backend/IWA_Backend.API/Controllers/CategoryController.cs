@@ -19,8 +19,8 @@ namespace IWA_Backend.API.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly CategoryLogic Logic;
-        private readonly IMapper<Category, CategoryDTO> Mapper;
-        public CategoryController(CategoryLogic logic, IMapper<Category, CategoryDTO> mapper)
+        private readonly IDTOMapper<Category, CategoryDTO> Mapper;
+        public CategoryController(CategoryLogic logic, IDTOMapper<Category, CategoryDTO> mapper)
         {
             Logic = logic;
             Mapper = mapper;

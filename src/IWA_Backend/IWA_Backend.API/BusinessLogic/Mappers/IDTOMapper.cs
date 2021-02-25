@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IWA_Backend.API.BusinessLogic.Mappers
 {
-    public interface IMapper<TEntity, TDTO>
+    public interface IDTOMapper<TEntity, TDTO>
     {
         public TEntity ToEntity(TDTO dto);
         public TDTO ToDTO(TEntity entity);

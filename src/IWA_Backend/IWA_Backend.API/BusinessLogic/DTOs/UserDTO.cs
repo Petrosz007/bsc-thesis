@@ -13,15 +13,13 @@ namespace IWA_Backend.API.BusinessLogic.DTOs
         public string Email { get; init; } = null!;
         [Required]
         public string Name { get; init; } = null!;
-        public byte[]? Avatar { get; init; } = null;
-        public ContractorPage? ContractorPage { get; init; } = null;
+        public ContractorPageDTO? ContractorPage { get; init; } = null;
     }
 
     public record UserInfoDTO
     {
         public string UserName { get; set; } = null!;
         public string Name { get; set; } = null!;
-        public byte[]? Avatar { get; set; } = null;
-        public ContractorPage? ContractorPage { get; set; } = null;
+        public ContractorPageDTO? ContractorPage { get; set; } = null;
     }
 }
