@@ -50,7 +50,7 @@ namespace IWA_Backend.API.Controllers
                 var dto = categoryDTO with
                 {
                     Id = 0,
-                    OwnerUserName = CurrentUserName,
+                    OwnerUserName = CurrentUserName!,
                 };
                 var category = Mapper.ToEntity(dto);
                 await Logic.CreateCategoryAsync(category, CurrentUserName);
@@ -69,7 +69,7 @@ namespace IWA_Backend.API.Controllers
                 var dto = categoryDTO with
                 {
                     Id = id,
-                    OwnerUserName = CurrentUserName,
+                    OwnerUserName = CurrentUserName!,
                 };
 
                 var category = Mapper.ToEntity(categoryDTO);

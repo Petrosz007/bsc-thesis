@@ -3,6 +3,7 @@ using IWA_Backend.API.BusinessLogic.DTOs;
 using IWA_Backend.API.BusinessLogic.Entities;
 using IWA_Backend.API.BusinessLogic.Mappers;
 using IWA_Backend.API.Contexts;
+using IWA_Backend.Tests.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -456,6 +457,7 @@ namespace IWA_Backend.Tests.IntegrationTests
                 var response = await client.DeleteAsync("/Appointment/1");
 
                 // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
                 Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
                 Assert.StartsWith("http://localhost/Account/AccessDenied", response?.Headers?.Location?.OriginalString);
             }

@@ -14,10 +14,20 @@ namespace IWA_Backend.API.Repositories
         public UserRepository(IWAContext context) =>
             Context = context;
 
+        public bool Exists(string userName) =>
+            Context.Users
+                .Any(u => u.UserName == userName);
+
         public User GetByUserName(string id) =>
             Context.Users
                 .FirstOrDefault(user => user.UserName == id)
                 ?? throw new NotFoundException($"User with user name '{id}' not found.");
 
+        public async Task UpdateAsync(User user)
+        {
+            Context.DetachLocal(user);
+            Context.Update(user);
+            await Context.SaveChangesAsync();
+        }
     }
 }

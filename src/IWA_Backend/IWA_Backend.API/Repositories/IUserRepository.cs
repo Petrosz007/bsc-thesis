@@ -9,5 +9,7 @@ namespace IWA_Backend.API.Repositories
     public interface IUserRepository
     {
         User GetByUserName(string userName);
+        Task UpdateAsync(User user);
+        bool Exists(string userName);
     }
 }

@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace IWA_Backend.Tests.UnitTests
+namespace IWA_Backend.Tests.UnitTests.Logic
 {
     public class CategoryLogicTest
     {
