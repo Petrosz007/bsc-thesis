@@ -19,4 +19,14 @@ namespace IWA_Backend.API.BusinessLogic.Exceptions
     {
         public InvalidEntityException(string message) : base(message) { }
     }
+
+    public class AlreadyBookedException : Exception
+    {
+        public AlreadyBookedException(string message) : base(message) { }
+    }
+
+    public class NotBookedException : Exception
+    {
+        public NotBookedException(string message) : base(message) { }
+    }
 }

@@ -460,5 +460,198 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 mockAppointmentRepo.Verify(r => r.DeleteAsync(appointment), Times.Never());
             }
         }
+
+        public class GetBooked
+        {
+            [Fact]
+            public void Successful()
+            {
+                // Arrange
+                var appointments = new List<Appointment>();
+
+                var mockAppointmentRepo = new Mock<IAppointmentRepository>();
+                mockAppointmentRepo.Setup(r => r.GetBookedAppointments("Test User")).Returns(appointments.AsQueryable());
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+
+                // Act
+                var result = logic.GetBookedAppointments("TestUser");
+
+                // Assert
+                Assert.True(appointments.SequenceEqual(result));
+            }
+        }
+
+        public class Book
+        {
+            [Fact]
+            public async Task Successful()
+            {
+                // Arrange
+                int id = 1;
+                var userName = "Test User";
+                var appointment = new Appointment
+                {
+                    Id = id,
+                    Category = new Category 
+                    {
+                        EveryoneAllowed = true,
+                        Owner = new User { UserName = "Owner" }
+                    },
+                };
+
+                var mockAppointmentRepo = new Mock<IAppointmentRepository>();
+                mockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+
+                // Act
+                await logic.BookAppointmentAsync(id, userName);
+
+                // Assert
+                mockAppointmentRepo.Verify(r => r.BookAppointmentAsync(appointment, userName), Times.Once());
+            }
+
+            [Fact]
+            public async Task Unauthorised()
+            {
+                // Arrange
+                int id = 1;
+                var userName = "Test User";
+                var appointment = new Appointment
+                {
+                    Id = id,
+                    Category = new Category
+                    {
+                        EveryoneAllowed = false,
+                        Owner = new User { UserName = "Owner" }
+                    },
+                };
+
+                var mockAppointmentRepo = new Mock<IAppointmentRepository>();
+                mockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.BookAppointmentAsync(id, userName));
+                mockAppointmentRepo.Verify(r => r.BookAppointmentAsync(appointment, userName), Times.Never());
+            }
+
+            [Fact]
+            public async Task AlreadyBooked()
+            {
+                // Arrange
+                int id = 1;
+                var userName = "Test User";
+                var appointment = new Appointment
+                {
+                    Id = id,
+                    Attendees = new List<User>{ new User{ UserName = userName } },
+                    Category = new Category
+                    {
+                        EveryoneAllowed = false,
+                        Owner = new User { UserName = "Owner" }
+                    },
+                };
+
+                var mockAppointmentRepo = new Mock<IAppointmentRepository>();
+                mockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<AlreadyBookedException>(() => logic.BookAppointmentAsync(id, userName));
+                mockAppointmentRepo.Verify(r => r.BookAppointmentAsync(appointment, userName), Times.Never());
+            }
+        }
+
+        public class UnBook
+        {
+            [Fact]
+            public async Task Successful()
+            {
+                // Arrange
+                int id = 1;
+                var userName = "Test User";
+                var appointment = new Appointment
+                {
+                    Id = id,
+                    Attendees = new List<User>{ new User{ UserName = userName } },
+                    Category = new Category
+                    {
+                        EveryoneAllowed = true,
+                        Owner = new User { UserName = "Owner" }
+                    },
+                };
+
+                var mockAppointmentRepo = new Mock<IAppointmentRepository>();
+                mockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+
+                // Act
+                await logic.UnBookAppointmentAsync(id, userName);
+
+                // Assert
+                mockAppointmentRepo.Verify(r => r.UnBookAppointmentAsync(appointment, userName), Times.Once());
+            }
+
+            [Fact]
+            public async Task Unauthorised()
+            {
+                // Arrange
+                int id = 1;
+                var userName = "Test User";
+                var appointment = new Appointment
+                {
+                    Id = id,
+                    Category = new Category
+                    {
+                        EveryoneAllowed = false,
+                        Owner = new User { UserName = "Owner" }
+                    },
+                };
+
+                var mockAppointmentRepo = new Mock<IAppointmentRepository>();
+                mockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UnBookAppointmentAsync(id, userName));
+                mockAppointmentRepo.Verify(r => r.UnBookAppointmentAsync(appointment, userName), Times.Never());
+            }
+
+            [Fact]
+            public async Task NotBooked()
+            {
+                // Arrange
+                int id = 1;
+                var userName = "Test User";
+                var appointment = new Appointment
+                {
+                    Id = id,
+                    Category = new Category
+                    {
+                        EveryoneAllowed = true,
+                        Owner = new User { UserName = "Owner" }
+                    },
+                };
+
+                var mockAppointmentRepo = new Mock<IAppointmentRepository>();
+                mockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<NotBookedException>(() => logic.UnBookAppointmentAsync(id, userName));
+                mockAppointmentRepo.Verify(r => r.UnBookAppointmentAsync(appointment, userName), Times.Never());
+            }
+        }
     }
 }
