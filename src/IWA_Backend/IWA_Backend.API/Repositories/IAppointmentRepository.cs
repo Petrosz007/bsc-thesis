@@ -10,7 +10,5 @@ namespace IWA_Backend.API.Repositories
     {
         IQueryable<Appointment> GetContractorsAllAppointments(string contractorUserName);
         IQueryable<Appointment> GetBookedAppointments(string userName);
-        Task BookAppointmentAsync(Appointment appointment, string userName);
-        Task UnBookAppointmentAsync(Appointment appointment, string userName);
     }
 }

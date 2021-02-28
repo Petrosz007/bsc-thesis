@@ -14,10 +14,12 @@ namespace IWA_Backend.API.BusinessLogic.Logic
     {
         private readonly IAppointmentRepository AppointmentRepository;
         private readonly ICategoryRepository CategoryRepository;
-        public AppointmentLogic(IAppointmentRepository appointmentRepository, ICategoryRepository categoryRepository)
+        private readonly IUserRepository UserRepository;
+        public AppointmentLogic(IAppointmentRepository appointmentRepository, ICategoryRepository categoryRepository, IUserRepository userRepository)
         {
             AppointmentRepository = appointmentRepository;
             CategoryRepository = categoryRepository;
+            UserRepository = userRepository;
         }
 
         public Appointment GetAppointmentById(int id, string? userName)
@@ -55,7 +57,10 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             if (appointment.Attendees.Any(u => u.UserName == userName))
                 throw new AlreadyBookedException("Appointment already booked.");
 
-            await AppointmentRepository.BookAppointmentAsync(appointment, userName);
+            var user = UserRepository.GetByUserName(userName);
+            appointment.Attendees.Add(user);
+
+            await AppointmentRepository.UpdateAsync(appointment);
         }
 
         public async Task UnBookAppointmentAsync(int appointmentId, string userName)
@@ -68,7 +73,9 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             if (!appointment.Attendees.Any(u => u.UserName == userName))
                 throw new NotBookedException("Appointment already booked.");
 
-            await AppointmentRepository.UnBookAppointmentAsync(appointment, userName);
+            appointment.Attendees.RemoveAll(u => u.UserName == userName);
+
+            await AppointmentRepository.UpdateAsync(appointment);
         }
 
         public bool HasWriteAccess(int categoryId, string? userName)

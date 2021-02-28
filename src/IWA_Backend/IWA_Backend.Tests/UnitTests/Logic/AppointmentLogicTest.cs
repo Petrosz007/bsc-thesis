@@ -37,7 +37,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockAppointmentRepo.Setup(r => r.GetById(0)).Returns(appointment);
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 var result = logic.GetAppointmentById(0, "TestUser");
@@ -53,7 +54,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockAppointmentRepo.Setup(r => r.GetById(It.IsAny<int>())).Throws(new NotFoundException(""));
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
@@ -72,7 +74,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockAppointmentRepo.Setup(r => r.GetById(0)).Returns(appointment);
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
@@ -240,7 +243,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockCategoryRepo.Setup(r => r.GetById(10)).Returns(category);
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 var result = logic.HasWriteAccess(10, "OwnerUser");
@@ -261,7 +265,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockCategoryRepo.Setup(r => r.GetById(10)).Returns(category);
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 var result = logic.HasWriteAccess(10, "Not allowed User");
@@ -287,7 +292,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockAppointmentRepo.Setup(r => r.Exists(10)).Returns(true);
                 mockCategoryRepo.Setup(r => r.GetById(2)).Returns(appointment.Category);
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 await logic.UpdateAppointmentAsync(appointment, "Owner");
@@ -310,7 +316,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockAppointmentRepo.Setup(r => r.Exists(10)).Throws(new NotFoundException(""));
                 mockCategoryRepo.Setup(r => r.GetById(2)).Returns(appointment.Category);
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
@@ -333,7 +340,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockAppointmentRepo.Setup(r => r.Exists(10)).Returns(true);
                 mockCategoryRepo.Setup(r => r.GetById(2)).Returns(appointment.Category);
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
@@ -358,7 +366,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockCategoryRepo.Setup(r => r.GetById(2)).Returns(appointment.Category);
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 await logic.CreateAppointmentAsync(appointment, "Owner");
@@ -380,7 +389,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockCategoryRepo.Setup(r => r.GetById(2)).Returns(appointment.Category);
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
@@ -406,7 +416,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockAppointmentRepo.Setup(r => r.GetById(10)).Returns(appointment);
                 mockCategoryRepo.Setup(r => r.GetById(2)).Returns(appointment.Category);
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 await logic.DeleteAppointmentAsync(10, "Owner");
@@ -429,7 +440,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockAppointmentRepo.Setup(r => r.GetById(10)).Returns(appointment);
                 mockCategoryRepo.Setup(r => r.GetById(2)).Returns(appointment.Category);
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
@@ -451,7 +463,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
                 mockAppointmentRepo.Setup(r => r.GetById(100)).Throws(new NotFoundException(""));
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
@@ -472,7 +485,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 mockAppointmentRepo.Setup(r => r.GetBookedAppointments("Test User")).Returns(appointments.AsQueryable());
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 var result = logic.GetBookedAppointments("TestUser");
@@ -490,6 +504,7 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 // Arrange
                 int id = 1;
                 var userName = "Test User";
+                var user = new User { UserName = userName };
                 var appointment = new Appointment
                 {
                     Id = id,
@@ -503,13 +518,16 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 mockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                mockUserRepo.Setup(r => r.GetByUserName(userName)).Returns(user);
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 await logic.BookAppointmentAsync(id, userName);
 
                 // Assert
-                mockAppointmentRepo.Verify(r => r.BookAppointmentAsync(appointment, userName), Times.Once());
+                Assert.Equal(user, appointment.Attendees.First());
+                mockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Once());
             }
 
             [Fact]
@@ -531,12 +549,14 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 mockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
                 await Assert.ThrowsAsync<UnauthorisedException>(() => logic.BookAppointmentAsync(id, userName));
-                mockAppointmentRepo.Verify(r => r.BookAppointmentAsync(appointment, userName), Times.Never());
+                Assert.Empty(appointment.Attendees);
+                mockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Never());
             }
 
             [Fact]
@@ -559,12 +579,13 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 mockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
                 await Assert.ThrowsAsync<AlreadyBookedException>(() => logic.BookAppointmentAsync(id, userName));
-                mockAppointmentRepo.Verify(r => r.BookAppointmentAsync(appointment, userName), Times.Never());
+                mockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Never());
             }
         }
 
@@ -590,13 +611,15 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 mockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 await logic.UnBookAppointmentAsync(id, userName);
 
                 // Assert
-                mockAppointmentRepo.Verify(r => r.UnBookAppointmentAsync(appointment, userName), Times.Once());
+                Assert.Empty(appointment.Attendees);
+                mockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Once());
             }
 
             [Fact]
@@ -618,12 +641,13 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 mockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
                 await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UnBookAppointmentAsync(id, userName));
-                mockAppointmentRepo.Verify(r => r.UnBookAppointmentAsync(appointment, userName), Times.Never());
+                mockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Never());
             }
 
             [Fact]
@@ -645,12 +669,13 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var mockAppointmentRepo = new Mock<IAppointmentRepository>();
                 mockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
                 var mockCategoryRepo = new Mock<ICategoryRepository>();
-                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new AppointmentLogic(mockAppointmentRepo.Object, mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
                 await Assert.ThrowsAsync<NotBookedException>(() => logic.UnBookAppointmentAsync(id, userName));
-                mockAppointmentRepo.Verify(r => r.UnBookAppointmentAsync(appointment, userName), Times.Never());
+                mockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Never());
             }
         }
     }

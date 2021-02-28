@@ -248,33 +248,5 @@ namespace IWA_Backend.Tests.UnitTests.Repositories
             Assert.Equal(2, result.Count);
             Assert.True(result.All(a => a.Category.Owner == users[0]));
         }
-
-        [Fact]
-        public async Task BookAsync()
-        {
-            // Arrange
-            var users = new List<User>
-            {
-                new User{ UserName = "testUser"},
-            };
-            var appointments = new List<Appointment>
-            {
-                new Appointment
-                {
-                    Id = 0,
-                },
-            };
-            var mockContext = new MockDbContextBuilder { Appointments = appointments, Users = users }.Build();
-            var repo = new AppointmentRepository(mockContext.Object);
-
-            // Act
-            await repo.BookAppointmentAsync(appointments[0], users[0].UserName);
-
-            // Assert
-            Assert.Equal(1, appointments[0].Attendees.Count);
-            Assert.Equal(users[0], appointments[0].Attendees.First());
-            mockContext.Verify(c => c.Update(appointments[0]), Times.Once());
-            mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
-        }
     }
 }

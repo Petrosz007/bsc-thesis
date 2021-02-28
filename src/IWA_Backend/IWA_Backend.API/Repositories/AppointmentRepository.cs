@@ -14,14 +14,6 @@ namespace IWA_Backend.API.Repositories
         public AppointmentRepository(IWAContext context) =>
             Context = context;
 
-        public async Task BookAppointmentAsync(Appointment appointment, string userName)
-        {
-            // Should not throw exception, because the user exists, got through [Authorize]
-            var user = Context.Users.First(u => u.UserName == userName);
-            appointment.Attendees.Add(user);
-            Context.Update(appointment);
-            await Context.SaveChangesAsync();
-        }
 
         public async Task CreateAsync(Appointment appointment)
         {
@@ -52,14 +44,6 @@ namespace IWA_Backend.API.Repositories
         Context.Appointments
                 .Where(a => a.Category.Owner.UserName == contractorUserName);
 
-        public async Task UnBookAppointmentAsync(Appointment appointment, string userName)
-        {
-            // Should not throw exception, because the user exists, got through [Authorize]
-            var user = Context.Users.First(u => u.UserName == userName);
-            appointment.Attendees.Remove(user);
-            Context.Update(appointment);
-            await Context.SaveChangesAsync();
-        }
 
         public async Task UpdateAsync(Appointment appointment)
         {
