@@ -41,6 +41,43 @@ namespace IWA_Backend.API.Controllers
             catch (UnauthorisedException) { return Unauthorized(); }
         }
 
+        [HttpPost("{id}/Book")]
+        [Authorize]
+        public async Task<ActionResult> BookAppointment(int id)
+        {
+            try
+            {
+                await Logic.BookAppointmentAsync(id, CurrentUserName!);
+                return NoContent();
+            }
+            catch (NotFoundException ex) { return NotFound(ex.Message); }
+            catch (UnauthorisedException) { return Unauthorized(); }
+            catch (AlreadyBookedException ex) { return BadRequest(ex.Message); }
+        }
+
+        [HttpPost("{id}/UnBook")]
+        [Authorize]
+        public async Task<ActionResult> UnBookAppointment(int id)
+        {
+            try
+            {
+                await Logic.UnBookAppointmentAsync(id, CurrentUserName!);
+                return NoContent();
+            }
+            catch (NotFoundException ex) { return NotFound(ex.Message); }
+            catch (UnauthorisedException) { return Unauthorized(); }
+            catch (NotBookedException ex) { return BadRequest(ex.Message); }
+        }
+
+        [HttpGet("Booked")]
+        [Authorize]
+        public ActionResult<IEnumerable<AppointmentDTO>> GetBookedAppointments()
+        {
+            var appointments = Logic.GetBookedAppointments(CurrentUserName!);
+            var appointmentDTOs = appointments.Select(Mapper.ToDTO);
+            return Ok(appointmentDTOs);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Contractor")]
         public async Task<ActionResult> CreateAppointment([FromBody] AppointmentDTO appointmentDTO)

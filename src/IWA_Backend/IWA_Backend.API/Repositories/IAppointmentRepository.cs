@@ -9,5 +9,6 @@ namespace IWA_Backend.API.Repositories
     public interface IAppointmentRepository : ICrudRepository<Appointment, int>
     {
         IQueryable<Appointment> GetContractorsAllAppointments(string contractorUserName);
+        IQueryable<Appointment> GetBookedAppointments(string userName);
     }
 }

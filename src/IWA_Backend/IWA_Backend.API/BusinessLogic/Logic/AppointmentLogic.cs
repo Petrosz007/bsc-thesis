@@ -14,10 +14,12 @@ namespace IWA_Backend.API.BusinessLogic.Logic
     {
         private readonly IAppointmentRepository AppointmentRepository;
         private readonly ICategoryRepository CategoryRepository;
-        public AppointmentLogic(IAppointmentRepository appointmentRepository, ICategoryRepository categoryRepository)
+        private readonly IUserRepository UserRepository;
+        public AppointmentLogic(IAppointmentRepository appointmentRepository, ICategoryRepository categoryRepository, IUserRepository userRepository)
         {
             AppointmentRepository = appointmentRepository;
             CategoryRepository = categoryRepository;
+            UserRepository = userRepository;
         }
 
         public Appointment GetAppointmentById(int id, string? userName)
@@ -39,7 +41,41 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             bool isAttendee = appointment.Attendees.Any(user => user.UserName == userName);
             bool isInCategory = appointment.Category.AllowedUsers.Any(user => user.UserName == userName);
 
-            return everyoneAllowed || isOwner || isAttendee || isInCategory ;
+            return everyoneAllowed || isOwner || isAttendee || isInCategory;
+        }
+
+        public IEnumerable<Appointment> GetBookedAppointments(string currentUserName) =>
+            AppointmentRepository.GetBookedAppointments(currentUserName);
+
+        public async Task BookAppointmentAsync(int appointmentId, string userName)
+        {
+            var appointment = AppointmentRepository.GetById(appointmentId);
+
+            if (!HasReadAccess(appointment, userName))
+                throw new UnauthorisedException("You are unauthorized to view this appointment.");
+
+            if (appointment.Attendees.Any(u => u.UserName == userName))
+                throw new AlreadyBookedException("Appointment already booked.");
+
+            var user = UserRepository.GetByUserName(userName);
+            appointment.Attendees.Add(user);
+
+            await AppointmentRepository.UpdateAsync(appointment);
+        }
+
+        public async Task UnBookAppointmentAsync(int appointmentId, string userName)
+        {
+            var appointment = AppointmentRepository.GetById(appointmentId);
+
+            if (!HasReadAccess(appointment, userName))
+                throw new UnauthorisedException("You are unauthorized to view this appointment.");
+
+            if (!appointment.Attendees.Any(u => u.UserName == userName))
+                throw new NotBookedException("Appointment already booked.");
+
+            appointment.Attendees.RemoveAll(u => u.UserName == userName);
+
+            await AppointmentRepository.UpdateAsync(appointment);
         }
 
         public bool HasWriteAccess(int categoryId, string? userName)

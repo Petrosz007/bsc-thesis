@@ -16,7 +16,7 @@ namespace IWA_Backend.API.BusinessLogic.Entities
         [Required]
         public string Description { get; set; } = null!;
         [Required]
-        public virtual ICollection<User> AllowedUsers { get; set; } = new List<User>();
+        public virtual List<User> AllowedUsers { get; set; } = new List<User>();
         [Required]
         public bool EveryoneAllowed { get; set; }
         [Required]

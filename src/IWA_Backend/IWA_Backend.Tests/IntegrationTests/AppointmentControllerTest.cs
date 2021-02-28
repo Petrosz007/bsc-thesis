@@ -481,5 +481,195 @@ namespace IWA_Backend.Tests.IntegrationTests
                 Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
             }
         }
+
+        [Collection("Sequential")]
+        public class Book : AppointmentControllerTest
+        {
+            [Fact]
+            public async Task Successful()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                int id = 1;
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "customer1", Password = "kebab" });
+                var response = await client.PostAsync($"/Appointment/{id}/Book", null!);
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.True(response.IsSuccessStatusCode);
+                var appointment = Context.Appointments.First(a => a.Id == 1);
+                Assert.Contains(appointment.Attendees, u => u.UserName == "customer1");
+            }
+
+            [Fact]
+            public async Task NotLoggedIn()
+            {
+                // Arrange
+                var client = Factory.CreateClient(new WebApplicationFactoryClientOptions
+                {
+                    AllowAutoRedirect = false,
+                });
+                int id = 1;
+
+                // Act
+                var response = await client.PostAsync($"/Appointment/{id}/Book", null!);
+
+                // Assert
+                Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+                Assert.StartsWith("http://localhost/Account/Login", response?.Headers?.Location?.OriginalString);
+            }
+
+            [Fact]
+            public async Task Unauthorised()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                int id = 8;
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "customer1", Password = "kebab" });
+                var response = await client.PostAsync($"/Appointment/{id}/Book", null!);
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            }
+
+            [Fact]
+            public async Task NotFound()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                int id = 100000;
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "customer1", Password = "kebab" });
+                var response = await client.PostAsync($"/Appointment/{id}/Book", null!);
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
+
+        [Collection("Sequential")]
+        public class UnBook : AppointmentControllerTest
+        {
+            [Fact]
+            public async Task Successful()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                int id = 4;
+                var userName = "customer2";
+                var context = Factory.Services.CreateScope().ServiceProvider.GetRequiredService<IWAContext>();
+                var containsBefore = context.Appointments.First(a => a.Id == id).Attendees.Any(u => u.UserName == userName);
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = userName, Password = "kebab" });
+                var response = await client.PostAsync($"/Appointment/{id}/UnBook", null!);
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.True(response.IsSuccessStatusCode);
+
+                Assert.True(containsBefore);
+                var appointment = Context.Appointments.First(a => a.Id == id);
+                Assert.DoesNotContain(appointment.Attendees, u => u.UserName == userName);
+            }
+
+            [Fact]
+            public async Task NotLoggedIn()
+            {
+                // Arrange
+                var client = Factory.CreateClient(new WebApplicationFactoryClientOptions
+                {
+                    AllowAutoRedirect = false,
+                });
+                int id = 1;
+
+                // Act
+                var response = await client.PostAsync($"/Appointment/{id}/UnBook", null!);
+
+                // Assert
+                Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+                Assert.StartsWith("http://localhost/Account/Login", response?.Headers?.Location?.OriginalString);
+            }
+
+            [Fact]
+            public async Task Unauthorised()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                int id = 8;
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "customer1", Password = "kebab" });
+                var response = await client.PostAsync($"/Appointment/{id}/UnBook", null!);
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            }
+
+            [Fact]
+            public async Task NotFound()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                int id = 100000;
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "customer1", Password = "kebab" });
+                var response = await client.PostAsync($"/Appointment/{id}/UnBook", null!);
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
+
+        [Collection("Sequential")]
+        public class GetBooked : AppointmentControllerTest
+        {
+            [Fact]
+            public async Task Successful()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                var userName = "customer1";
+                var appointments = Context.Appointments.Where(a => a.Attendees.Any(u => u.UserName == userName));
+                var appointmentDTOs = appointments.Select(AppointmentMapper.ToDTO);
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = userName, Password = "kebab" });
+                var response = await client.GetAsync($"/Appointment/Booked");
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.True(response.IsSuccessStatusCode);
+                var responseAppointments = await response.Content.ReadAsAsync<IEnumerable<AppointmentDTO>>();
+                Assert.True(appointmentDTOs.All(a => a.ValuesEqual(responseAppointments.First(app => app.Id == a.Id))));
+            }
+
+            [Fact]
+            public async Task NotLoggedIn()
+            {
+                // Arrange
+                var client = Factory.CreateClient(new WebApplicationFactoryClientOptions
+                {
+                    AllowAutoRedirect = false,
+                });
+
+                // Act
+                var response = await client.GetAsync($"/Appointment/Booked");
+
+                // Assert
+                Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+                Assert.StartsWith("http://localhost/Account/Login", response?.Headers?.Location?.OriginalString);
+            }
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace IWA_Backend.API.BusinessLogic.Entities
         [Required]
         public virtual Category Category { get; set; } = null!;
         [Required]
-        public virtual ICollection<User> Attendees { get; set; } = new List<User>();
+        public virtual List<User> Attendees { get; set; } = new List<User>();
         [Required]
         public int MaxAttendees { get; set; }
     }
