@@ -1,4 +1,5 @@
-﻿using IWA_Backend.API.BusinessLogic.DTOs;
+﻿using AutoMapper;
+using IWA_Backend.API.BusinessLogic.DTOs;
 using IWA_Backend.API.BusinessLogic.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,11 +17,13 @@ namespace IWA_Backend.API.Controllers
     {
         private readonly SignInManager<User> signInManager;
         private readonly UserManager<User> userManager;
+        private readonly IMapper Mapper;
 
-        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager)
+        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager, IMapper mapper)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
+            Mapper = mapper;
         }
 
         [HttpPost("Login")]
@@ -43,15 +46,14 @@ namespace IWA_Backend.API.Controllers
                 Name = register.Name,
                 UserName = register.UserName,
                 Email = register.Email,
-                // TODO: Add contractor page support
-                ContractorPage = null,
+                ContractorPage = Mapper.Map<ContractorPage>(register.ContractorPage),
             };
 
             var result = await userManager.CreateAsync(user, register.Password);
             if(!result.Succeeded)
             {
                 // TODO: Better error handling
-                if(result.Errors.Count() > 0)
+                if(result.Errors.Any())
                 {
                     if(result.Errors.First().Code == "DuplicateUserName")
                     {

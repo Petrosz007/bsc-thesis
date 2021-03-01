@@ -116,6 +116,61 @@ namespace IWA_Backend.Tests.IntegrationTests
         }
 
         [Collection("Sequential")]
+        public class GetContractors : AppointmentControllerTest
+        {
+            [Fact]
+            public async Task NotLoggedIn()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                string userName = "contractor1";
+                var ids = new int[] { 1, 2 };
+                var testAppointments = Context.Appointments.Where(a => ids.Contains(a.Id)).ToList().Select(AppointmentMapper.ToDTO);
+
+                // Act
+                var response = await client.GetAsync($"/Appointment/Contractor/{userName}");
+
+                // Assert
+                Assert.True(response.IsSuccessStatusCode);
+                var appointments = await response.Content.ReadAsAsync<IEnumerable<AppointmentDTO>>();
+                Assert.True(testAppointments.All(a => a.ValuesEqual(appointments.First(app => app.Id == a.Id))));
+            }
+
+            [Fact]
+            public async Task LoggedIn()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                string userName = "contractor1";
+                var ids = new int[] { 1, 2, 3, 4 };
+                var testAppointments = Context.Appointments.Where(a => ids.Contains(a.Id)).ToList().Select(AppointmentMapper.ToDTO);
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "customer1", Password = "kebab" });
+                var response = await client.GetAsync($"/Appointment/Contractor/{userName}");
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.True(response.IsSuccessStatusCode);
+                var appointments = await response.Content.ReadAsAsync<IEnumerable<AppointmentDTO>>();
+                Assert.True(testAppointments.All(a => a.ValuesEqual(appointments.First(app => app.Id == a.Id))));
+            }
+
+            [Fact]
+            public async Task NotFound()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+
+                // Act
+                var response = await client.GetAsync("/Appointment/Contractor/Nonexistent");
+
+                // Assert
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
+
+        [Collection("Sequential")]
         public class Create : AppointmentControllerTest
         {
             [Fact]
@@ -504,6 +559,27 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
 
             [Fact]
+            public async Task AlreadyBooked()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                int id = 1;
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "customer1", Password = "kebab" });
+                var response1 = await client.PostAsync($"/Appointment/{id}/Book", null!);
+                var response2 = await client.PostAsync($"/Appointment/{id}/Book", null!);
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.True(response1.IsSuccessStatusCode);
+                var appointment = Context.Appointments.First(a => a.Id == 1);
+                Assert.Contains(appointment.Attendees, u => u.UserName == "customer1");
+
+                Assert.Equal(HttpStatusCode.BadRequest, response2.StatusCode);
+            }
+
+            [Fact]
             public async Task NotLoggedIn()
             {
                 // Arrange
@@ -628,6 +704,22 @@ namespace IWA_Backend.Tests.IntegrationTests
                 // Assert
                 Assert.True(loginResponse.IsSuccessStatusCode);
                 Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+
+            [Fact]
+            public async Task NotBooked()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                int id = 1;
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "customer1", Password = "kebab" });
+                var response = await client.PostAsync($"/Appointment/{id}/UnBook", null!);
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             }
         }
 

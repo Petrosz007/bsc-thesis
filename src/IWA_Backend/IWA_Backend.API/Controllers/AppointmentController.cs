@@ -41,6 +41,18 @@ namespace IWA_Backend.API.Controllers
             catch (UnauthorisedException) { return Unauthorized(); }
         }
 
+        [HttpGet("Contractor/{contractorUserName}")]
+        public ActionResult<IEnumerable<AppointmentDTO>> GetContractorsAppointments(string contractorUserName)
+        {
+            try
+            {
+                var appointments = Logic.GetContractorsAppointments(contractorUserName, CurrentUserName);
+                var appointmentDTOs = appointments.Select(Mapper.ToDTO);
+                return Ok(appointmentDTOs);
+            }
+            catch (NotFoundException ex) { return NotFound(ex.Message); }
+        }
+
         [HttpPost("{id}/Book")]
         [Authorize]
         public async Task<ActionResult> BookAppointment(int id)

@@ -32,6 +32,17 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             return appointment;
         }
 
+        public IEnumerable<Appointment> GetContractorsAppointments(string contractorUserName, string? userName)
+        {
+            if (!UserRepository.Exists(contractorUserName))
+                throw new NotFoundException($"Contractor with username {contractorUserName} not found.");
+
+            var appointments = AppointmentRepository.GetContractorsAllAppointments(contractorUserName)
+                .ToList()
+                .Where(a => HasReadAccess(a, userName));
+            return appointments;
+        }
+
         public static bool HasReadAccess(Appointment appointment, string? userName)
         {
             bool everyoneAllowed = appointment.Category.EveryoneAllowed;
