@@ -44,15 +44,15 @@ namespace IWA_Backend.API.Contexts
         public bool AnyCategories() =>
             Context.Categories.Any();
 
-        public async Task ReseedDataAsync()
+        public async Task ReseedDataAsync(bool addId = true)
         {
             Context.Database.EnsureDeleted();
             await Context.SaveChangesAsync();
             Initialise();
-            await SeedDataAsync();
+            await SeedDataAsync(addId);
         }
 
-        public async Task SeedDataAsync()
+        public async Task SeedDataAsync(bool addId = true)
         {
             var users = new List<User>
             {
@@ -98,6 +98,7 @@ namespace IWA_Backend.API.Contexts
             {
                 await UserManager.CreateAsync(user, "kebab");
             }
+            await Context.SaveChangesAsync();
 
             var role = new UserRole
             {
@@ -107,13 +108,14 @@ namespace IWA_Backend.API.Contexts
 
             await UserManager.AddToRoleAsync(users[0], "Contractor");
             await UserManager.AddToRoleAsync(users[1], "Contractor");
+            await Context.SaveChangesAsync();
 
 
             var categories = new List<Category>
             {
                 new Category
                 {
-                    Id = 1,
+                    //Id = 1,
                     Name = "Kézműves Kisegítés",
                     Description = "Karcsi segít mindenféle kézműves dologban!",
                     AllowedUsers = new List<User>(),
@@ -124,7 +126,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Category
                 {
-                    Id = 2,
+                    //Id = 2,
                     Name = "Korai Kőműves Kajakozás",
                     Description = "Karcsi kajakja kajak jó!",
                     AllowedUsers = new List<User>{ users[2] },
@@ -135,7 +137,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Category
                 {
-                    Id = 3,
+                    //Id = 3,
                     Name = "Angol C1 felkészítés",
                     Description = "Felkészítés az Angol C1 nyelvvizsgára",
                     AllowedUsers = new List<User>(),
@@ -146,7 +148,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Category
                 {
-                    Id = 4,
+                    //Id = 4,
                     Name = "Privát angol Konrádnak",
                     Description = "Karcsi kajakja kajak jó!",
                     AllowedUsers = new List<User>{ users[3] },
@@ -156,14 +158,20 @@ namespace IWA_Backend.API.Contexts
                     Owner = users[1],
                 },
             };
+            int categoryId = 1;
             foreach (var category in categories)
+            {
+                if (addId)
+                    category.Id = categoryId++;
                 Context.Categories.Add(category);
+            }
+            await Context.SaveChangesAsync();
 
             var appointments = new List<Appointment>
             {
                 new Appointment
                 {
-                    Id = 1,
+                    //Id = 1,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
                     Category = categories[0],
@@ -172,7 +180,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
-                    Id = 2,
+                    //Id = 2,
                     StartTime = DateTime.Now.AddHours(1),
                     EndTime = DateTime.Now.AddHours(2),
                     Category = categories[0],
@@ -181,7 +189,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
-                    Id = 3,
+                    //Id = 3,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
                     Category = categories[1],
@@ -190,7 +198,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
-                    Id = 4,
+                    //Id = 4,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
                     Category = categories[1],
@@ -199,7 +207,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
-                    Id = 5,
+                    //Id = 5,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
                     Category = categories[2],
@@ -208,7 +216,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
-                    Id = 6,
+                    //Id = 6,
                     StartTime = DateTime.Now.AddHours(1),
                     EndTime = DateTime.Now.AddHours(2),
                     Category = categories[2],
@@ -217,7 +225,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
-                    Id = 7,
+                    //Id = 7,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
                     Category = categories[3],
@@ -226,7 +234,7 @@ namespace IWA_Backend.API.Contexts
                 },
                 new Appointment
                 {
-                    Id = 8,
+                    //Id = 8,
                     StartTime = DateTime.Now.AddHours(1),
                     EndTime = DateTime.Now.AddHours(2),
                     Category = categories[3],
@@ -234,8 +242,14 @@ namespace IWA_Backend.API.Contexts
                     MaxAttendees = categories[3].MaxAttendees,
                 },
             };
+            int appointmentId = 1;
             foreach(var appointment in appointments)
+            {
+                if (addId)
+                    appointment.Id = appointmentId++;
+
                 Context.Appointments.Add(appointment);
+            }
 
             await Context.SaveChangesAsync();
         }
