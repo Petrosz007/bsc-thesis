@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IWA_Backend.API.BusinessLogic.Entities
 {
-    public class Appointment
+    public record Appointment
     {
         [Key]
         public int Id { get; set; }
@@ -15,11 +15,9 @@ namespace IWA_Backend.API.BusinessLogic.Entities
         [Required]
         public DateTime EndTime { get; set; }
         [Required]
-        public Category Category { get; set; } = new();
+        public virtual Category Category { get; set; } = null!;
         [Required]
-        public List<User> Attendees { get; set; } = new();
-        [Required]
-        public User Owner { get; set; } = new();
+        public virtual List<User> Attendees { get; set; } = new List<User>();
         [Required]
         public int MaxAttendees { get; set; }
     }

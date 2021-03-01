@@ -4,14 +4,16 @@ using IWA_Backend.API.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IWA_Backend.API.Migrations
 {
     [DbContext(typeof(IWAContext))]
-    partial class IWAContextModelSnapshot : ModelSnapshot
+    [Migration("20210215214316_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,6 +113,9 @@ namespace IWA_Backend.API.Migrations
 
                     b.Property<int?>("AppointmentId")
                         .HasColumnType("int");
+
+                    b.Property<byte[]>("Avatar")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
@@ -342,7 +347,7 @@ namespace IWA_Backend.API.Migrations
                         .HasForeignKey("AppointmentId");
 
                     b.HasOne("IWA_Backend.API.BusinessLogic.Entities.Category", null)
-                        .WithMany("AllowedUsers")
+                        .WithMany("AllowedCustomers")
                         .HasForeignKey("CategoryId");
 
                     b.HasOne("IWA_Backend.API.BusinessLogic.Entities.ContractorPage", "ContractorPage")
@@ -410,7 +415,7 @@ namespace IWA_Backend.API.Migrations
 
             modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Category", b =>
                 {
-                    b.Navigation("AllowedUsers");
+                    b.Navigation("AllowedCustomers");
                 });
 #pragma warning restore 612, 618
         }

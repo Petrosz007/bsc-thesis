@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IWA_Backend.API.Migrations
 {
     [DbContext(typeof(IWAContext))]
-    [Migration("20210213191449_Init")]
-    partial class Init
+    [Migration("20210301180754_Migration2")]
+    partial class Migration2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,17 +37,12 @@ namespace IWA_Backend.API.Migrations
                     b.Property<int>("MaxAttendees")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OwnerId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("Appointments");
                 });
@@ -73,10 +68,15 @@ namespace IWA_Backend.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("OwnerId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Categories");
                 });
@@ -114,9 +114,6 @@ namespace IWA_Backend.API.Migrations
                     b.Property<int?>("AppointmentId")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("Avatar")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
@@ -128,6 +125,7 @@ namespace IWA_Backend.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -168,6 +166,7 @@ namespace IWA_Backend.API.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -326,11 +325,14 @@ namespace IWA_Backend.API.Migrations
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Category", b =>
+                {
                     b.HasOne("IWA_Backend.API.BusinessLogic.Entities.User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");
-
-                    b.Navigation("Category");
 
                     b.Navigation("Owner");
                 });
@@ -342,7 +344,7 @@ namespace IWA_Backend.API.Migrations
                         .HasForeignKey("AppointmentId");
 
                     b.HasOne("IWA_Backend.API.BusinessLogic.Entities.Category", null)
-                        .WithMany("AllowedCustomers")
+                        .WithMany("AllowedUsers")
                         .HasForeignKey("CategoryId");
 
                     b.HasOne("IWA_Backend.API.BusinessLogic.Entities.ContractorPage", "ContractorPage")
@@ -410,7 +412,7 @@ namespace IWA_Backend.API.Migrations
 
             modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Category", b =>
                 {
-                    b.Navigation("AllowedCustomers");
+                    b.Navigation("AllowedUsers");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace IWA_Backend.Tests.Mock
+namespace IWA_Backend.Tests.Utilities
 {
     internal class MockDbContextBuilder
     {
