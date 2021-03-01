@@ -559,6 +559,27 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
 
             [Fact]
+            public async Task AlreadyBooked()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                int id = 1;
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "customer1", Password = "kebab" });
+                var response1 = await client.PostAsync($"/Appointment/{id}/Book", null!);
+                var response2 = await client.PostAsync($"/Appointment/{id}/Book", null!);
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.True(response1.IsSuccessStatusCode);
+                var appointment = Context.Appointments.First(a => a.Id == 1);
+                Assert.Contains(appointment.Attendees, u => u.UserName == "customer1");
+
+                Assert.Equal(HttpStatusCode.BadRequest, response2.StatusCode);
+            }
+
+            [Fact]
             public async Task NotLoggedIn()
             {
                 // Arrange
@@ -683,6 +704,22 @@ namespace IWA_Backend.Tests.IntegrationTests
                 // Assert
                 Assert.True(loginResponse.IsSuccessStatusCode);
                 Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+
+            [Fact]
+            public async Task NotBooked()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                int id = 1;
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "customer1", Password = "kebab" });
+                var response = await client.PostAsync($"/Appointment/{id}/UnBook", null!);
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             }
         }
 
