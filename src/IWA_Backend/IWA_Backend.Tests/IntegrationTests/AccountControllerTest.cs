@@ -86,7 +86,7 @@ namespace IWA_Backend.Tests.IntegrationTests
         public class Register : AccountControllerTest
         {
             [Fact]
-            public async Task Successful()
+            public async Task SuccessfulCustomer()
             {
                 // Arrange
                 var client = Factory.CreateClient();
@@ -107,6 +107,41 @@ namespace IWA_Backend.Tests.IntegrationTests
                 var user = Context.Users.First(u => u.UserName == register.UserName);
                 Assert.Equal(register.UserName, user.UserName);
                 Assert.Equal(register.Email, user.Email);
+
+                var roles = await UserManager.GetRolesAsync(user);
+                Assert.DoesNotContain("Contractor", roles);
+            }
+
+            [Fact]
+            public async Task SuccessfulContractor()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                var register = new RegisterDTO
+                {
+                    Name = "New User",
+                    UserName = "newuser",
+                    Email = "newuser@example.com",
+                    Password = "kebab",
+                    PasswordConfirmation = "kebab",
+                    ContractorPage = new ContractorPageDTO
+                    {
+                        Title = "Test Title",
+                        Bio = "Test Bio",
+                    },
+                };
+
+                // Act
+                var response = await client.PostAsJsonAsync("/Account/Register", register);
+
+                // Assert
+                Assert.True(response.IsSuccessStatusCode);
+                var user = Context.Users.First(u => u.UserName == register.UserName);
+                Assert.Equal(register.UserName, user.UserName);
+                Assert.Equal(register.Email, user.Email);
+
+                var roles = await UserManager.GetRolesAsync(user);
+                Assert.Contains("Contractor", roles);
             }
 
             [Fact]
