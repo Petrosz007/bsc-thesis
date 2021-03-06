@@ -106,8 +106,8 @@ namespace IWA_Backend.API.Contexts
             };
             await RoleManager.CreateAsync(role);
 
-            await UserManager.AddToRoleAsync(users[0], "Contractor");
-            await UserManager.AddToRoleAsync(users[1], "Contractor");
+            await UserManager.AddToRoleAsync(Context.Users.First(u => u.UserName == "contractor1"), "Contractor");
+            await UserManager.AddToRoleAsync(Context.Users.First(u => u.UserName == "contractor2"), "Contractor");
             await Context.SaveChangesAsync();
 
 

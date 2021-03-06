@@ -39,7 +39,7 @@ namespace IWA_Backend.API
             dbInitialiser.Initialise();
             if (dbInitialiser.AnyCategories())
             {
-                await dbInitialiser.ReseedDataAsync();
+                await dbInitialiser.ReseedDataAsync(false);
             }
             else
             {
