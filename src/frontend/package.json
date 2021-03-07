@@ -1,7 +1,7 @@
 {
   "name": "iwa-frontend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./build/dist/index.js",
   "license": "MIT",
   "devDependencies": {
     "@snowpack/app-scripts-react": "^2.0.0",

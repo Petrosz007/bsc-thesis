@@ -75,6 +75,14 @@ namespace IWA_Backend.API
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
+
+            services.AddCors(o => o.AddPolicy("Localhost", builder =>
+            {
+                builder.WithOrigins("http://localhost:8100")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            }));
         }
 
         protected virtual void ConfigureDb(IServiceCollection services)
@@ -99,7 +107,8 @@ namespace IWA_Backend.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IWA_Backend.API v1"));
             }
 
-            app.UseCors("Allow All Policy");
+            //app.UseCors("Allow All Policy");
+            app.UseCors("Localhost");
 
             app.UseHttpsRedirection();
 

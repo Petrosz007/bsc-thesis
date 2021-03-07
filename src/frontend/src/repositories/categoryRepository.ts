@@ -14,7 +14,10 @@ export class CategoryRepository implements ICategoryRepository {
     }
 
     async getById(id: number): Promise<Category> {
-        const response = await fetch(`https://localhost:44347/Category/${id}`);
+        const response = await fetch(`https://localhost:44347/Category/${id}`, {
+            credentials: 'include',
+            mode: 'cors',
+        });
         if(!response.ok) {
             throw new Error(`${response.status}: ${await response.text()}`)
         }

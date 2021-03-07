@@ -17,3 +17,8 @@ export interface AppointmentDTO {
     attendeeUserNames: string[];
     maxAttendees: number;
 };
+
+export interface LoginDTO {
+    userName: string;
+    password: string;
+}

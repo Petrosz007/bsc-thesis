@@ -17,7 +17,10 @@ export class AppointmentRepository implements IAppointmentRepository {
     }
 
     async getById(id: number): Promise<Appointment> {
-        const response = await fetch(`https://localhost:44347/Appointment/${id}`);
+        const response = await fetch(`https://localhost:44347/Appointment/${id}`, {
+            credentials: 'include',
+            mode: 'cors',
+        });
         if(!response.ok) {
             throw new Error(`${response.status}: ${await response.text()}`)
         }

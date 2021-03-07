@@ -8,40 +8,29 @@ import CategoryCard from './components/CategoryCard';
 import { CategoryRepository } from './repositories/categoryRepository';
 import { AppointmentRepository } from './repositories/appointmentRepository';
 import AppointmentCard from './components/AppointmentCard';
+import LoginCard from './components/LoginCard';
+import { Failed, Idle, Loaded, Loading, useApiCall } from './hooks/apiCallHooks';
+import LoginProvider from './components/contexts/LoginProvider';
 
 const App = () => {
     const userRepo = new UserRepository();
     const categoryRepo = new CategoryRepository(userRepo);
     const appointmentRepo = new AppointmentRepository(userRepo, categoryRepo);
 
-    const [appointment, setAppointment] = useState<Appointment>();
-    
-    useEffect(() => {
-        refreshData()
-    }, []);
+    const [appointmentId, setAppointmentId] = useState(1);
 
-    const refreshData = useCallback(() => {
-        setAppointment(undefined);
-        appointmentRepo.getById(3)
-            .then(c => setAppointment(c))
-            .catch(err => console.error(err));
-    }, [categoryRepo]);
+    const [state, refreshData] = useApiCall(() => appointmentRepo.getById(appointmentId), [appointmentId]);
 
     return (
-        <>
-            {/* <h1>my first snowpack+react app</h1>
-            <h2>hello ❄️Snowpack❄️</h2>
-            <p>Is this really that fast? Holy moly</p>
-            <h1>Time is ticking awaaay {count} awaay</h1>
-            <div id="target0">
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Similique a quo maiores dolore sequi. Vitae nam facere labore, expedita totam, eligendi dolor eum veniam accusamus assumenda enim eos. Impedit, sint.</p>
-            </div> */}
-            {appointment === undefined
-                ? <p>Loading...</p>
-                : <AppointmentCard appointment={appointment}/>
-            }
+        <LoginProvider>
+            <LoginCard />
+            <input type="number" value={appointmentId} onChange={e => setAppointmentId(parseInt(e.target.value))}/><br/>
             <button onClick={() => refreshData()}>Refresh that</button>
-        </>
+            {state instanceof Loading && <div>Loading...</div>}
+            {state instanceof Failed && <div>Error: {state.error.message}</div>}
+            {state instanceof Idle && <div>Click to load.</div>}
+            {state instanceof Loaded && <AppointmentCard appointment={state.value}/>}
+        </LoginProvider>
     );
 };
 
