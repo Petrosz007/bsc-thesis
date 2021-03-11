@@ -1,3 +1,31 @@
-div.appointment-card {
-    background-color: rgba(94, 248, 47, 0.829);
+@use "./styles/variables" as var;
+
+div.appointmentCard {
+    $borderRadius: 5px;
+
+    width: 300px;
+    display: block;
+    overflow:hidden;
+
+    border: 2px solid rgb(202, 202, 202);
+    border-radius: $borderRadius;
+
+    :is(.cardTop, .cardBottom) {
+        padding: 10px;
+    }
+
+    div.cardTop {
+        padding-bottom: 3px;
+        background-color: var.$mainDark;
+        color: white;
+
+        span {
+            font-size: 1.3rem;
+        }
+    }
+
+    div.cardBottom {
+        padding-top: 3px;
+        background-color: rgb(245, 245, 245);
+    }
 }

@@ -1,0 +1,55 @@
+@use "./styles/variables.scss" as var;
+
+$contentHeight: 40px;
+
+.navbar {
+    width: 100%;
+    height: 70px;
+    padding: 0 15px;
+    border-bottom: 3px solid var.$mainColor;
+    // border-bottom: 4px solid green;
+    background-color: white;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.loginDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    vertical-align: middle;
+
+    p {
+        line-height: $contentHeight;
+        margin: 0 5px;
+    }
+}
+
+.buttonBase {
+    $color: var.$mainColor;
+    display: block;
+    height: $contentHeight;
+    padding: 5px 10px;
+    margin: 0 5px;
+
+    border-radius: 3px;
+    border: 2px solid $color;
+    background-color: $color;
+    color: white;
+    cursor: pointer;
+
+    &.inverted {
+        background-color: white;
+        color: $color;
+        transition: 150ms ease-in-out;
+
+        &:hover {
+            background-color: $color;
+            color: white;
+        }
+    }
+}

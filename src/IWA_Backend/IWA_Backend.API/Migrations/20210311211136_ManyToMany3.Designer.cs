@@ -3,33 +3,35 @@ using System;
 using IWA_Backend.API.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IWA_Backend.API.Migrations
 {
     [DbContext(typeof(IWAContext))]
-    partial class IWAContextModelSnapshot : ModelSnapshot
+    [Migration("20210311211136_ManyToMany3")]
+    partial class ManyToMany3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.3");
 
-            modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.AllowedUserOnCategories", b =>
+            modelBuilder.Entity("CategoryUser", b =>
                 {
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("AllowedUserOnCategoriesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("AllowedUsersId")
                         .HasColumnType("int");
 
-                    b.HasKey("CategoryId", "UserId");
+                    b.HasKey("AllowedUserOnCategoriesId", "AllowedUsersId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AllowedUsersId");
 
-                    b.ToTable("AllowedUserOnCategories");
+                    b.ToTable("CategoryAllowedUsers");
                 });
 
             modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Appointment", b =>
@@ -326,23 +328,19 @@ namespace IWA_Backend.API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.AllowedUserOnCategories", b =>
+            modelBuilder.Entity("CategoryUser", b =>
                 {
-                    b.HasOne("IWA_Backend.API.BusinessLogic.Entities.Category", "Category")
-                        .WithMany("AllowedUserOnCategoriesJoin")
-                        .HasForeignKey("CategoryId")
+                    b.HasOne("IWA_Backend.API.BusinessLogic.Entities.Category", null)
+                        .WithMany()
+                        .HasForeignKey("AllowedUserOnCategoriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IWA_Backend.API.BusinessLogic.Entities.User", "User")
-                        .WithMany("AllowedUserOnCategoriesJoin")
-                        .HasForeignKey("UserId")
+                    b.HasOne("IWA_Backend.API.BusinessLogic.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("AllowedUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Appointment", b =>
@@ -449,15 +447,8 @@ namespace IWA_Backend.API.Migrations
                     b.Navigation("AttendeeOnAppointmentsJoin");
                 });
 
-            modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Category", b =>
-                {
-                    b.Navigation("AllowedUserOnCategoriesJoin");
-                });
-
             modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.User", b =>
                 {
-                    b.Navigation("AllowedUserOnCategoriesJoin");
-
                     b.Navigation("AttendeeOnAppointmentsJoin");
 
                     b.Navigation("OwnerOfCategories");

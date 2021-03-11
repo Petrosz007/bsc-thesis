@@ -14,22 +14,23 @@ export class Failed<T> {
 
 export type Status<T,U> = Loading | Idle | Loaded<T> | Failed<U>;
 
-export const useApiCall = <T>(fn: () => Promise<T>, deps: React.DependencyList): [ Status<T,Error>, () => void ] => {
+export const useApiCall = <T>(fn: () => Promise<T>, deps: React.DependencyList) => {
     const [status, setStatus] = useState<Status<T,Error>>(new Idle());
 
-    const fetch = useCallback(() => {
+    const fetch = useCallback(async () => {
         setStatus(new Loading());
-        fn()
-            .then(result => {
-                setStatus(new Loaded(result));
-            })
-            .catch(err => {
-                const error = err instanceof Error ? err : new Error(err);
-                setStatus(new Failed(error));
-            });
+        try {
+            const result = await fn();
+            setStatus(new Loaded(result));
+            return result;
+        } catch(err) {
+            const error = err instanceof Error ? err : new Error(err);
+            setStatus(new Failed(error));
+            throw error;
+        }
     }, [fn, ...deps]);
 
-    return [ status, fetch ];
+    return [ status, fetch ] as const;
 }
 
 export const useLogin = (

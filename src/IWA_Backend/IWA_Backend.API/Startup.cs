@@ -89,6 +89,7 @@ namespace IWA_Backend.API
         {
             services.AddDbContext<IWAContext>(options => options
                 .UseLazyLoadingProxies()
+                .EnableSensitiveDataLogging()
                 .UseMySql(Configuration.GetConnectionString("MySqlServer"), new MySqlServerVersion(new Version(10, 5, 3))));
         }
 

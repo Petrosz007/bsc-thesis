@@ -11,8 +11,8 @@ export interface CategoryDTO {
 
 export interface AppointmentDTO {
     id: number;
-    startTime: Date;
-    endTime: Date;
+    startTime: string;
+    endTime: string;
     categoryId: number;
     attendeeUserNames: string[];
     maxAttendees: number;

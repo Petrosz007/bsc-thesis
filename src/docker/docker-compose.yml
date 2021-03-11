@@ -9,3 +9,4 @@ services:
       MYSQL_DATABASE: iwa
     volumes:
       - ./db_data:/var/lib/mysql
+    restart: unless-stopped

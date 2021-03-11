@@ -1,4 +1,4 @@
-import { useEffect, useState, StrictMode, useCallback } from 'react';
+import { useEffect, useState, StrictMode, useCallback, useContext } from 'react';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './App.scss';
@@ -10,27 +10,51 @@ import { AppointmentRepository } from './repositories/appointmentRepository';
 import AppointmentCard from './components/AppointmentCard';
 import LoginCard from './components/LoginCard';
 import { Failed, Idle, Loaded, Loading, useApiCall } from './hooks/apiCallHooks';
-import LoginProvider from './components/contexts/LoginProvider';
+import LoginProvider, { LoginContext } from './components/contexts/LoginProvider';
+import NavBar from './components/NavBar';
+import DataProvider, { DataContext } from './components/contexts/DataProvider';
+import { DIContext } from './components/contexts/DIContext';
 
 const App = () => {
-    const userRepo = new UserRepository();
-    const categoryRepo = new CategoryRepository(userRepo);
-    const appointmentRepo = new AppointmentRepository(userRepo, categoryRepo);
+    return (
+        <DataProvider>
+            <LoginProvider>
+                <Main />
+            </LoginProvider>
+        </DataProvider>
+    );
+};
+
+const Main = () => {
+    const { loginState } = useContext(LoginContext);
+    const { appointmentRepo } = useContext(DIContext);
+    const { dataState, dataDispatch } = useContext(DataContext);
 
     const [appointmentId, setAppointmentId] = useState(1);
 
-    const [state, refreshData] = useApiCall(() => appointmentRepo.getById(appointmentId), [appointmentId]);
+    const [state, refreshData] = useApiCall(async () => {
+        const appointment = await appointmentRepo.getById(appointmentId);
+        dataDispatch({ type: 'updateAppointment', appointment });
+        return appointment;
+    }, [appointmentId, loginState]);
+
+    const appointment = dataState.appointments.find(a => a.id === appointmentId);
 
     return (
-        <LoginProvider>
+        <>
+            <NavBar />
             <LoginCard />
             <input type="number" value={appointmentId} onChange={e => setAppointmentId(parseInt(e.target.value))}/><br/>
             <button onClick={() => refreshData()}>Refresh that</button>
             {state instanceof Loading && <div>Loading...</div>}
             {state instanceof Failed && <div>Error: {state.error.message}</div>}
             {state instanceof Idle && <div>Click to load.</div>}
-            {state instanceof Loaded && <AppointmentCard appointment={state.value}/>}
-        </LoginProvider>
+
+            {state instanceof Loaded && 
+            (appointment === undefined 
+                ? <div>Appointment not loaded yet.</div>
+                :<AppointmentCard appointment={appointment}/>)}
+        </>
     );
 };
 
