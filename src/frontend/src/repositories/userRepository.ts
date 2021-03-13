@@ -1,4 +1,5 @@
 import { User } from "src/logic/entities";
+import { apiFetch } from "./utilities";
 
 export interface IUserRepository {
     getByUserName(userName: string) : Promise<User>;
@@ -6,7 +7,7 @@ export interface IUserRepository {
 
 export class UserRepository implements IUserRepository {
     async getByUserName(userName: string) : Promise<User> {
-        const response = await fetch(`https://localhost:44347/User/Info/${userName}`);
+        const response = await apiFetch(`https://localhost:44347/User/Info/${userName}`, 'GET');
         if(!response.ok) {
             throw new Error(`${response.status}: ${await response.text()}`)
         }

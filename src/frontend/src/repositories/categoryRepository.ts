@@ -1,6 +1,7 @@
 import { CategoryDTO } from "src/logic/dtos";
 import { Category } from "src/logic/entities";
 import { IUserRepository } from "./userRepository";
+import { apiFetch } from "./utilities";
 
 export interface ICategoryRepository {
     getById(id: number) : Promise<Category>;
@@ -14,10 +15,7 @@ export class CategoryRepository implements ICategoryRepository {
     }
 
     async getById(id: number): Promise<Category> {
-        const response = await fetch(`https://localhost:44347/Category/${id}`, {
-            credentials: 'include',
-            mode: 'cors',
-        });
+        const response = await apiFetch(`https://localhost:44347/Category/${id}`, 'GET');
         if(!response.ok) {
             throw new Error(`${response.status}: ${await response.text()}`)
         }

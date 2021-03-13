@@ -2,6 +2,7 @@ import { AppointmentDTO } from "src/logic/dtos";
 import { Appointment } from "src/logic/entities";
 import { ICategoryRepository } from "./categoryRepository";
 import { IUserRepository } from "./userRepository";
+import { apiFetch, apiFetchWithBody } from "./utilities";
 
 export interface IAppointmentRepository {
     getById(id: number): Promise<Appointment>;
@@ -19,10 +20,7 @@ export class AppointmentRepository implements IAppointmentRepository {
     }
 
     async getById(id: number): Promise<Appointment> {
-        const response = await fetch(`https://localhost:44347/Appointment/${id}`, {
-            credentials: 'include',
-            mode: 'cors',
-        });
+        const response = await apiFetch(`https://localhost:44347/Appointment/${id}`, 'GET');
         if(!response.ok) {
             throw new Error(`${response.status}: ${await response.text()}`)
         }
@@ -44,11 +42,7 @@ export class AppointmentRepository implements IAppointmentRepository {
     }
 
     async book(id: number): Promise<void> {
-        const response = await fetch(`https://localhost:44347/Appointment/${id}/Book`, {
-            method: 'POST',
-            credentials: 'include',
-            mode: 'cors',
-        });
+        const response = await apiFetchWithBody(`https://localhost:44347/Appointment/${id}/Book`, 'POST');
         if(!response.ok) {
             throw new Error(`${response.status}: ${await response.text()}`)
         }
@@ -57,11 +51,7 @@ export class AppointmentRepository implements IAppointmentRepository {
     }
 
     async unBook(id: number): Promise<void> {
-        const response = await fetch(`https://localhost:44347/Appointment/${id}/UnBook`, {
-            method: 'POST',
-            credentials: 'include',
-            mode: 'cors',
-        });
+        const response = await apiFetchWithBody(`https://localhost:44347/Appointment/${id}/UnBook`, 'POST');
         if(!response.ok) {
             throw new Error(`${response.status}: ${await response.text()}`)
         }
