@@ -1,12 +1,7 @@
-import { useEffect, useState, StrictMode, useCallback, useContext } from 'react';
+import { useEffect, useState, StrictMode, useContext } from 'react';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './App.scss';
-import { Appointment, Category, User } from './logic/entities';
-import { UserRepository } from './repositories/userRepository';
-import CategoryCard from './components/CategoryCard';
-import { CategoryRepository } from './repositories/categoryRepository';
-import { AppointmentRepository } from './repositories/appointmentRepository';
 import AppointmentCard from './components/AppointmentCard';
 import LoginCard from './components/LoginCard';
 import { Failed, Idle, Loaded, Loading, useApiCall } from './hooks/apiCallHooks';
@@ -32,11 +27,18 @@ const Main = () => {
 
     const [appointmentId, setAppointmentId] = useState(1);
 
-    const [state, refreshData] = useApiCall(async () => {
-        const appointment = await appointmentRepo.getById(appointmentId);
-        dataDispatch({ type: 'updateAppointment', appointment });
-        return appointment;
-    }, [appointmentId, loginState]);
+    const [state, refreshData] = useApiCall(() => 
+        appointmentRepo.getById(appointmentId)
+            .sideEffect(appointment => {
+                dataDispatch({ type: 'updateAppointment', appointment });
+            })
+    , [appointmentId, loginState]);
+
+    useEffect(() => {
+        if(state instanceof Failed) {
+            console.error("Error in index.tsx, appointment state result match", state.error);
+        }
+    }, [state]);
 
     const appointment = dataState.appointments.find(a => a.id === appointmentId);
 

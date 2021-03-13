@@ -1,10 +1,11 @@
 import { CategoryDTO } from "src/logic/dtos";
 import { Category } from "src/logic/entities";
+import { ResultPromise } from "../utilities/result";
 import { IUserRepository } from "./userRepository";
-import { apiFetch } from "./utilities";
+import { safeApiFetch } from "./utilities";
 
 export interface ICategoryRepository {
-    getById(id: number) : Promise<Category>;
+    getById(id: number): ResultPromise<Category,Error>;
 };
 
 export class CategoryRepository implements ICategoryRepository {
@@ -14,22 +15,24 @@ export class CategoryRepository implements ICategoryRepository {
         this.userRepo = userRepository;
     }
 
-    async getById(id: number): Promise<Category> {
-        const response = await apiFetch(`https://localhost:44347/Category/${id}`, 'GET');
-        if(!response.ok) {
-            throw new Error(`${response.status}: ${await response.text()}`)
-        }
-        
-        const categoryDto = await response.json() as CategoryDTO;
-        const owner = this.userRepo.getByUserName(categoryDto.ownerUserName);
-        const allowedUsers = Promise.all(categoryDto.allowedUserNames.map(userName => this.userRepo.getByUserName(userName)));
+    getById = (id: number): ResultPromise<Category,Error> =>
+        safeApiFetch(`https://localhost:44347/Category/${id}`, 'GET')
+            .andThenAsync(async response => {               
+                const categoryDto = await response.json() as CategoryDTO;
+                const ownerResult = this.userRepo.getByUserName(categoryDto.ownerUserName);
+                const atendeeResults = ResultPromise.all(
+                        categoryDto.allowedUserNames.map(userName => this.userRepo.getByUserName(userName))
+                    );
 
-        const category: Category = {
-            ...categoryDto,
-            owner: await owner,
-            allowedUsers: await allowedUsers,
-        };
-
-        return category;
-    }
+                return ownerResult
+                    .andThenAsync(async owner => 
+                        atendeeResults.map(allowedUsers => (
+                            {
+                                ...categoryDto,
+                                owner,
+                                allowedUsers,
+                            } as Category)
+                        )
+                    );
+            });
 }

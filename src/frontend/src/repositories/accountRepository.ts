@@ -1,30 +1,20 @@
-import { LoginDTO } from "../logic/dtos";
-import { apiFetchWithBody } from "./utilities";
+import { LoginDTO } from "logic/dtos";
+import { ResultPromise } from "src/utilities/result";
+import { safeApiFetchWithBody } from "./utilities";
 
 export interface IAccountRepository {
-    login(userName: string, password: string): Promise<void>;
-    logout(): Promise<void>;
+    login(userName: string, password: string): ResultPromise<void,Error>;
+    logout(): ResultPromise<void,Error>;
 }
 
 export class AccountRepository implements IAccountRepository {
-    login = async (userName: string, password: string): Promise<void> => {
+    login = (userName: string, password: string): ResultPromise<void,Error> => {
         const loginDto: LoginDTO = { userName, password };
-        const response = await apiFetchWithBody(`https://localhost:44347/Account/Login`, 'POST', loginDto);
-
-        if(!response.ok) {
-            throw new Error(`Login failed: ${response.status}: ${await response.text()}`);
-        }
-
-        return;
+        return safeApiFetchWithBody(`https://localhost:44347/Account/Login`, 'POST', loginDto)
+            .map(_result => {});
     }
 
-    logout = async (): Promise<void> => {
-        const response = await apiFetchWithBody(`https://localhost:44347/Account/Logout`, 'POST');
-
-        if(!response.ok) {
-            throw new Error(`Login failed: ${response.status}: ${await response.text()}`);
-        }
-
-        return;
-    }
+    logout = (): ResultPromise<void,Error> => 
+        safeApiFetchWithBody(`https://localhost:44347/Account/Logout`, 'POST')
+            .map(_result => {});
 }

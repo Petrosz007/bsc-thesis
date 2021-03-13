@@ -1,13 +1,14 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Appointment } from 'src/logic/entities';
 import CategoryCard from './CategoryCard';
 import UserCard from './UserCard';
 
 import './AppointmentCard.scss';
 import { LoggedIn, LoginContext } from './contexts/LoginProvider';
-import { Loading, useApiCall } from '../hooks/apiCallHooks';
+import { Failed, Loading, useApiCall } from '../hooks/apiCallHooks';
 import { DIContext } from './contexts/DIContext';
 import { DataContext } from './contexts/DataProvider';
+import { ResultPromise } from '../utilities/result';
 
 const HourDuration = ({ startTime, endTime }: { startTime: Date, endTime: Date }) => {
     const minutes = Math.floor((endTime.getTime() - startTime.getTime()) / (1000 * 60));
@@ -35,17 +36,32 @@ export default ({ appointment }: { appointment: Appointment }) => {
     
     const { appointmentRepo } = useContext(DIContext);
 
-    const [bookingStatus, book] = useApiCall(async () => {
-        await appointmentRepo.book(appointment.id);
-        const newAppointment = await appointmentRepo.getById(appointment.id);
-        dataDispatch({ type: 'updateAppointment', appointment: newAppointment });
-    }, [appointment]);
+    const [bookingStatus, book] = useApiCall(() =>
+        appointmentRepo.book(appointment.id)
+            .sideEffect(_result => {
+                appointmentRepo.getById(appointment.id)
+                    .sideEffect(newAppointment => {
+                        dataDispatch({ type: 'updateAppointment', appointment: newAppointment });
+                    })
+            })
+    , [appointment]);
 
-    const [unBookingStatus, unBook] = useApiCall(async () => {
-        await appointmentRepo.unBook(appointment.id);
-        const newAppointment = await appointmentRepo.getById(appointment.id);
-        dataDispatch({ type: 'updateAppointment', appointment: newAppointment });
-    }, [appointment]);
+    const [unBookingStatus, unBook] = useApiCall(() =>
+        appointmentRepo.unBook(appointment.id).sideEffect(_result => {
+                appointmentRepo.getById(appointment.id).sideEffect(newAppointment => {
+                      dataDispatch({ type: 'updateAppointment', appointment: newAppointment });
+                })
+            })
+    , [appointment]);
+
+    useEffect(() => {
+        if(bookingStatus instanceof Failed) {
+            console.error(bookingStatus.error);
+        }
+        if(unBookingStatus instanceof Failed) {
+            console.error(unBookingStatus.error);
+        }
+    }, [bookingStatus, unBookingStatus]);
     
     const isAttendee = () => loginState instanceof LoggedIn 
         && appointment.attendees.some(user => user.userName == loginState.user.userName);
