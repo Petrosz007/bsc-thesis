@@ -1,24 +1,21 @@
-import { CategoryDTO } from "src/logic/dtos";
-import { Category } from "src/logic/entities";
+import { CategoryDTO } from "../logic/dtos";
+import { Category } from "../logic/entities";
 import { ResultPromise } from "../utilities/result";
 import { IUserRepository } from "./userRepository";
-import { safeApiFetch } from "./utilities";
+import { safeApiFetchAs } from "./utilities";
 
 export interface ICategoryRepository {
     getById(id: number): ResultPromise<Category,Error>;
 };
 
 export class CategoryRepository implements ICategoryRepository {
-    userRepo: IUserRepository;
-
-    constructor(userRepository: IUserRepository) {
-        this.userRepo = userRepository;
-    }
+    constructor(
+        private readonly userRepo: IUserRepository
+    ) {}
 
     getById = (id: number): ResultPromise<Category,Error> =>
-        safeApiFetch(`https://localhost:44347/Category/${id}`, 'GET')
-            .andThenAsync(async response => {               
-                const categoryDto = await response.json() as CategoryDTO;
+        safeApiFetchAs<CategoryDTO>(`https://localhost:44347/Category/${id}`, 'GET')
+            .andThen(categoryDto => {             
                 const ownerResult = this.userRepo.getByUserName(categoryDto.ownerUserName);
                 const atendeeResults = ResultPromise.all(
                         categoryDto.allowedUserNames.map(userName => this.userRepo.getByUserName(userName))

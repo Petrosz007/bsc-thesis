@@ -1,8 +1,11 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { DIContext } from "../components/contexts/DIContext";
 import { LoggedOut, LoginContext } from "../components/contexts/LoginProvider";
-import { User } from "src/logic/entities";
-import { ResultPromise } from "src/utilities/result";
+import { User } from "../logic/entities";
+import { ResultPromise } from "../utilities/result";
+import { DataContext } from "../components/contexts/DataProvider";
+import { useEffectAsync } from "./utilities";
+import { useHistory } from "react-router";
 
 export class Loading {} 
 export class Idle {}
@@ -31,6 +34,29 @@ export const useApiCall = <T,E>(fn: () => ResultPromise<T,E>, deps: React.Depend
     return [ status, fetch ] as const;
 }
 
+export const useCookieLogin = (): () => void => {
+    const { loginState, loginDispatch } = useContext(LoginContext);
+    const { userRepo } = useContext(DIContext);
+
+    const cookieLogin = useCallback(async () => {
+        if(loginState instanceof LoggedOut) {
+            await userRepo.getSelf()
+                .andThen(userRepo.getByUserName)
+                .match(
+                    user => {
+                        loginDispatch({ type: 'login', user });
+                    },
+                    error => {
+                        if(error === 'NotLoggedIn') return;
+                        console.error('useCookieLogin', error);
+                    }
+                );
+        }
+    }, []);
+
+    return cookieLogin;
+}
+
 export const useLogin = (
     userName: string,
     password: string,
@@ -38,18 +64,18 @@ export const useLogin = (
     const [status, setStatus] = useState<Status<User,Error>>(new Idle());
     const { loginState, loginDispatch } = useContext(LoginContext);
     const { userRepo, accountRepo } = useContext(DIContext);
+    const history = useHistory();
 
     const login = useCallback(async () => {
         setStatus(new Loading());
 
-        const loginResult = await accountRepo.login(userName, password)
+        await accountRepo.login(userName, password)
             .andThen(_ => userRepo.getByUserName(userName))
-            .toPromise();
-
-        loginResult.match(
+            .match(
             user => {
-                loginDispatch({ type: 'login', user });
                 setStatus(new Loaded(user));     
+                loginDispatch({ type: 'login', user });
+                history.push('/');
             },
             error => setStatus(new Failed(error)));
     }, [userName, password]);
@@ -60,7 +86,9 @@ export const useLogin = (
 export const useLogout = (): [ Status<boolean,Error>, () => void ] => {
     const [status, setStatus] = useState<Status<boolean,Error>>(new Idle());
     const { loginState, loginDispatch } = useContext(LoginContext);
+    const { dataState, dataDispatch } = useContext(DataContext);
     const { accountRepo } = useContext(DIContext);
+    const history = useHistory();
 
     const logout = useCallback(async () => {
         if(loginState instanceof LoggedOut) {
@@ -75,8 +103,10 @@ export const useLogout = (): [ Status<boolean,Error>, () => void ] => {
 
         logoutResult.match(
             _ => {
+                setStatus(new Loaded(true));
                 loginDispatch({ type: 'logout' });
-                setStatus(new Loaded(true));     
+                dataDispatch({ type: 'logout' });
+                history.push('/'); 
             },
             error => setStatus(new Failed(error)));
     }, [status, loginState, loginDispatch, accountRepo]);

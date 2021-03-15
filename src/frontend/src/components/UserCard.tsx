@@ -1,5 +1,5 @@
 import React from 'react';
-import { User } from 'src/logic/entities';
+import { User } from '../logic/entities';
 
 import './UserCard.scss';
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Category } from "src/logic/entities";
+import { Category } from "../logic/entities";
 import UserCard from "./UserCard";
 
 import './CategoryCard.scss';

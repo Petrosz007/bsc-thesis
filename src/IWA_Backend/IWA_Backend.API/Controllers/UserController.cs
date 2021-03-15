@@ -51,5 +51,11 @@ namespace IWA_Backend.API.Controllers
             catch (NotFoundException ex) { return NotFound(ex.Message); }
             catch (UnauthorisedException ex) { return Unauthorized(ex.Message); }
         }
+
+        [HttpGet("Self")]
+        public ActionResult<IsLoggedInDTO> GetSelf()
+        {
+            return Ok(new IsLoggedInDTO(CurrentUserName is not null, CurrentUserName));
+        }
     }
 }

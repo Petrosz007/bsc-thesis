@@ -1,6 +1,6 @@
 import React from "react";
 import { createContext, useReducer } from "react";
-import { Appointment, Category, User } from "src/logic/entities";
+import { Appointment, Category, User } from "../../logic/entities";
 
 export interface DataState {
     appointments: Appointment[];
@@ -27,7 +27,8 @@ export const DataContext = createContext<DataContextType>({
 export type DataAction =
     | { type: 'updateAppointment', appointment: Appointment }
     | { type: 'updateCategory', category: Category }
-    | { type: 'updateUser', user: User };
+    | { type: 'updateUser', user: User }
+    | { type: 'logout'};
 
 function setValue<T,G>(values: T[], value: T, lens: (_x: T) => G): T[] {
     if(!values.some(x => lens(x) === lens(value))) {
@@ -59,6 +60,8 @@ const reducer = (state: DataState, action: DataAction): DataState => {
                 ...state,
                 users: setValue(state.users, action.user, u => u.userName),
             };
+        case 'logout':
+            return initialState;
         default:
             return state;
     }

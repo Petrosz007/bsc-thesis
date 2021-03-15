@@ -1,29 +1,26 @@
 import { AppointmentDTO } from "../logic/dtos";
 import { Appointment } from "../logic/entities";
-import { ResultPromise } from "../utilities/result";
+import { ResultPromise, Unit } from "../utilities/result";
 import { ICategoryRepository } from "./categoryRepository";
 import { IUserRepository } from "./userRepository";
-import { safeApiFetch, safeApiFetchWithBody } from "./utilities";
+import { parseResponseAs, safeApiFetchAs, safeApiFetchWithBodyAs, safeApiFetchWithBodyAsUnit } from "./utilities";
 
 export interface IAppointmentRepository {
     getById(id: number): ResultPromise<Appointment,Error>;
-    book(id: number): ResultPromise<void,Error>;
-    unBook(id: number): ResultPromise<void,Error>;
+    getContractorsAppointments(contractorUserName: string): ResultPromise<Appointment[],Error>;
+    book(id: number): ResultPromise<Unit,Error>;
+    unBook(id: number): ResultPromise<Unit,Error>;
 };
 
 export class AppointmentRepository implements IAppointmentRepository {
-    userRepo: IUserRepository;
-    categoryRepo: ICategoryRepository;
+    constructor(
+        private readonly userRepo: IUserRepository, 
+        private readonly categoryRepo: ICategoryRepository
+    ) {}
 
-    constructor(userRepository: IUserRepository, categgoryRepository: ICategoryRepository) {
-        this.userRepo = userRepository;
-        this.categoryRepo = categgoryRepository;
-    }
-
-    getById = (id: number): ResultPromise<Appointment,Error> =>
-        safeApiFetch(`https://localhost:44347/Appointment/${id}`, 'GET')
-            .andThenAsync(async response => {
-                const appointmentDto = await response.json() as AppointmentDTO;
+    private dtoToEntity = (dto: AppointmentDTO): ResultPromise<Appointment,Error> =>
+        ResultPromise.ok<AppointmentDTO,Error>(dto)
+            .andThen(appointmentDto => {
                 const categoryResult = this.categoryRepo.getById(appointmentDto.categoryId);
                 const attendeeResults = ResultPromise.all(
                     appointmentDto.attendeeUserNames.map(userName => this.userRepo.getByUserName(userName))
@@ -43,11 +40,17 @@ export class AppointmentRepository implements IAppointmentRepository {
                     );
             });
 
-    book = (id: number): ResultPromise<void,Error> =>
-        safeApiFetchWithBody(`https://localhost:44347/Appointment/${id}/Book`, 'POST')
-            .mapAsync(async _response => {});
+    getById = (id: number): ResultPromise<Appointment,Error> =>
+        safeApiFetchAs<AppointmentDTO>(`https://localhost:44347/Appointment/${id}`, 'GET')
+            .andThen(this.dtoToEntity);
 
-    unBook = (id: number): ResultPromise<void,Error> =>
-        safeApiFetchWithBody(`https://localhost:44347/Appointment/${id}/UnBook`, 'POST')
-            .mapAsync(async _response => {});
+    getContractorsAppointments = (contractorUserName: string): ResultPromise<Appointment[],Error> =>
+        safeApiFetchAs<AppointmentDTO[]>(`https://localhost:44347/Appointment/Contractor/${contractorUserName}`, 'GET')
+            .andThen(appointmentsDtos => ResultPromise.all(appointmentsDtos.map(this.dtoToEntity)));
+
+    book = (id: number): ResultPromise<Unit,Error> =>
+        safeApiFetchWithBodyAsUnit(`https://localhost:44347/Appointment/${id}/Book`, 'POST');
+
+    unBook = (id: number): ResultPromise<Unit,Error> =>
+        safeApiFetchWithBodyAsUnit(`https://localhost:44347/Appointment/${id}/UnBook`, 'POST');
 };

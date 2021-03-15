@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Appointment } from 'src/logic/entities';
+import { Appointment } from '../logic/entities';
 import CategoryCard from './CategoryCard';
 import UserCard from './UserCard';
 
@@ -71,8 +71,8 @@ export default ({ appointment }: { appointment: Appointment }) => {
         if(unBookingStatus instanceof Loading) return <span>Unbooking...</span>;
         
         return <>
-            {bookingStatus instanceof Error && <span>Error booking</span>}
-            {unBookingStatus instanceof Error && <span>Error unbooking</span>}
+            {bookingStatus instanceof Failed && <span>Error booking</span>}
+            {unBookingStatus instanceof Failed && <span>Error unbooking</span>}
             {isAttendee()
                     ? <button onClick={() => unBook()}>Lemondás</button> 
                     : <button onClick={() => book()}>Foglalás</button>}

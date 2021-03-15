@@ -22,3 +22,8 @@ export interface LoginDTO {
     userName: string;
     password: string;
 }
+
+export interface IsLoggedInDTO {
+    isLoggedIn: boolean;
+    userName: string|null;
+}

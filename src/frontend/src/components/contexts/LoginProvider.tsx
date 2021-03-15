@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useState } from "react";
-import { User } from "src/logic/entities";
+import { User } from "../../logic/entities";
 
 export class LoggedOut {}
 export class LoggedIn {

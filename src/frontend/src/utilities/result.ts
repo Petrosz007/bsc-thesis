@@ -1,3 +1,5 @@
+export type Unit = {};
+
 export class Ok<T,E> {
     constructor(public readonly value: T) {}
 
@@ -138,21 +140,3 @@ export class ResultPromise<T,E> {
         errFn: (_: E) => U
     ): Promise<U> => this.promise.then(result => result.match(okFn, errFn));
 }
-
-const fetchError = (err: unknown) => {
-    if(err instanceof Error) {
-        return err;
-    }
-
-    return new Error(`${err}`);
-}
-
-export const safeFetch: (input: RequestInfo, init?: RequestInit | undefined) => ResultPromise<Response, Error> = 
-    ResultPromise.compose(
-        Result.fromThrowableAsync(fetch, fetchError), 
-        x => x.andThenAsync(async response => 
-            !response.ok
-                ? ResultPromise.err(new Error(`${response.status}: ${await response.text()}`))
-                : ResultPromise.ok(response)
-        )
-    );
