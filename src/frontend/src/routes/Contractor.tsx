@@ -43,9 +43,7 @@ const ContractorPage = () => {
                 contractorResult.map(user => [appointments, user] as const)
             )
             .sideEffect(([appointments, contractor]) => {
-                appointments.map(appointment => {
-                    dataDispatch({ type: 'updateAppointment', appointment });
-                });
+                dataDispatch({ type: 'setAppointments', appointments });
                 dataDispatch({ type: 'updateUser', user: contractor });
             });
         }, [contractorUserName, loginState]);

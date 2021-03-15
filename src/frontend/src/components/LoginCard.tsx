@@ -4,8 +4,8 @@ import { Failed, Idle, Loaded, Loading, useApiCall, useLogin, useLogout } from "
 import { LoggedIn, LoggedOut, LoginContext } from "./contexts/LoginProvider";
 
 export default () => {
-    const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
+    const [userName, setUserName] = useState('customer1');
+    const [password, setPassword] = useState('kebab');
 
     const { loginState } = useContext(LoginContext);
 
@@ -23,7 +23,7 @@ export default () => {
             {loginState instanceof LoggedOut && <div>Logged out</div>}
             
             UserName: <input type="text" value={userName} onChange={e => setUserName(e.target.value)}/><br/>
-            Password: <input type="text" value={password} onChange={e => setPassword(e.target.value)}/><br/>
+            Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)}/><br/>
             <button onClick={() => login()}>Login</button>
             <button onClick={() => logout()}>Logout</button>
         </div>

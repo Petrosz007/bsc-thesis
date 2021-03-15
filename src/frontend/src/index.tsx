@@ -15,6 +15,8 @@ import Home from './routes/Home';
 import Contractor from './routes/Contractor';
 import Login from './routes/Login';
 import { useCookieLogin, useLogin } from './hooks/apiCallHooks';
+import Booked from './routes/Booked';
+import OwnAppointments from './routes/OwnAppointments';
   
 
 const App = () => {
@@ -37,15 +39,11 @@ const Main = () => {
             <NavBar />
 
             <Switch>
-                <Route path="/contractor">
-                    <Contractor />
-                </Route>
-                <Route path ="/login">
-                    <Login />
-                </Route>
-                <Route path="/">
-                    <Home />
-                </Route>
+                <Route path="/contractor">          <Contractor />          </Route>
+                <Route path ="/booked">             <Booked />              </Route>
+                <Route path ="/own-appointments">   <OwnAppointments />     </Route>
+                <Route path ="/login">              <Login />       </Route>
+                <Route path="/">                    <Home />        </Route>
             </Switch>
         </Router>
     );

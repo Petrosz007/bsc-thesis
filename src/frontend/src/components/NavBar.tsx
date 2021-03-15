@@ -29,8 +29,12 @@ const LoggedInComponent = ({ user }: { user: User }) => {
 
     return (
         <>
+            <NavLink to="/booked">Booked</NavLink>
+            {user.contractorPage !== null &&
+                <NavLink to="/own-appointments">Own Appointments</NavLink>
+            }
             <p>Hello {user.name}!</p>
-            <button className="buttonBase" onClick={logout}>Log Out</button>
+            <button className="buttonBase inverted" onClick={logout}>Log Out</button>
         </>
     );
 }
@@ -42,7 +46,7 @@ export default () => {
         <nav className="navbar">
             <p>Időpontfoglaló Webes Alkalmazás</p>
             <div className="navRight">
-                <NavLink to="/">Home</NavLink>
+                <NavLink to="/" exact={true}>Home</NavLink>
                 {loginState instanceof LoggedOut && 
                     <LoggedOutConponent /> 
                 }

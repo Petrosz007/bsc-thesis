@@ -8,6 +8,7 @@ import { parseResponseAs, safeApiFetchAs, safeApiFetchWithBodyAs, safeApiFetchWi
 export interface IAppointmentRepository {
     getById(id: number): ResultPromise<Appointment,Error>;
     getContractorsAppointments(contractorUserName: string): ResultPromise<Appointment[],Error>;
+    getBooked(): ResultPromise<Appointment[],Error>;
     book(id: number): ResultPromise<Unit,Error>;
     unBook(id: number): ResultPromise<Unit,Error>;
 };
@@ -40,13 +41,21 @@ export class AppointmentRepository implements IAppointmentRepository {
                     );
             });
 
+    private dtosToEntities = (dtos: AppointmentDTO[]): ResultPromise<Appointment[],Error> =>
+        ResultPromise.all(dtos.map(this.dtoToEntity));
+        
+
     getById = (id: number): ResultPromise<Appointment,Error> =>
         safeApiFetchAs<AppointmentDTO>(`https://localhost:44347/Appointment/${id}`, 'GET')
             .andThen(this.dtoToEntity);
 
     getContractorsAppointments = (contractorUserName: string): ResultPromise<Appointment[],Error> =>
         safeApiFetchAs<AppointmentDTO[]>(`https://localhost:44347/Appointment/Contractor/${contractorUserName}`, 'GET')
-            .andThen(appointmentsDtos => ResultPromise.all(appointmentsDtos.map(this.dtoToEntity)));
+            .andThen(this.dtosToEntities);
+
+    getBooked = (): ResultPromise<Appointment[],Error> =>
+        safeApiFetchAs<AppointmentDTO[]>(`https://localhost:44347/Appointment/Booked`, 'GET')
+            .andThen(this.dtosToEntities);
 
     book = (id: number): ResultPromise<Unit,Error> =>
         safeApiFetchWithBodyAsUnit(`https://localhost:44347/Appointment/${id}/Book`, 'POST');
