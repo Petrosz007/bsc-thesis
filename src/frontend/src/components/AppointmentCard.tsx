@@ -23,8 +23,8 @@ const HourDuration = ({ startTime, endTime }: { startTime: Date, endTime: Date }
 const FormattedDate = ({ date }: { date: Date }) => {
     const padNum = (x: number) => x.toFixed(0).padStart(2, '0');
     const year = date.getFullYear();
-    const month = padNum(date.getMonth());
-    const day = padNum(date.getDay());
+    const month = padNum(date.getMonth() + 1);
+    const day = padNum(date.getDate());
     const hour = padNum(date.getHours());
     const minute = padNum(date.getMinutes());
     return <>{year}.{month}.{day} {hour}:{minute}</>;
@@ -54,17 +54,26 @@ export default ({ appointment }: { appointment: Appointment }) => {
             })
     , [appointment]);
 
+    const [deleteStatus, deleteAppointment] = useApiCall(() =>
+        appointmentRepo.delete(appointment.id)
+            .sideEffect(_ => {
+                dataDispatch({ type: 'deleteAppointment', id: appointment.id });
+            })
+    , [appointment]);
+
     useEffect(() => {
-        if(bookingStatus instanceof Failed) {
-            console.error(bookingStatus.error);
-        }
-        if(unBookingStatus instanceof Failed) {
-            console.error(unBookingStatus.error);
-        }
+        [bookingStatus, unBookingStatus, deleteStatus].map(x => {
+            if(x instanceof Failed) {
+                console.error(x.error);
+            }
+        })
     }, [bookingStatus, unBookingStatus]);
     
     const isAttendee = () => loginState instanceof LoggedIn 
-        && appointment.attendees.some(user => user.userName == loginState.user.userName);
+        && appointment.attendees.some(user => user.userName === loginState.user.userName);
+
+    const isOwner = () => loginState instanceof LoggedIn 
+        && appointment.category.owner.userName === loginState.user.userName;
 
     const button = () => {
         if(bookingStatus instanceof Loading) return <span>Booking...</span>;
@@ -79,6 +88,18 @@ export default ({ appointment }: { appointment: Appointment }) => {
         </>;
     }
 
+    const deleteButton = () => {
+        if(deleteStatus instanceof Loading) return <span>Deleting...</span>;
+
+        return (
+            <>
+            {isOwner() &&
+                <button onClick={() => deleteAppointment()}>Delete</button>
+            }
+            </>
+        );
+    }
+
     return (
         <div className="appointmentCard">
             <div className="cardTop">
@@ -89,6 +110,7 @@ export default ({ appointment }: { appointment: Appointment }) => {
                 <p><FormattedDate date={appointment.startTime}/> - <HourDuration startTime={appointment.startTime} endTime={appointment.endTime}/></p>
                 <p>{appointment.category.price} Ft</p>
                 {button()}
+                {deleteButton()}
             </div>
         </div>
     );

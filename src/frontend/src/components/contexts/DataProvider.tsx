@@ -27,7 +27,9 @@ export const DataContext = createContext<DataContextType>({
 export type DataAction =
     | { type: 'updateAppointment', appointment: Appointment }
     | { type: 'setAppointments', appointments: Appointment[] }
+    | { type: 'deleteAppointment', id: number }
     | { type: 'updateCategory', category: Category }
+    | { type: 'setCategories', categories: Category[] }
     | { type: 'updateUser', user: User }
     | { type: 'logout'};
 
@@ -43,8 +45,6 @@ const setValue = <T,G>(values: T[], value: T, lens: (_x: T) => G): T[] => {
 }
 
 const reducer = (state: DataState, action: DataAction): DataState => {
-    console.log(state, action);
-    
     switch(action.type) {
         case 'updateAppointment':
             return {
@@ -56,10 +56,20 @@ const reducer = (state: DataState, action: DataAction): DataState => {
                 ...state,
                 appointments: action.appointments,
             };
+        case 'deleteAppointment':
+            return {
+                ...state,
+                appointments: state.appointments.filter(a => a.id !== action.id),
+            };
         case 'updateCategory':
             return {
                 ...state,
                 categories: setValue(state.categories, action.category, c => c.id),
+            };
+        case 'setCategories':
+            return {
+                ...state,
+                categories: action.categories,
             };
         case 'updateUser':
             return {

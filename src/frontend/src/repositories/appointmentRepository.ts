@@ -3,7 +3,7 @@ import { Appointment } from "../logic/entities";
 import { ResultPromise, Unit } from "../utilities/result";
 import { ICategoryRepository } from "./categoryRepository";
 import { IUserRepository } from "./userRepository";
-import { parseResponseAs, safeApiFetchAs, safeApiFetchWithBodyAs, safeApiFetchWithBodyAsUnit } from "./utilities";
+import { parseResponseAs, safeApiFetchAs, safeApiFetchAsUnit, safeApiFetchWithBodyAs, safeApiFetchWithBodyAsUnit } from "./utilities";
 
 export interface IAppointmentRepository {
     getById(id: number): ResultPromise<Appointment,Error>;
@@ -11,6 +11,8 @@ export interface IAppointmentRepository {
     getBooked(): ResultPromise<Appointment[],Error>;
     book(id: number): ResultPromise<Unit,Error>;
     unBook(id: number): ResultPromise<Unit,Error>;
+    create(dto: AppointmentDTO): ResultPromise<Appointment,Error>;
+    delete(id: number): ResultPromise<Unit,Error>;
 };
 
 export class AppointmentRepository implements IAppointmentRepository {
@@ -62,4 +64,11 @@ export class AppointmentRepository implements IAppointmentRepository {
 
     unBook = (id: number): ResultPromise<Unit,Error> =>
         safeApiFetchWithBodyAsUnit(`https://localhost:44347/Appointment/${id}/UnBook`, 'POST');
+
+    create = (dto: AppointmentDTO): ResultPromise<Appointment,Error> =>
+        safeApiFetchWithBodyAs<AppointmentDTO>(`https://localhost:44347/Appointment`, 'POST', dto)
+            .andThen(this.dtoToEntity);
+
+    delete = (id: number): ResultPromise<Unit,Error> =>
+        safeApiFetchAsUnit(`https://localhost:44347/Appointment/${id}`, 'DELETE');
 };

@@ -4,11 +4,13 @@ import { DIContext } from "../components/contexts/DIContext";
 import { LoggedIn, LoggedOut, LoginContext } from "../components/contexts/LoginProvider";
 import { Failed, Idle, Loaded, Loading, useApiCall } from "../hooks/apiCallHooks";
 import { Appointment, User } from "../logic/entities";
-import React, { useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router";
+import { AppointmentDTO } from "logic/dtos";
 
 const Appointments = ({ appointments }: { appointments: Appointment[] }) => {
     if(appointments.length === 0) return <p>No booked appointments</p>
+    
     return (
         <>
         {appointments.map(appointment => 
