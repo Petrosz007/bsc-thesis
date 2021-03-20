@@ -39,11 +39,11 @@ const LoggedInComponent = ({ user }: { user: User }) => {
     );
 }
 
-export default () => {
+export default ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
     const { loginState } = useContext(LoginContext);
 
     return (
-        <nav className="navbar">
+        <nav className={`navbar ${className}`}>
             <p>Időpontfoglaló Webes Alkalmazás</p>
             <div className="navRight">
                 <NavLink to="/" exact={true}>Home</NavLink>

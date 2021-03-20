@@ -1,7 +1,6 @@
 import { StrictMode, useEffect } from 'react';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './App.scss';
 import LoginProvider from './components/contexts/LoginProvider';
 import NavBar from './components/NavBar';
 import DataProvider from './components/contexts/DataProvider';
@@ -18,6 +17,7 @@ import { useCookieLogin, useLogin } from './hooks/apiCallHooks';
 import Booked from './routes/Booked';
 import OwnAppointments from './routes/OwnAppointments';
   
+import './index.scss';
 
 const App = () => {
     return (
@@ -36,15 +36,19 @@ const Main = () => {
 
     return (
         <Router>
-            <NavBar />
+            <div className="main-layout">
+                <NavBar className="main-navbar"/>
 
-            <Switch>
-                <Route path="/contractor">          <Contractor />          </Route>
-                <Route path ="/booked">             <Booked />              </Route>
-                <Route path ="/own-appointments">   <OwnAppointments />     </Route>
-                <Route path ="/login">              <Login />       </Route>
-                <Route path="/">                    <Home />        </Route>
-            </Switch>
+                <div className="main-content">
+                    <Switch>
+                        <Route path="/contractor">          <Contractor />          </Route>
+                        <Route path ="/booked">             <Booked />              </Route>
+                        <Route path ="/own-appointments">   <OwnAppointments />     </Route>
+                        <Route path ="/login">              <Login />       </Route>
+                        <Route path="/">                    <Home />        </Route>
+                    </Switch>
+                </div>
+            </div>
         </Router>
     );
 };

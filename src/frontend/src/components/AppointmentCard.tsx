@@ -1,14 +1,11 @@
 import React, { useContext, useEffect } from 'react';
 import { Appointment } from '../logic/entities';
-import CategoryCard from './CategoryCard';
-import UserCard from './UserCard';
-
-import './AppointmentCard.scss';
 import { LoggedIn, LoginContext } from './contexts/LoginProvider';
 import { Failed, Loading, useApiCall } from '../hooks/apiCallHooks';
 import { DIContext } from './contexts/DIContext';
 import { DataContext } from './contexts/DataProvider';
-import { ResultPromise } from '../utilities/result';
+
+import './AppointmentCard.scss';
 
 const HourDuration = ({ startTime, endTime }: { startTime: Date, endTime: Date }) => {
     const minutes = Math.floor((endTime.getTime() - startTime.getTime()) / (1000 * 60));
@@ -30,7 +27,7 @@ const FormattedDate = ({ date }: { date: Date }) => {
     return <>{year}.{month}.{day} {hour}:{minute}</>;
 }
 
-export default ({ appointment }: { appointment: Appointment }) => {
+const BookButton = ({ appointment }: { appointment: Appointment }) => {
     const { loginState } = useContext(LoginContext);
     const { dataDispatch } = useContext(DataContext);
     
@@ -54,6 +51,33 @@ export default ({ appointment }: { appointment: Appointment }) => {
             })
     , [appointment]);
 
+    useEffect(() => {
+        [bookingStatus, unBookingStatus].map(x => {
+            if(x instanceof Failed) {
+                console.error(x.error);
+            }
+        })
+    }, [bookingStatus, unBookingStatus]);
+
+    const isAttendee = () => loginState instanceof LoggedIn 
+        && appointment.attendees.some(user => user.userName === loginState.user.userName);
+
+    if(bookingStatus instanceof Loading) return <span>Booking...</span>;
+    if(unBookingStatus instanceof Loading) return <span>Unbooking...</span>;
+
+    return <>
+        {bookingStatus instanceof Failed && <span>Error booking</span>}
+        {unBookingStatus instanceof Failed && <span>Error unbooking</span>}
+        {isAttendee()
+                ? <button onClick={() => unBook()}>Lemondás</button> 
+                : <button onClick={() => book()}>Foglalás</button>}
+    </>;
+}
+
+const DeleteButton = ({ appointment }: { appointment: Appointment }) => {
+    const { dataDispatch } = useContext(DataContext);
+    const { appointmentRepo } = useContext(DIContext);
+
     const [deleteStatus, deleteAppointment] = useApiCall(() =>
         appointmentRepo.delete(appointment.id)
             .sideEffect(_ => {
@@ -62,55 +86,37 @@ export default ({ appointment }: { appointment: Appointment }) => {
     , [appointment]);
 
     useEffect(() => {
-        [bookingStatus, unBookingStatus, deleteStatus].map(x => {
-            if(x instanceof Failed) {
-                console.error(x.error);
-            }
-        })
-    }, [bookingStatus, unBookingStatus]);
-    
-    const isAttendee = () => loginState instanceof LoggedIn 
-        && appointment.attendees.some(user => user.userName === loginState.user.userName);
+        if(deleteStatus instanceof Failed) {
+            console.error(deleteStatus.error);
+        }
+    }, [deleteStatus]);
+
+    if(deleteStatus instanceof Loading) return <span>Deleting...</span>;
+
+    return (
+        <button onClick={() => deleteAppointment()}>Delete</button>
+    );
+}
+
+export default ({ appointment }: { appointment: Appointment }) => {
+    const { loginState } = useContext(LoginContext);
 
     const isOwner = () => loginState instanceof LoggedIn 
         && appointment.category.owner.userName === loginState.user.userName;
 
-    const button = () => {
-        if(bookingStatus instanceof Loading) return <span>Booking...</span>;
-        if(unBookingStatus instanceof Loading) return <span>Unbooking...</span>;
-        
-        return <>
-            {bookingStatus instanceof Failed && <span>Error booking</span>}
-            {unBookingStatus instanceof Failed && <span>Error unbooking</span>}
-            {isAttendee()
-                    ? <button onClick={() => unBook()}>Lemondás</button> 
-                    : <button onClick={() => book()}>Foglalás</button>}
-        </>;
-    }
-
-    const deleteButton = () => {
-        if(deleteStatus instanceof Loading) return <span>Deleting...</span>;
-
-        return (
-            <>
-            {isOwner() &&
-                <button onClick={() => deleteAppointment()}>Delete</button>
-            }
-            </>
-        );
-    }
-
     return (
         <div className="appointmentCard">
-            <div className="cardTop">
-                <span>{appointment.category.name}</span>
-            </div>
-            <div className="cardBottom">
+            <span className="appointment-header">{appointment.category.name}</span>
+            <div className="appointment-descripton">
                 <p>{appointment.category.description}</p>
-                <p><FormattedDate date={appointment.startTime}/> - <HourDuration startTime={appointment.startTime} endTime={appointment.endTime}/></p>
+                {/* <p><FormattedDate date={appointment.startTime}/> - <HourDuration startTime={appointment.startTime} endTime={appointment.endTime}/></p> */}
                 <p>{appointment.category.price} Ft</p>
-                {button()}
-                {deleteButton()}
+            </div>
+            <div className="appointment-methods">
+                <BookButton appointment={appointment} />
+                {isOwner() &&
+                    <DeleteButton appointment={appointment} />
+                }
             </div>
         </div>
     );

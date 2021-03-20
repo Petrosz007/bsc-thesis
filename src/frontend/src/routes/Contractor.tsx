@@ -7,6 +7,8 @@ import React, { useContext, useEffect } from "react";
 import { Switch, useParams, useRouteMatch } from "react-router";
 import { Route } from "react-router-dom";
 import { Appointment, User } from "../logic/entities";
+import { Dictionary, groupBy } from "../utilities/listExtensions";
+import AppointmentAgenda from "../components/AppointmentAgenda";
 
 const ContractorInfo = ({ user }: { user: User }) => {
     return (
@@ -15,16 +17,6 @@ const ContractorInfo = ({ user }: { user: User }) => {
             <p>{user.contractorPage?.title}</p>
             <p>{user.contractorPage?.bio}</p>
         </div>
-    );
-}
-
-const Appointments = ({ appointments }: { appointments: Appointment[] }) => {
-    return (
-        <>
-        {appointments.map(appointment => 
-            <AppointmentCard appointment={appointment} key={appointment.id} />
-        )}
-        </>
     );
 }
 
@@ -66,7 +58,7 @@ const ContractorPage = () => {
         {state instanceof Loaded && 
         <>
             <ContractorInfo user={state.value[1]}/>
-            <Appointments appointments={dataState.appointments}/>
+            <AppointmentAgenda appointments={dataState.appointments}/>
         </>
         }
         </>

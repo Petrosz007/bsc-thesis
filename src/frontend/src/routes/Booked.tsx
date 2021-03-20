@@ -6,7 +6,8 @@ import { Failed, Idle, Loaded, Loading, useApiCall } from "../hooks/apiCallHooks
 import { Appointment, User } from "../logic/entities";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router";
-import { AppointmentDTO } from "logic/dtos";
+import { AppointmentDTO } from "../logic/dtos";
+import AppointmentAgenda from "../components/AppointmentAgenda";
 
 const Appointments = ({ appointments }: { appointments: Appointment[] }) => {
     if(appointments.length === 0) return <p>No booked appointments</p>
@@ -49,7 +50,7 @@ const BookedAppointments = ({ user }: { user: User }) => {
         {state instanceof Idle && <div>Click to load.</div>}
         
         {state instanceof Loaded && 
-            <Appointments appointments={appointments} />
+            <AppointmentAgenda appointments={appointments} />
         }
         </>
     );

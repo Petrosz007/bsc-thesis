@@ -9,6 +9,7 @@ import { Redirect } from "react-router";
 import { AppointmentDTO } from "../logic/dtos";
 
 import './OwnAppointments.scss'
+import AppointmentAgenda from "../components/AppointmentAgenda";
 interface AppointmentEditdata {
     // id: number;
     startTimeDate: string;
@@ -71,16 +72,6 @@ const AppointmentEditor = ({ categories, onSubmit }: { categories: Category[], o
     );
 }
 
-const Appointments = ({ appointments }: { appointments: Appointment[] }) => {
-    return (
-        <div className="own-appointments">
-        {appointments.map(appointment => 
-            <AppointmentCard appointment={appointment} key={appointment.id} />
-        )}
-        </div>
-    );
-}
-
 const OwnAppointments = ({ user }: { user: User }) => {
     const { dataState, dataDispatch } = useContext(DataContext);
     const { appointmentRepo, categoryRepo } = useContext(DIContext);
@@ -125,7 +116,7 @@ const OwnAppointments = ({ user }: { user: User }) => {
         {state instanceof Loaded && 
         <>
             <AppointmentEditor onSubmit={onNewAppointment} categories={categories} />
-            <Appointments appointments={appointments} />
+            <AppointmentAgenda appointments={appointments} />
         </>
         }
         </>

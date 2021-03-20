@@ -3,29 +3,28 @@
 div.appointmentCard {
     $borderRadius: 5px;
 
-    width: 300px;
-    display: block;
-    overflow:hidden;
+    width: 600px;
+    display: grid;
+    grid-template-columns: 75% 25%;
+    grid-template-rows: 30px auto;
 
-    border: 2px solid rgb(202, 202, 202);
-    border-radius: $borderRadius;
+    .appointment-header {
+        grid-column: 1 / 3;
+        grid-row: 1 / 2;
+        // padding-bottom: 3px;
+        color: var.$mainDark;
 
-    :is(.cardTop, .cardBottom) {
-        padding: 10px;
+        font-size: 1.3rem;
     }
 
-    div.cardTop {
-        padding-bottom: 3px;
-        background-color: var.$mainDark;
-        color: white;
-
-        span {
-            font-size: 1.3rem;
-        }
+    div.appointment-descripton {
+        grid-column: 1 / 2;
+        grid-row: 2 / 3;
+        // padding-top: 3px;
     }
-
-    div.cardBottom {
-        padding-top: 3px;
-        background-color: rgb(245, 245, 245);
+    div.appointment-methods {
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+        // padding-top: 3px;
     }
 }
