@@ -10,6 +10,7 @@ import { AppointmentDTO } from "../logic/dtos";
 
 import './OwnAppointments.scss'
 import AppointmentAgenda from "../components/AppointmentAgenda";
+import UserAdder from "../components/UserAdder";
 interface AppointmentEditdata {
     // id: number;
     startTimeDate: string;
@@ -17,18 +18,18 @@ interface AppointmentEditdata {
     endTimeDate: string;
     endTimeTime: string;
     categoryId: number;
-    attendeeUserNames: string[];
     maxAttendees: number;
 }
 
 const AppointmentEditor = ({ categories, onSubmit }: { categories: Category[], onSubmit: (_x: AppointmentDTO) => void }) => {
+    const users = useContext(DataContext).dataState.users;
+
     const [state, setState] = useState<AppointmentEditdata>({
         startTimeDate: new Date().toISOString().slice(0,10),
         startTimeTime: new Date().toISOString().slice(11,16),
         endTimeDate: new Date(Date.now() + 60*60*1000).toISOString().slice(0,10),
         endTimeTime: new Date(Date.now() + 60*60*1000).toISOString().slice(11,16),
         categoryId: categories[0].id,
-        attendeeUserNames: [],
         maxAttendees: 1,
     });
 
@@ -44,7 +45,8 @@ const AppointmentEditor = ({ categories, onSubmit }: { categories: Category[], o
             ...state,
             startTime: new Date(`${state.startTimeDate} ${state.startTimeTime}`).toISOString(),
             endTime: new Date(`${state.endTimeDate} ${state.endTimeTime}`).toISOString(),
-            id: 0 
+            attendeeUserNames: users.map(user => user.userName),
+            id: 0,
         });
         event.preventDefault();
     }
@@ -67,6 +69,7 @@ const AppointmentEditor = ({ categories, onSubmit }: { categories: Category[], o
                 )}
             </select><br/>
             MaxAttendees: <input type="number" name="maxAttendees" value={state.maxAttendees} onChange={handleChange} /><br/>
+            <UserAdder />
             <input type="submit" value="Submit"/>
         </form>
     );

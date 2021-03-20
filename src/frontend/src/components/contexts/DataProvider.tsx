@@ -31,6 +31,7 @@ export type DataAction =
     | { type: 'updateCategory', category: Category }
     | { type: 'setCategories', categories: Category[] }
     | { type: 'updateUser', user: User }
+    | { type: 'deleteUser', userName: string }
     | { type: 'logout'};
 
 const setValue = <T,G>(values: T[], value: T, lens: (_x: T) => G): T[] => {
@@ -75,6 +76,11 @@ const reducer = (state: DataState, action: DataAction): DataState => {
             return {
                 ...state,
                 users: setValue(state.users, action.user, u => u.userName),
+            };
+        case 'deleteUser':
+            return {
+                ...state,
+                users: state.users.filter(user => user.userName !== action.userName),
             };
         case 'logout':
             return initialState;
