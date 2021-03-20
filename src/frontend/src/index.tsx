@@ -13,11 +13,13 @@ import {
 import Home from './routes/Home';
 import Contractor from './routes/Contractor';
 import Login from './routes/Login';
-import { useCookieLogin, useLogin } from './hooks/apiCallHooks';
+import { Failed, Idle, Loading, useLogin } from './hooks/apiCallHooks';
 import Booked from './routes/Booked';
 import OwnAppointments from './routes/OwnAppointments';
   
 import './index.scss';
+import { useCookieLogin } from './hooks/useCookieLogin';
+import { useEffectAsync, useLayoutEffectAsync } from './hooks/utilities';
 
 const App = () => {
     return (
@@ -28,11 +30,15 @@ const App = () => {
 };
 
 const Main = () => {
-    const cookieLogin = useCookieLogin();
+    const [loginStatus, login] = useCookieLogin();
 
+    useEffectAsync(login, []);
     useEffect(() => {
-        cookieLogin();
-    }, []);
+        if(loginStatus instanceof Failed)
+            console.error('Error communicating with the server', loginStatus.error);
+    }, [loginStatus]);
+
+    if(loginStatus instanceof Idle || loginStatus instanceof Loading) return <p>Loading...</p>;
 
     return (
         <Router>
@@ -40,6 +46,7 @@ const Main = () => {
                 <NavBar className="main-navbar"/>
 
                 <div className="main-content">
+                    {loginStatus instanceof Failed && <p>Error communicating with the server...<br/><br/></p>}
                     <Switch>
                         <Route path="/contractor">          <Contractor />          </Route>
                         <Route path ="/booked">             <Booked />              </Route>

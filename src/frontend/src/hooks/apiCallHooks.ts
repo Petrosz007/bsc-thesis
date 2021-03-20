@@ -34,29 +34,6 @@ export const useApiCall = <T,E>(fn: () => ResultPromise<T,E>, deps: React.Depend
     return [ status, fetch ] as const;
 }
 
-export const useCookieLogin = (): () => void => {
-    const { loginState, loginDispatch } = useContext(LoginContext);
-    const { userRepo } = useContext(DIContext);
-
-    const cookieLogin = useCallback(async () => {
-        if(loginState instanceof LoggedOut) {
-            await userRepo.getSelf()
-                .andThen(userRepo.getByUserName)
-                .match(
-                    user => {
-                        loginDispatch({ type: 'login', user });
-                    },
-                    error => {
-                        if(error === 'NotLoggedIn') return;
-                        console.error('useCookieLogin', error);
-                    }
-                );
-        }
-    }, []);
-
-    return cookieLogin;
-}
-
 export const useLogin = (
     userName: string,
     password: string,

@@ -1,18 +1,16 @@
-import AppointmentCard from "../components/AppointmentCard";
 import DataProvider, { DataContext } from "../components/contexts/DataProvider"
 import { DIContext } from "../components/contexts/DIContext";
 import { LoggedIn, LoggedOut, LoginContext } from "../components/contexts/LoginProvider";
 import { Failed, Idle, Loaded, Loading, useApiCall } from "../hooks/apiCallHooks";
-import { Appointment, Category, User } from "../logic/entities";
+import { Category, User } from "../logic/entities";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router";
 import { AppointmentDTO } from "../logic/dtos";
-
-import './OwnAppointments.scss'
 import AppointmentAgenda from "../components/AppointmentAgenda";
 import UserAdder from "../components/UserAdder";
+
+import './OwnAppointments.scss'
 interface AppointmentEditdata {
-    // id: number;
     startTimeDate: string;
     startTimeTime: string;
     endTimeDate: string;
