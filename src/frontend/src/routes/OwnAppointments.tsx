@@ -88,13 +88,13 @@ const OwnAppointments = ({ user }: { user: User }) => {
             })
     , []);
 
-    const onNewAppointment = useCallback((dto: AppointmentDTO) => {
+    const [creatingState, createAppointment] = useApiCall((dto: AppointmentDTO) => 
         appointmentRepo.create(dto)
             .sideEffect(appointment => {
                 console.log('Created', appointment);
                 dataDispatch({ type: 'updateAppointment', appointment });
             })
-    }, []);
+    , []);
 
     useEffect(() => {
         if(state instanceof Failed) {
@@ -116,7 +116,10 @@ const OwnAppointments = ({ user }: { user: User }) => {
         
         {state instanceof Loaded && 
         <>
-            <AppointmentEditor onSubmit={onNewAppointment} categories={categories} />
+            {creatingState instanceof Failed && <p>Error while creating appointment: {creatingState.error.message}</p>}
+            {categories.length === 0
+                ? <p>Can't create appointments without categories, create a category first!</p>
+                : <AppointmentEditor onSubmit={createAppointment} categories={categories} />}
             <AppointmentAgenda appointments={appointments} />
         </>
         }

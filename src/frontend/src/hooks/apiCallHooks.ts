@@ -18,13 +18,13 @@ export class Failed<T> {
 
 export type Status<T,U> = Loading | Idle | Loaded<T> | Failed<U>;
 
-export const useApiCall = <T,E>(fn: () => ResultPromise<T,E>, deps: React.DependencyList) => {
+export const useApiCall = <T,E>(fn: (...args: any[]) => ResultPromise<T,E>, deps: React.DependencyList) => {
     const [status, setStatus] = useState<Status<T,Error>>(new Idle());
 
-    const fetch = useCallback(async () => {
+    const fetch = useCallback(async (...args: any[]) => {
         setStatus(new Loading());
 
-        const result = await fn().toPromise();
+        const result = await fn(...args).toPromise();
         result.match(
             value => setStatus(new Loaded(value)),
             error => setStatus(new Failed(error))
@@ -34,16 +34,13 @@ export const useApiCall = <T,E>(fn: () => ResultPromise<T,E>, deps: React.Depend
     return [ status, fetch ] as const;
 }
 
-export const useLogin = (
-    userName: string,
-    password: string,
-): [ Status<User,Error>, () => void ] => {
+export const useLogin = (): [ Status<User,Error>, (userName: string, password: string) => Promise<void> ] => {
     const [status, setStatus] = useState<Status<User,Error>>(new Idle());
-    const { loginState, loginDispatch } = useContext(LoginContext);
+    const { loginDispatch } = useContext(LoginContext);
     const { userRepo, accountRepo } = useContext(DIContext);
     const history = useHistory();
 
-    const login = useCallback(async () => {
+    const login = useCallback(async (userName: string, password: string) => {
         setStatus(new Loading());
 
         await accountRepo.login(userName, password)
@@ -52,10 +49,10 @@ export const useLogin = (
             user => {
                 setStatus(new Loaded(user));     
                 loginDispatch({ type: 'login', user });
-                history.push('/');
+                // history.push('/');
             },
             error => setStatus(new Failed(error)));
-    }, [userName, password]);
+    }, []);
 
     return [ status, login ];
 }

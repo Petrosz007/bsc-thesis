@@ -1,3 +1,5 @@
+import { ContractorPage } from "./entities";
+
 export interface CategoryDTO {
     id: number;
     name: string;
@@ -26,4 +28,13 @@ export interface LoginDTO {
 export interface IsLoggedInDTO {
     isLoggedIn: boolean;
     userName: string|null;
+}
+
+export interface RegisterDTO {
+    userName: string,
+    email: string,
+    name: string,
+    password: string,
+    passwordConfirmation: string,
+    contractorPage: ContractorPage | null,
 }

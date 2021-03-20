@@ -11,7 +11,7 @@ const LoggedOutConponent = () => {
     return (
         <>
             <button className="buttonBase inverted" onClick={()=>history.push('/login')}>Log In</button>
-            <button className="buttonBase">Register</button>
+            <button className="buttonBase" onClick={()=>history.push('/register')}>Register</button>
         </>
     );
 }

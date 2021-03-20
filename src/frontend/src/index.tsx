@@ -20,6 +20,7 @@ import OwnAppointments from './routes/OwnAppointments';
 import './index.scss';
 import { useCookieLogin } from './hooks/useCookieLogin';
 import { useEffectAsync, useLayoutEffectAsync } from './hooks/utilities';
+import Register from './routes/Register';
 
 const App = () => {
     return (
@@ -51,8 +52,9 @@ const Main = () => {
                         <Route path="/contractor">          <Contractor />          </Route>
                         <Route path ="/booked">             <Booked />              </Route>
                         <Route path ="/own-appointments">   <OwnAppointments />     </Route>
-                        <Route path ="/login">              <Login />       </Route>
-                        <Route path="/">                    <Home />        </Route>
+                        <Route path ="/login">              <Login />               </Route>
+                        <Route path ="/register">           <Register />            </Route>
+                        <Route path="/">                    <Home />                </Route>
                     </Switch>
                 </div>
             </div>
