@@ -31,7 +31,10 @@ const LoggedInComponent = ({ user }: { user: User }) => {
         <>
             <NavLink to="/booked">Booked</NavLink>
             {user.contractorPage !== null &&
+            <>
                 <NavLink to="/own-appointments">Own Appointments</NavLink>
+                <NavLink to="/reports">Reports</NavLink>
+            </>
             }
             <p>Hello {user.name}!</p>
             <button className="buttonBase inverted" onClick={logout}>Log Out</button>

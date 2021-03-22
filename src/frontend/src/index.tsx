@@ -21,6 +21,8 @@ import './index.scss';
 import { useCookieLogin } from './hooks/useCookieLogin';
 import { useEffectAsync, useLayoutEffectAsync } from './hooks/utilities';
 import Register from './routes/Register';
+import Report from './routes/Reports';
+import Reports from './routes/Reports';
 
 const App = () => {
     return (
@@ -52,6 +54,7 @@ const Main = () => {
                         <Route path="/contractor">          <Contractor />          </Route>
                         <Route path ="/booked">             <Booked />              </Route>
                         <Route path ="/own-appointments">   <OwnAppointments />     </Route>
+                        <Route path ="/reports">            <Reports />             </Route>
                         <Route path ="/login">              <Login />               </Route>
                         <Route path ="/register">           <Register />            </Route>
                         <Route path="/">                    <Home />                </Route>

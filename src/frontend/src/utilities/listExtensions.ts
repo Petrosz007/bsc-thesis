@@ -9,3 +9,6 @@ export const groupBy = <T>(list: T[], compare: (_x: T) => string): Dictionary<T>
         const key = compare(x);
         return { ...acc, [key]: [...acc[key] ?? [], x] }
     }, {} as Dictionary<T>);
+
+export const uniques = <T>(list: T[], compare: (_x: T) => string): T[] => 
+    Object.values(groupBy(list, compare)).flatMap(x => x.length === 0 ? [] : x[0]);
