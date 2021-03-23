@@ -5,7 +5,7 @@ import { Failed, Idle, Loaded, Loading, useApiCall } from "../hooks/apiCallHooks
 import { Category, User } from "../logic/entities";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router";
-import { AppointmentDTO } from "../logic/dtos";
+import { AppointmentDTO, CategoryDTO } from "../logic/dtos";
 import AppointmentAgenda from "../components/AppointmentAgenda";
 import UserAdder from "../components/UserAdder";
 
@@ -17,6 +17,14 @@ interface AppointmentEditdata {
     endTimeTime: string;
     categoryId: number;
     maxAttendees: number;
+}
+
+interface CategoryEditdata {
+    name: string;
+    description: string;
+    everyoneAllowed: boolean;
+    maxAttendees: number;
+    price: number;
 }
 
 const AppointmentEditor = ({ categories, onSubmit }: { categories: Category[], onSubmit: (_x: AppointmentDTO) => void }) => {
@@ -51,7 +59,6 @@ const AppointmentEditor = ({ categories, onSubmit }: { categories: Category[], o
 
     return (
         <form onSubmit={handleSubmit}>
-            {/* <input type="date" value={state.startTime}/> */}
             Start:
             <input type="date" name="startTimeDate" value={state.startTimeDate} onChange={handleChange} />
             <input type="time" name="startTimeTime" value={state.startTimeTime} onChange={handleChange} />
@@ -73,6 +80,51 @@ const AppointmentEditor = ({ categories, onSubmit }: { categories: Category[], o
     );
 }
 
+const CategoryEditor = ({ owner, onSubmit }: { owner: User, onSubmit: (_x: CategoryDTO) => void }) => {
+    const users = useContext(DataContext).dataState.users;
+
+    const [state, setState] = useState<CategoryEditdata>({
+        name: '',
+        description: '',
+        everyoneAllowed: true,
+        maxAttendees: 1,
+        price: 0,
+    });
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement & HTMLSelectElement>) => {
+        const value = event.target.type === 'checkbox' 
+            ? event.target.checked
+            : event.target.value;
+
+        setState({
+            ...state,
+            [event.target.name]: value,
+        });
+    };
+
+    const handleSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
+        onSubmit({ 
+            ...state,
+            allowedUserNames: users.map(u => u.userName),
+            ownerUserName: owner.userName,
+            id: 0,
+        });
+        event.preventDefault();
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+            Name: <input type="text" name="name" value={state.name} onChange={handleChange} /><br/>
+            Description: <input type="text" name="description" value={state.description} onChange={handleChange} /><br/>
+            Everyone allowed: <input type="checkbox" name="everyoneAllowed" checked={state.everyoneAllowed} onChange={handleChange} /><br/>
+            MaxAttendees: <input type="number" name="maxAttendees" value={state.maxAttendees} onChange={handleChange} /><br/>
+            Price: <input type="number" name="price" value={state.price} onChange={handleChange} /><br/>
+            <UserAdder />
+            <input type="submit" value="Submit"/>
+        </form>
+    );
+}
+
 const OwnAppointments = ({ user }: { user: User }) => {
     const { dataState, dataDispatch } = useContext(DataContext);
     const { appointmentRepo, categoryRepo } = useContext(DIContext);
@@ -88,11 +140,19 @@ const OwnAppointments = ({ user }: { user: User }) => {
             })
     , []);
 
-    const [creatingState, createAppointment] = useApiCall((dto: AppointmentDTO) => 
+    const [createAppointmentState, createAppointment] = useApiCall((dto: AppointmentDTO) => 
         appointmentRepo.create(dto)
             .sideEffect(appointment => {
                 console.log('Created', appointment);
                 dataDispatch({ type: 'updateAppointment', appointment });
+            })
+    , []);
+
+    const [createCategoryState, createCategory] = useApiCall((dto: CategoryDTO) => 
+        categoryRepo.create(dto)
+            .sideEffect(category => {
+                console.log('Created', category);
+                dataDispatch({ type: 'updateCategory', category });
             })
     , []);
 
@@ -116,7 +176,10 @@ const OwnAppointments = ({ user }: { user: User }) => {
         
         {state instanceof Loaded && 
         <>
-            {creatingState instanceof Failed && <p>Error while creating appointment: {creatingState.error.message}</p>}
+            {createCategoryState instanceof Failed && <p>Error while creating category: {createCategoryState.error.message}</p>}
+            <CategoryEditor onSubmit={createCategory} owner={user} />
+
+            {createAppointmentState instanceof Failed && <p>Error while creating appointment: {createAppointmentState.error.message}</p>}
             {categories.length === 0
                 ? <p>Can't create appointments without categories, create a category first!</p>
                 : <AppointmentEditor onSubmit={createAppointment} categories={categories} />}

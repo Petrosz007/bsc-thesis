@@ -2,11 +2,12 @@ import { CategoryDTO } from "../logic/dtos";
 import { Category } from "../logic/entities";
 import { ResultPromise } from "../utilities/result";
 import { IUserRepository } from "./userRepository";
-import { safeApiFetchAs } from "./utilities";
+import { safeApiFetchAs, safeApiFetchWithBodyAs } from "./utilities";
 
 export interface ICategoryRepository {
     getById(id: number): ResultPromise<Category,Error>;
     getContractorsCategories(username: string): ResultPromise<Category[],Error>;
+    create(dto: CategoryDTO): ResultPromise<Category,Error>;
 };
 
 export class CategoryRepository implements ICategoryRepository {
@@ -45,4 +46,8 @@ export class CategoryRepository implements ICategoryRepository {
     getContractorsCategories = (userName: string): ResultPromise<Category[],Error> =>
         safeApiFetchAs<CategoryDTO[]>(`https://localhost:44347/Category/Contractor/${userName}`, 'GET')
             .andThen(this.dtosToEntities);
+
+    create = (dto: CategoryDTO): ResultPromise<Category,Error> => 
+        safeApiFetchWithBodyAs<CategoryDTO>(`https://localhost:44347/Category`, 'POST', dto)
+            .andThen(this.dtoToEntity);
 }
