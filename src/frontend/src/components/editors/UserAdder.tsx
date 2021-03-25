@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react"
-import { Failed, Loading, useApiCall } from "../hooks/apiCallHooks";
-import { User } from "../logic/entities";
-import { setValue } from "../utilities/listExtensions";
-import { DIContext } from "./contexts/DIContext";
+import { useApiCall, Loading, Failed } from "../../hooks/apiCallHooks";
+import { User } from "../../logic/entities";
+import { setValue } from "../../utilities/listExtensions";
+import { DIContext } from "../contexts/DIContext";
 
 export default ({ users, setUsers }: { users: User[], setUsers: React.Dispatch<React.SetStateAction<User[]>> }) => {
     const { userRepo } = useContext(DIContext);
