@@ -1,6 +1,7 @@
 import React from "react";
 import { createContext, useReducer } from "react";
 import { Appointment, Category, User } from "../../logic/entities";
+import { setValue } from "../../utilities/listExtensions";
 
 export interface DataState {
     appointments: Appointment[];
@@ -34,17 +35,6 @@ export type DataAction =
     | { type: 'setUsers', users: User[] }
     | { type: 'deleteUser', userName: string }
     | { type: 'logout'};
-
-const setValue = <T,G>(values: T[], value: T, lens: (_x: T) => G): T[] => {
-    if(!values.some(x => lens(x) === lens(value))) {
-        return [...values, value];
-    }
-
-    return values.map(x =>
-        lens(x) !== lens(value)
-            ? x
-            : value);
-}
 
 const reducer = (state: DataState, action: DataAction): DataState => {
     switch(action.type) {

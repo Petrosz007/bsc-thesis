@@ -1,21 +1,21 @@
-import React, { useCallback, useContext, useState } from "react"
+import React, { useContext, useState } from "react"
 import { Failed, Loading, useApiCall } from "../hooks/apiCallHooks";
-import { DataContext } from "./contexts/DataProvider";
+import { User } from "../logic/entities";
+import { setValue } from "../utilities/listExtensions";
 import { DIContext } from "./contexts/DIContext";
 
-export default () => {
+export default ({ users, setUsers }: { users: User[], setUsers: React.Dispatch<React.SetStateAction<User[]>> }) => {
     const { userRepo } = useContext(DIContext);
-    const { dataState, dataDispatch } = useContext(DataContext);
     const [userName, setUserName] = useState("");
 
     const [addState, add] = useApiCall(() =>
         userRepo.getByUserName(userName).sideEffect(user => {
-            dataDispatch({ type: 'updateUser', user });
+            setUsers(prevState => setValue(prevState, user, u => u.userName));
         })
     , [userName]);
 
     const remove = (userName: string) => {
-        dataDispatch({ type: 'deleteUser', userName });
+        setUsers(prevState => prevState.filter(u => u.userName !== userName));
     };
 
     return (
@@ -25,7 +25,7 @@ export default () => {
                 ? <span>Loading...</span>
                 : <button onClick={e => {add(); e.preventDefault()}}>Add</button>}<br/>
             {addState instanceof Failed && <p>Failed: {addState.error.message}</p>}
-            {dataState.users.map(user => 
+            {users.map(user => 
                 <React.Fragment key={user.userName}>
                     <span>{user.name} ({user.userName})</span>
                     <button onClick={e => {remove(user.userName); e.preventDefault()}}>X</button>
