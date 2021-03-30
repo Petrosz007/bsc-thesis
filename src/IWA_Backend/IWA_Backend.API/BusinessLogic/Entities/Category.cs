@@ -25,5 +25,7 @@ namespace IWA_Backend.API.BusinessLogic.Entities
         public int MaxAttendees { get; set; }
         [Required]
         public int Price { get; set; }
+
+        public virtual List<AllowedUserOnCategories> AllowedUserOnCategoriesJoin { get; set; }  = null!;
     }
 }

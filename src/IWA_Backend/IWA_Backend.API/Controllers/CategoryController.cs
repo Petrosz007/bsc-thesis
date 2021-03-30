@@ -41,6 +41,18 @@ namespace IWA_Backend.API.Controllers
             catch (UnauthorisedException) { return Unauthorized(); }
         }
 
+        [HttpGet("Contractor/{userName}")]
+        public ActionResult<IEnumerable<CategoryDTO>> GetOwnCategories(string userName)
+        {
+            try
+            {
+                var categories = Logic.GetContractorsCategories(userName, CurrentUserName);
+                var categoriesDTO = categories.Select(Mapper.ToDTO);
+                return Ok(categoriesDTO);
+            }
+            catch (NotFoundException ex) { return NotFound(ex.Message); }
+        }
+
         [HttpPost]
         [Authorize(Roles = "Contractor")]
         public async Task<ActionResult> CreateCategory([FromBody] CategoryDTO categoryDTO)

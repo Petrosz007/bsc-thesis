@@ -25,9 +25,10 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                     Owner = new User { UserName = "TestUser" },
                 };
 
-                var mockRepo = new Mock<ICategoryRepository>();
-                mockRepo.Setup(r => r.GetById(0)).Returns(category);
-                var logic = new CategoryLogic(mockRepo.Object);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                mockCategoryRepo.Setup(r => r.GetById(0)).Returns(category);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new CategoryLogic(mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 var result = logic.GetCategoryById(0, "TestUser");
@@ -40,9 +41,10 @@ namespace IWA_Backend.Tests.UnitTests.Logic
             public void NotFound()
             {
                 // Arrange
-                var mockRepo = new Mock<ICategoryRepository>();
-                mockRepo.Setup(r => r.GetById(0)).Throws(new NotFoundException(""));
-                var logic = new CategoryLogic(mockRepo.Object);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                mockCategoryRepo.Setup(r => r.GetById(0)).Throws(new NotFoundException(""));
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new CategoryLogic(mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
@@ -58,9 +60,10 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                     Owner = new User { UserName = "TestUser" },
                 };
 
-                var mockRepo = new Mock<ICategoryRepository>();
-                mockRepo.Setup(r => r.GetById(0)).Returns(category);
-                var logic = new CategoryLogic(mockRepo.Object);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                mockCategoryRepo.Setup(r => r.GetById(0)).Returns(category);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new CategoryLogic(mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 var result = logic.GetCategoryById(0, "TestUser");
@@ -82,16 +85,17 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                     Owner = new User { UserName = "Owner" }
                 };
 
-                var mockRepo = new Mock<ICategoryRepository>();
-                mockRepo.Setup(r => r.Exists(2)).Returns(true);
-                mockRepo.Setup(r => r.GetById(2)).Returns(category);
-                var logic = new CategoryLogic(mockRepo.Object);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                mockCategoryRepo.Setup(r => r.Exists(2)).Returns(true);
+                mockCategoryRepo.Setup(r => r.GetById(2)).Returns(category);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new CategoryLogic(mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 await logic.UpdateCategoryAsync(category, "Owner");
 
                 // Assert
-                mockRepo.Verify(r => r.UpdateAsync(category), Times.Once());
+                mockCategoryRepo.Verify(r => r.UpdateAsync(category), Times.Once());
             }
 
             [Fact]
@@ -104,15 +108,16 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                     Owner = new User { UserName = "Owner" }
                 };
 
-                var mockRepo = new Mock<ICategoryRepository>();
-                mockRepo.Setup(r => r.Exists(2)).Returns(false);
-                mockRepo.Setup(r => r.GetById(2)).Throws(new NotFoundException(""));
-                var logic = new CategoryLogic(mockRepo.Object);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                mockCategoryRepo.Setup(r => r.Exists(2)).Returns(false);
+                mockCategoryRepo.Setup(r => r.GetById(2)).Throws(new NotFoundException(""));
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new CategoryLogic(mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
                 await Assert.ThrowsAsync<NotFoundException>(() => logic.UpdateCategoryAsync(category, "Owner"));
-                mockRepo.Verify(r => r.UpdateAsync(category), Times.Never());
+                mockCategoryRepo.Verify(r => r.UpdateAsync(category), Times.Never());
             }
 
             [Fact]
@@ -125,15 +130,16 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                     Owner = new User { UserName = "Owner" }
                 };
 
-                var mockRepo = new Mock<ICategoryRepository>();
-                mockRepo.Setup(r => r.Exists(2)).Returns(true);
-                mockRepo.Setup(r => r.GetById(2)).Returns(category);
-                var logic = new CategoryLogic(mockRepo.Object);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                mockCategoryRepo.Setup(r => r.Exists(2)).Returns(true);
+                mockCategoryRepo.Setup(r => r.GetById(2)).Returns(category);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new CategoryLogic(mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
                 await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UpdateCategoryAsync(category, "Not Owner"));
-                mockRepo.Verify(r => r.UpdateAsync(category), Times.Never());
+                mockCategoryRepo.Verify(r => r.UpdateAsync(category), Times.Never());
             }
 
             [Fact]
@@ -146,15 +152,16 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                     Owner = new User { UserName = "Owner" }
                 };
 
-                var mockRepo = new Mock<ICategoryRepository>();
-                mockRepo.Setup(r => r.Exists(2)).Returns(true);
-                mockRepo.Setup(r => r.GetById(2)).Returns(category);
-                var logic = new CategoryLogic(mockRepo.Object);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                mockCategoryRepo.Setup(r => r.Exists(2)).Returns(true);
+                mockCategoryRepo.Setup(r => r.GetById(2)).Returns(category);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new CategoryLogic(mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
                 await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UpdateCategoryAsync(category, "Not Owner"));
-                mockRepo.Verify(r => r.UpdateAsync(category), Times.Never());
+                mockCategoryRepo.Verify(r => r.UpdateAsync(category), Times.Never());
             }
         }
 
@@ -170,14 +177,15 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                     Owner = new User { UserName = "Owner" }
                 };
 
-                var mockRepo = new Mock<ICategoryRepository>();
-                var logic = new CategoryLogic(mockRepo.Object);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new CategoryLogic(mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 await logic.CreateCategoryAsync(category, "Owner");
 
                 // Assert
-                mockRepo.Verify(r => r.CreateAsync(category), Times.Once());
+                mockCategoryRepo.Verify(r => r.CreateAsync(category), Times.Once());
             }
         }
 
@@ -193,15 +201,16 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                     Owner = new User { UserName = "Owner" }
                 };
 
-                var mockRepo = new Mock<ICategoryRepository>();
-                mockRepo.Setup(r => r.GetById(2)).Returns(category);
-                var logic = new CategoryLogic(mockRepo.Object);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                mockCategoryRepo.Setup(r => r.GetById(2)).Returns(category);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new CategoryLogic(mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 await logic.DeleteCategoryAsync(2, "Owner");
 
                 // Assert
-                mockRepo.Verify(r => r.DeleteAsync(category), Times.Once());
+                mockCategoryRepo.Verify(r => r.DeleteAsync(category), Times.Once());
             }
 
             [Fact]
@@ -214,28 +223,30 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                     Owner = new User { UserName = "Owner" }
                 };
 
-                var mockRepo = new Mock<ICategoryRepository>();
-                mockRepo.Setup(r => r.GetById(2)).Returns(category);
-                var logic = new CategoryLogic(mockRepo.Object);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                mockCategoryRepo.Setup(r => r.GetById(2)).Returns(category);
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new CategoryLogic(mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
                 await Assert.ThrowsAsync<UnauthorisedException>(() => logic.DeleteCategoryAsync(2, "Not Owner"));
-                mockRepo.Verify(r => r.DeleteAsync(category), Times.Never());
+                mockCategoryRepo.Verify(r => r.DeleteAsync(category), Times.Never());
             }
 
             [Fact]
             public async Task DoesntExist()
             {
                 // Arrange
-                var mockRepo = new Mock<ICategoryRepository>();
-                mockRepo.Setup(r => r.GetById(2)).Throws(new NotFoundException(""));
-                var logic = new CategoryLogic(mockRepo.Object);
+                var mockCategoryRepo = new Mock<ICategoryRepository>();
+                mockCategoryRepo.Setup(r => r.GetById(2)).Throws(new NotFoundException(""));
+                var mockUserRepo = new Mock<IUserRepository>();
+                var logic = new CategoryLogic(mockCategoryRepo.Object, mockUserRepo.Object);
 
                 // Act
                 // Assert
                 await Assert.ThrowsAsync<NotFoundException>(() => logic.DeleteCategoryAsync(2, "Not Owner"));
-                mockRepo.Verify(r => r.DeleteAsync(It.IsAny<Category>()), Times.Never());
+                mockCategoryRepo.Verify(r => r.DeleteAsync(It.IsAny<Category>()), Times.Never());
             }
         }
     }

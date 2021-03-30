@@ -22,4 +22,6 @@ namespace IWA_Backend.API.BusinessLogic.DTOs
         public string Name { get; set; } = null!;
         public ContractorPageDTO? ContractorPage { get; set; } = null;
     }
+
+    public record IsLoggedInDTO(bool IsLoggedIn, string? UserName);
 }

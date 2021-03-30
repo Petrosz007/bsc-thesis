@@ -1,0 +1,15 @@
+.main-layout {
+    display: grid;
+    grid-template-columns: [first] 1fr [content-start] 60% [content-end] 1fr [last];
+    grid-template-rows: [nav-start] 70px [content-start] 1fr [last];
+
+    .main-navbar {
+        grid-column: first / last;
+        grid-row: nav-start / content-start;
+    }
+
+    .main-content {
+        grid-column: content-start / content-end;
+        grid-row: content-start / last;
+    }
+}

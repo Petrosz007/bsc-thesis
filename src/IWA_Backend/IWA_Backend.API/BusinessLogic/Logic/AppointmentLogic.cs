@@ -56,7 +56,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
         }
 
         public IEnumerable<Appointment> GetBookedAppointments(string currentUserName) =>
-            AppointmentRepository.GetBookedAppointments(currentUserName);
+            AppointmentRepository.GetBookedAppointments(currentUserName).ToList();
 
         public async Task BookAppointmentAsync(int appointmentId, string userName)
         {

@@ -10,11 +10,13 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 {
     public class CategoryLogic
     {
-        private readonly ICategoryRepository Repository;
+        private readonly ICategoryRepository CategoryRepository;
+        private readonly IUserRepository UserRepository;
 
-        public CategoryLogic(ICategoryRepository repository)
+        public CategoryLogic(ICategoryRepository categoryRepository, IUserRepository userRepository)
         {
-            Repository = repository;
+            CategoryRepository = categoryRepository;
+            UserRepository = userRepository;
         }
 
         public static bool HasReadAccess(Category category, string? userName)
@@ -30,7 +32,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 
         public bool HasWriteAccess(int categoryId, string? userName)
         {
-            var category = Repository.GetById(categoryId);
+            var category = CategoryRepository.GetById(categoryId);
             var isOwner = category.Owner.UserName == userName;
 
             return isOwner;
@@ -38,7 +40,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 
         public Category GetCategoryById(int id, string? userName)
         {
-            var category = Repository.GetById(id);
+            var category = CategoryRepository.GetById(id);
 
             if (!HasReadAccess(category, userName))
                 throw new UnauthorisedException($"You are unauthorized to view this category.");
@@ -46,9 +48,20 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             return category;
         }
 
+        public IEnumerable<Category> GetContractorsCategories(string contractorUserName, string? userName)
+        {
+            if (!UserRepository.Exists(contractorUserName))
+                throw new NotFoundException($"Contractor with username {contractorUserName} not found.");
+
+            var categories = CategoryRepository.GetUsersCategories(contractorUserName)
+                .ToList()
+                .Where(category => HasReadAccess(category, userName));
+            return categories;
+        }
+
         public async Task CreateCategoryAsync(Category category, string? userName)
         {
-            await Repository.CreateAsync(category);
+            await CategoryRepository.CreateAsync(category);
         }
 
         public async Task UpdateCategoryAsync(Category category, string? userName)
@@ -56,17 +69,17 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             if (!HasWriteAccess(category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to update this appointment");
 
-            await Repository.UpdateAsync(category);
+            await CategoryRepository.UpdateAsync(category);
         }
 
         public async Task DeleteCategoryAsync(int categoryId, string? userName)
         {
-            var category = Repository.GetById(categoryId);
+            var category = CategoryRepository.GetById(categoryId);
 
             if (!HasWriteAccess(category.Id, userName))
                 throw new UnauthorisedException("Unauthorised to delete this category.");
 
-            await Repository.DeleteAsync(category);
+            await CategoryRepository.DeleteAsync(category);
         }
     }
 }

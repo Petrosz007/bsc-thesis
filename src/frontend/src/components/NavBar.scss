@@ -1,0 +1,77 @@
+@use "./styles/variables.scss" as var;
+
+$contentHeight: 40px;
+$height: 70px;
+
+.navbar {
+    width: 100%;
+    height: $height;
+    padding: 0 15px;
+    border-bottom: 3px solid var.$mainColor;
+    // border-bottom: 4px solid green;
+    background-color: white;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navRight {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    vertical-align: middle;
+
+    p, a {
+        line-height: $height;
+        padding: 0 6px;
+    }
+
+    a {
+        $color: black;
+        height: $height;
+
+        color: $color;
+        display: inline-block;
+
+        text-decoration: none;
+        
+        &:visited {
+            color: $color;
+        }
+        &.active {
+            color: white;
+            background-color: var.$mainColor;
+        }
+        &:focus {
+            outline: 0;
+        }
+    }
+}
+
+.buttonBase {
+    $color: var.$mainColor;
+    display: block;
+    height: $contentHeight;
+    padding: 5px 10px;
+    margin: (($height - $contentHeight) / 2) 5px;
+
+    border-radius: 3px;
+    border: 2px solid $color;
+    background-color: $color;
+    color: white;
+    cursor: pointer;
+
+    &.inverted {
+        background-color: white;
+        color: $color;
+        transition: 150ms ease-in-out;
+
+        &:hover {
+            background-color: $color;
+            color: white;
+        }
+    }
+}

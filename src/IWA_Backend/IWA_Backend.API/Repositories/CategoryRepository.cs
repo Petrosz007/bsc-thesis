@@ -37,6 +37,9 @@ namespace IWA_Backend.API.Repositories
                 .FirstOrDefault(category => category.Id == id)
                 ?? throw new NotFoundException($"Category with id '{id}' not found.");
 
+        public IQueryable<Category> GetUsersCategories(string? userName) =>
+            Context.Categories
+                .Where(category => category.Owner.UserName == userName);
 
         public async Task UpdateAsync(Category category)
         {
