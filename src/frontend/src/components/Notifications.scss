@@ -1,0 +1,58 @@
+.notification {
+    width: 600px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 2px solid;
+
+    pointer-events: all;
+
+    display: grid;
+    grid-template-columns: auto 30px;
+    grid-template-rows: auto;
+
+    transition: all 150ms ease-in-out;
+    transform: translateY(-20px);
+
+    &.visible {
+        transform: translateY(10px);
+    }
+
+    p {
+        grid-column: 1 / 2;
+        word-wrap: break-word;
+        overflow-wrap: anywhere;
+    }
+
+    button {
+        grid-column: 2 / 3;
+        height: 30px;
+        width: 30px;
+    }
+}
+
+.notification-error { 
+    background-color: #FDF2F5;
+    color: #CD3441;
+    border-color: #c75861;
+}
+.notification-warning { background-color: yellow; }
+.notification-success { background-color: green; }
+
+.notifications {
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    pointer-events: none;
+
+    // padding-top: 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+}

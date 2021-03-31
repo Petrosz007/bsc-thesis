@@ -23,12 +23,15 @@ import { useEffectAsync, useLayoutEffectAsync } from './hooks/utilities';
 import Register from './routes/Register';
 import Report from './routes/Reports';
 import Reports from './routes/Reports';
+import NotificationProvider from './components/contexts/NotificationProvider';
 
 const App = () => {
     return (
-        <LoginProvider>
-            <Main />
-        </LoginProvider>
+        <NotificationProvider>
+            <LoginProvider>
+                <Main />
+            </LoginProvider>
+        </NotificationProvider>
     );
 };
 

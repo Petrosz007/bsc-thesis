@@ -8,6 +8,7 @@ import { DIContext } from "../contexts/DIContext";
 import UserAdder from "./UserAdder";
 
 import './AppointmentEditor.scss';
+import { NotificationContext } from "../contexts/NotificationProvider";
 
 interface AppointmentEditdata {
     startTimeDate: string;
