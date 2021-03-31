@@ -19,10 +19,10 @@ const ContractorPageInputs = ({ state, setState }: { state: ContractorPage, setS
     return (
     <>
         <label htmlFor="title">Title:</label>
-        <input type="text" name="title" value={state.title} onChange={handleContractorChange}/><br/>
+        <input type="text" name="title" value={state.title} required={true} onChange={handleContractorChange}/><br/>
 
         <label htmlFor="bio">Bio:</label>
-        <input type="text" name="bio" value={state.bio} onChange={handleContractorChange}/><br/>
+        <input type="text" name="bio" value={state.bio} required={true} onChange={handleContractorChange}/><br/>
     </>
     );
 }
@@ -62,19 +62,19 @@ const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => 
         <form onSubmit={handleSubmit}>
             {/* <input type="date" value={state.startTime}/> */}
             <label htmlFor="userName">Username:</label>
-            <input type="text" name="userName" value={state.userName} onChange={handleChange} /><br/>
+            <input type="text" name="userName" value={state.userName} required={true} onChange={handleChange} /><br/>
 
             <label htmlFor="email">Email:</label>
-            <input type="email" name="email" value={state.email} onChange={handleChange} /><br/>
+            <input type="email" name="email" value={state.email} required={true} onChange={handleChange} /><br/>
 
             <label htmlFor="name">Name:</label>
-            <input type="text" name="name" value={state.name} onChange={handleChange} /><br/>
+            <input type="text" name="name" value={state.name} required={true} onChange={handleChange} /><br/>
 
             <label htmlFor="password">Password:</label>
-            <input type="password" name="password" value={state.password} onChange={handleChange} /><br/>
+            <input type="password" name="password" value={state.password} required={true} autoComplete="new-password" onChange={handleChange} /><br/>
 
             <label htmlFor="passwordConfirmation">Password confirmation:</label>
-            <input type="password" name="passwordConfirmation" value={state.passwordConfirmation} onChange={handleChange} /><br/>
+            <input type="password" name="passwordConfirmation" value={state.passwordConfirmation} required={true} onChange={handleChange} /><br/>
 
             <label htmlFor="isContractor">Register as a contractor? </label>
             <input type="checkbox" name="isContractor" checked={isContractor} onChange={e => setIsContractor(prevState => !prevState)} /><br/>

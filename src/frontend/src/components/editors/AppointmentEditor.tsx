@@ -27,9 +27,9 @@ export default ({ categories, onClose }: {
 }) => {
     const initialAppointmentEditorState: AppointmentEditdata = {
         startTimeDate: new Date().toISOString().slice(0,10),
-        startTimeTime: new Date().toISOString().slice(11,16),
+        startTimeTime: new Date().toISOString().slice(11,14) + "00",
         endTimeDate: new Date(Date.now() + 60*60*1000).toISOString().slice(0,10),
-        endTimeTime: new Date(Date.now() + 60*60*1000).toISOString().slice(11,16),
+        endTimeTime: new Date(Date.now() + 60*60*1000).toISOString().slice(11,14) + "00",
         categoryId: categories[0].id,
         maxAttendees: 1,
         createAnother: false,
@@ -51,7 +51,23 @@ export default ({ categories, onClose }: {
             })
     , []);
 
-    const handleChange = useHandleChange(setState);
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement & HTMLSelectElement>) => {
+        const value = event.target.type === 'checkbox' 
+            ? event.target.checked
+            : event.target.value;
+
+        if(event.target.name === 'startTimeDate') {
+            setState(prevState => ({
+                ...prevState,
+                endTimeDate: event.target.value,
+            }))
+        }
+
+        setState(prevState => ({
+            ...prevState,
+            [event.target.name]: value,
+        }));
+    };
 
     const handleSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
         setCloseAfterLoad(!state.createAnother);
@@ -95,7 +111,7 @@ export default ({ categories, onClose }: {
                 </div>
                 <label htmlFor="startTimeDate">End</label>
                 <div>
-                    <input type="date" name="endTimeDate" value={state.endTimeDate} onChange={handleChange} />
+                    <input type="date" name="endTimeDate" value={state.endTimeDate} min={state.startTimeDate} onChange={handleChange} />
                     <input type="time" name="endTimeTime" value={state.endTimeTime} onChange={handleChange} />
                 </div>
                 <label htmlFor="categoryId">Category</label>
@@ -105,7 +121,7 @@ export default ({ categories, onClose }: {
                         )}
                 </select>
                 <label htmlFor="maxAttendees">MaxAttendees</label>
-                <input type="number" name="maxAttendees" value={state.maxAttendees} onChange={handleChange} /><br/>
+                <input type="number" name="maxAttendees" value={state.maxAttendees} min="1" onChange={handleChange} /><br/>
             </div>
 
             <div className="editor-user-adder">

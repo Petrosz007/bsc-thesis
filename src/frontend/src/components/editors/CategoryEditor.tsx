@@ -85,15 +85,15 @@ export default ({ owner, onClose }: {
         <form onSubmit={handleSubmit} className="category-editor-form">
             <div className="editor-inputs">
                 <label htmlFor="name">Name</label>
-                <input type="text" name="name" value={state.name} onChange={handleChange} />
+                <input type="text" name="name" value={state.name} required={true} onChange={handleChange} />
                 <label htmlFor="description">Description</label>
-                <input type="text" name="description" value={state.description} onChange={handleChange} />
+                <input type="text" name="description" value={state.description} required={true} onChange={handleChange} />
                 <label htmlFor="everyoneAllowed">Everyone allowed</label>
                 <input type="checkbox" name="everyoneAllowed" checked={state.everyoneAllowed} onChange={handleChange} />
                 <label htmlFor="maxAttendees">MaxAttendees</label>
-                <input type="number" name="maxAttendees" value={state.maxAttendees} onChange={handleChange} />
+                <input type="number" name="maxAttendees" value={state.maxAttendees} min="1" onChange={handleChange} />
                 <label htmlFor="price">Price</label>
-                <input type="number" name="price" value={state.price} onChange={handleChange} />
+                <input type="number" name="price" value={state.price} min="0" onChange={handleChange} />
             </div>
             
             <div className="editor-user-adder">

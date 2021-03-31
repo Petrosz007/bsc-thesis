@@ -27,10 +27,10 @@ export default () => {
     if(loginStatus instanceof Loading) return <div>Logging in ...</div>
 
     return (
-        <div>
-            UserName: <input type="text" value={userName} onChange={e => setUserName(e.target.value)}/><br/>
-            Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)}/><br/>
-            <button onClick={() => login(userName, password)}>Login</button>
-        </div>
+        <form onSubmit={() => login(userName, password)}>
+            UserName: <input type="text" value={userName} required={true} onChange={e => setUserName(e.target.value)}/><br/>
+            Password: <input type="password" value={password} required={true} autoComplete="current-password" onChange={e => setPassword(e.target.value)}/><br/>
+            <input type="submit" value="Login" />
+        </form>
     );
 };
