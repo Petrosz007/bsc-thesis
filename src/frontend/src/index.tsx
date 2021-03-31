@@ -1,4 +1,4 @@
-import { StrictMode, useEffect } from 'react';
+import { StrictMode, useContext, useEffect } from 'react';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import LoginProvider from './components/contexts/LoginProvider';
@@ -23,22 +23,29 @@ import { useEffectAsync, useLayoutEffectAsync } from './hooks/utilities';
 import Register from './routes/Register';
 import Report from './routes/Reports';
 import Reports from './routes/Reports';
+import NotificationProvider, { NotificationContext } from './components/contexts/NotificationProvider';
 
 const App = () => {
     return (
-        <LoginProvider>
-            <Main />
-        </LoginProvider>
+        <NotificationProvider>
+            <LoginProvider>
+                <Main />
+            </LoginProvider>
+        </NotificationProvider>
     );
 };
 
 const Main = () => {
     const [loginStatus, login] = useCookieLogin();
+    const { notificationDispatch } = useContext(NotificationContext);
 
     useEffectAsync(login, []);
     useEffect(() => {
-        if(loginStatus instanceof Failed)
+        if(loginStatus instanceof Failed) {
             console.error('Error communicating with the server', loginStatus.error);
+            notificationDispatch({ type: 'addError', message: 'Error communication with the server' });
+        }
+
     }, [loginStatus]);
 
     if(loginStatus instanceof Idle || loginStatus instanceof Loading) return <p>Loading...</p>;
@@ -49,7 +56,6 @@ const Main = () => {
                 <NavBar className="main-navbar"/>
 
                 <div className="main-content">
-                    {loginStatus instanceof Failed && <p>Error communicating with the server...<br/><br/></p>}
                     <Switch>
                         <Route path="/contractor">          <Contractor />          </Route>
                         <Route path ="/booked">             <Booked />              </Route>

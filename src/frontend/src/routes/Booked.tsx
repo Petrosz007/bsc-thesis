@@ -8,6 +8,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router";
 import { AppointmentDTO } from "../logic/dtos";
 import AppointmentAgenda from "../components/AppointmentAgenda";
+import { NotificationContext } from "../components/contexts/NotificationProvider";
 
 const Appointments = ({ appointments }: { appointments: Appointment[] }) => {
     if(appointments.length === 0) return <p>No booked appointments</p>
@@ -23,6 +24,7 @@ const Appointments = ({ appointments }: { appointments: Appointment[] }) => {
 
 const BookedAppointments = ({ user }: { user: User }) => {
     const { dataState, dataDispatch } = useContext(DataContext);
+    const { notificationDispatch } = useContext(NotificationContext);
     const { appointmentRepo } = useContext(DIContext);
 
     const [state, refreshData] = useApiCall(() =>
@@ -35,6 +37,7 @@ const BookedAppointments = ({ user }: { user: User }) => {
     useEffect(() => {
         if(state instanceof Failed) {
             console.error("Error in Booked.tsx, appointment state result match", state.error);
+            notificationDispatch({ type: 'addError', message: `Error in Booked: ${state.error}` });
         }
         else if(state instanceof Idle) {
             refreshData();
@@ -46,8 +49,6 @@ const BookedAppointments = ({ user }: { user: User }) => {
     return (
         <>
         {state instanceof Loading && <div>Loading...</div>}
-        {state instanceof Failed && <div>Error: {state.error.message}</div>}
-        {state instanceof Idle && <div>Click to load.</div>}
         
         {state instanceof Loaded && 
             <AppointmentAgenda appointments={appointments} />

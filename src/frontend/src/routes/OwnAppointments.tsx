@@ -9,12 +9,14 @@ import AppointmentAgenda from "../components/AppointmentAgenda";
 import Modal from "../components/Modal";
 import AppointmentEditor from "../components/editors/AppointmentEditor";
 import CategoryEditor from "../components/editors/CategoryEditor";
+import { NotificationContext } from "../components/contexts/NotificationProvider";
 
 import './OwnAppointments.scss'
 
 const OwnAppointments = ({ user }: { user: User }) => {
     const { dataState, dataDispatch } = useContext(DataContext);
     const { appointmentRepo, categoryRepo } = useContext(DIContext);
+    const { notificationDispatch } = useContext(NotificationContext);
     const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
     const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
@@ -32,6 +34,7 @@ const OwnAppointments = ({ user }: { user: User }) => {
     useEffect(() => {
         if(state instanceof Failed) {
             console.error("Error in OwnAppointments.tsx, appointment state result match", state.error);
+            notificationDispatch({ type: 'addError', message: `Error in OwnAppointments: ${state.error}` });
         }
         else if(state instanceof Idle) {
             refreshData();
@@ -44,8 +47,6 @@ const OwnAppointments = ({ user }: { user: User }) => {
     return (
         <>
         {state instanceof Loading && <div>Loading...</div>}
-        {state instanceof Failed && <div>Error: {state.error.message}</div>}
-        {state instanceof Idle && <div>Click to load.</div>}
         
         {state instanceof Loaded && 
         <>

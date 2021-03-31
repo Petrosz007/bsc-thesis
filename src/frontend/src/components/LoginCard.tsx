@@ -1,35 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useCallback, useContext, useState } from "react";
 import { Redirect } from "react-router";
 import { Failed, Idle, Loaded, Loading, useApiCall, useLogin, useLogout } from "../hooks/apiCallHooks";
 import { LoggedIn, LoggedOut, LoginContext } from "./contexts/LoginProvider";
+import { NotificationContext } from "./contexts/NotificationProvider";
 
 export default () => {
+    const { loginState } = useContext(LoginContext);
+    const { notificationDispatch } = useContext(NotificationContext);
+    
     const [userName, setUserName] = useState('customer1');
     const [password, setPassword] = useState('kebab');
 
-    const { loginState } = useContext(LoginContext);
-
     const [loginStatus, login] = useLogin();
-    const [logoutStatus, logout] = useLogout();
+
+    useEffect(() => {
+        if(loginStatus instanceof Failed) {
+            console.error('Error in LoginCard: ', loginStatus.error);
+            notificationDispatch({ type: 'addError', message: `Error logging in: ${loginStatus.error.message}` });
+        }
+    }, [loginStatus]);
 
     if(loginState instanceof LoggedIn && loginStatus instanceof Loaded)
         return <Redirect to="/" />;
 
-    if(loginStatus instanceof Loading || logoutStatus instanceof Loading) return <div>Logging in ...</div>
+    if(loginStatus instanceof Loading) return <div>Logging in ...</div>
 
     return (
-        <div>
-            {loginStatus instanceof Failed && <div>Error: {loginStatus.error.message}</div>}
-            {logoutStatus instanceof Failed && <div>Error: {logoutStatus.error.message}</div>}
-
-            {loginState instanceof LoggedIn && <div>Logged in</div>}
-            {loginState instanceof LoggedOut && <div>Logged out</div>}
-            
-            UserName: <input type="text" value={userName} onChange={e => setUserName(e.target.value)}/><br/>
-            Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)}/><br/>
-            <button onClick={() => login(userName, password)}>Login</button>
-            <button onClick={() => logout()}>Logout</button>
-        </div>
+        <form onSubmit={() => login(userName, password)}>
+            UserName: <input type="text" value={userName} required={true} onChange={e => setUserName(e.target.value)}/><br/>
+            Password: <input type="password" value={password} required={true} autoComplete="current-password" onChange={e => setPassword(e.target.value)}/><br/>
+            <input type="submit" value="Login" />
+        </form>
     );
 };

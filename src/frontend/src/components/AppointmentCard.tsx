@@ -6,6 +6,7 @@ import { DIContext } from './contexts/DIContext';
 import { DataContext } from './contexts/DataProvider';
 
 import './AppointmentCard.scss';
+import { NotificationContext } from './contexts/NotificationProvider';
 
 const HourDuration = ({ startTime, endTime }: { startTime: Date, endTime: Date }) => {
     const minutes = Math.floor((endTime.getTime() - startTime.getTime()) / (1000 * 60));
@@ -30,6 +31,7 @@ const FormattedDate = ({ date }: { date: Date }) => {
 const BookButton = ({ appointment }: { appointment: Appointment }) => {
     const { loginState } = useContext(LoginContext);
     const { dataDispatch } = useContext(DataContext);
+    const { notificationDispatch } = useContext(NotificationContext);
     
     const { appointmentRepo } = useContext(DIContext);
 
@@ -55,6 +57,7 @@ const BookButton = ({ appointment }: { appointment: Appointment }) => {
         [bookingStatus, unBookingStatus].map(x => {
             if(x instanceof Failed) {
                 console.error(x.error);
+                notificationDispatch({ type: 'addError', message: 'Jelentkezz be a foglaláshoz!' });
             }
         })
     }, [bookingStatus, unBookingStatus]);
@@ -66,8 +69,6 @@ const BookButton = ({ appointment }: { appointment: Appointment }) => {
     if(unBookingStatus instanceof Loading) return <span>Unbooking...</span>;
 
     return <>
-        {bookingStatus instanceof Failed && <span>Error booking</span>}
-        {unBookingStatus instanceof Failed && <span>Error unbooking</span>}
         {isAttendee()
                 ? <button onClick={() => unBook()}>Lemondás</button> 
                 : <button onClick={() => book()}>Foglalás</button>}

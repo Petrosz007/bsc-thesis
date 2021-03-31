@@ -6,6 +6,7 @@ import AppointmentCard from "../components/AppointmentCard";
 import DataProvider, { DataContext } from "../components/contexts/DataProvider";
 import { DIContext } from "../components/contexts/DIContext";
 import { LoggedIn, LoggedOut, LoginContext } from "../components/contexts/LoginProvider";
+import { NotificationContext } from "../components/contexts/NotificationProvider";
 import { Failed, Idle, Loaded, Loading, useApiCall } from "../hooks/apiCallHooks";
 import { Appointment, Category, User } from "../logic/entities";
 import { Dictionary, groupBy, uniques } from "../utilities/listExtensions";
@@ -67,6 +68,7 @@ const ReportDisplay = ({ users, appointments, categories }: { users: User[], app
 const Reports = ({ user }: { user: User }) => {
     const { dataState, dataDispatch } = useContext(DataContext);
     const { appointmentRepo } = useContext(DIContext);
+    const { notificationDispatch } = useContext(NotificationContext);
 
     const [state, refreshData] = useApiCall(() =>
         appointmentRepo.getContractorsAppointments(user.userName)
@@ -83,6 +85,7 @@ const Reports = ({ user }: { user: User }) => {
     useEffect(() => {
         if(state instanceof Failed) {
             console.error("Error in Report.tsx, appointment state result match", state.error);
+            notificationDispatch({ type: 'addError', message: `Error in Report: ${state.error}` });
         }
         else if(state instanceof Idle) {
             refreshData();
@@ -96,7 +99,6 @@ const Reports = ({ user }: { user: User }) => {
     return (
         <>
         {state instanceof Loading && <div>Loading...</div>}
-        {state instanceof Failed && <div>Error: {state.error.message}</div>}
         
         {state instanceof Loaded && 
             (users.length === 0

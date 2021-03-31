@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { DIContext } from "../components/contexts/DIContext";
 import { LoggedIn, LoginContext } from "../components/contexts/LoginProvider";
+import { NotificationContext } from "../components/contexts/NotificationProvider";
 import { Failed, Loaded, Loading, useApiCall, useLogin } from "../hooks/apiCallHooks";
 import { useEffectAsync } from "../hooks/utilities";
 import { RegisterDTO } from "../logic/dtos";
@@ -18,10 +19,10 @@ const ContractorPageInputs = ({ state, setState }: { state: ContractorPage, setS
     return (
     <>
         <label htmlFor="title">Title:</label>
-        <input type="text" name="title" value={state.title} onChange={handleContractorChange}/><br/>
+        <input type="text" name="title" value={state.title} required={true} onChange={handleContractorChange}/><br/>
 
         <label htmlFor="bio">Bio:</label>
-        <input type="text" name="bio" value={state.bio} onChange={handleContractorChange}/><br/>
+        <input type="text" name="bio" value={state.bio} required={true} onChange={handleContractorChange}/><br/>
     </>
     );
 }
@@ -61,19 +62,19 @@ const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => 
         <form onSubmit={handleSubmit}>
             {/* <input type="date" value={state.startTime}/> */}
             <label htmlFor="userName">Username:</label>
-            <input type="text" name="userName" value={state.userName} onChange={handleChange} /><br/>
+            <input type="text" name="userName" value={state.userName} required={true} onChange={handleChange} /><br/>
 
             <label htmlFor="email">Email:</label>
-            <input type="email" name="email" value={state.email} onChange={handleChange} /><br/>
+            <input type="email" name="email" value={state.email} required={true} onChange={handleChange} /><br/>
 
             <label htmlFor="name">Name:</label>
-            <input type="text" name="name" value={state.name} onChange={handleChange} /><br/>
+            <input type="text" name="name" value={state.name} required={true} onChange={handleChange} /><br/>
 
             <label htmlFor="password">Password:</label>
-            <input type="password" name="password" value={state.password} onChange={handleChange} /><br/>
+            <input type="password" name="password" value={state.password} required={true} autoComplete="new-password" onChange={handleChange} /><br/>
 
             <label htmlFor="passwordConfirmation">Password confirmation:</label>
-            <input type="password" name="passwordConfirmation" value={state.passwordConfirmation} onChange={handleChange} /><br/>
+            <input type="password" name="passwordConfirmation" value={state.passwordConfirmation} required={true} onChange={handleChange} /><br/>
 
             <label htmlFor="isContractor">Register as a contractor? </label>
             <input type="checkbox" name="isContractor" checked={isContractor} onChange={e => setIsContractor(prevState => !prevState)} /><br/>
@@ -90,6 +91,8 @@ const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => 
 export default () => {
     const { loginState } = useContext(LoginContext);
     const { accountRepo } = useContext(DIContext);
+    const { notificationDispatch } = useContext(NotificationContext);
+
     const history = useHistory();
 
     const [_loginStatus, login] = useLogin();
@@ -101,6 +104,9 @@ export default () => {
     , []);
 
     useEffectAsync(async () => {
+        if(registerStatus instanceof Failed) {
+            notificationDispatch({ type: 'addError', message: `Error while registering: ${registerStatus.error}` });
+        }
         if(registerStatus instanceof Loaded) {
             await login(registerStatus.value.userName, registerStatus.value.password);
             history.push('/');
@@ -115,7 +121,6 @@ export default () => {
 
     return (
         <>
-            {registerStatus instanceof Failed && <div>Error: {registerStatus.error.message}</div> }
             {registerStatus instanceof Loading && <div>Registering...</div> }
             <RegisterForm onSubmit={register}/>
         </>

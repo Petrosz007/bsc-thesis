@@ -9,6 +9,7 @@ import { Route } from "react-router-dom";
 import { Appointment, User } from "../logic/entities";
 import { Dictionary, groupBy } from "../utilities/listExtensions";
 import AppointmentAgenda from "../components/AppointmentAgenda";
+import { NotificationContext } from "../components/contexts/NotificationProvider";
 
 const ContractorInfo = ({ user }: { user: User }) => {
     return (
@@ -25,6 +26,7 @@ const ContractorPage = () => {
     const { loginState } = useContext(LoginContext);
     const { appointmentRepo, userRepo } = useContext(DIContext);
     const { dataState, dataDispatch } = useContext(DataContext);
+    const { notificationDispatch } = useContext(NotificationContext);
 
     const [state, refreshData] = useApiCall(() => {
         const appointmentsResult = appointmentRepo.getContractorsAppointments(contractorUserName);
@@ -43,6 +45,7 @@ const ContractorPage = () => {
     useEffect(() => {
         if(state instanceof Failed) {
             console.error("Error in index.tsx, appointment state result match", state.error);
+            notificationDispatch({ type: 'addError', message: `Error in Contractor: ${state.error}` });
         }
         else if(state instanceof Idle) {
             refreshData();
@@ -52,8 +55,6 @@ const ContractorPage = () => {
     return (
         <>
         {state instanceof Loading && <div>Loading...</div>}
-        {state instanceof Failed && <div>Error: {state.error.message}</div>}
-        {state instanceof Idle && <div>Click to load.</div>}
         
         {state instanceof Loaded && 
         <>
