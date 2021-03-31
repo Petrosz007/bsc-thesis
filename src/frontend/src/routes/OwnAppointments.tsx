@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router";
 import AppointmentAgenda from "../components/AppointmentAgenda";
 import Modal from "../components/Modal";
-import AppointmentEditor from "../components/editors/AppointmentEditor";
+import { AppointmentEditorCreate } from "../components/editors/AppointmentEditor";
 import CategoryEditor from "../components/editors/CategoryEditor";
 import { NotificationContext } from "../components/contexts/NotificationProvider";
 
@@ -57,7 +57,7 @@ const OwnAppointments = ({ user }: { user: User }) => {
             }
             {isAppointmentModalOpen &&
                 <Modal>
-                    <AppointmentEditor categories={categories} onClose={() => setIsAppointmentModalOpen(false)} />
+                    <AppointmentEditorCreate categories={categories} onClose={() => setIsAppointmentModalOpen(false)} />
                 </Modal>
             }
 
@@ -67,7 +67,7 @@ const OwnAppointments = ({ user }: { user: User }) => {
                 : <button onClick={() => setIsAppointmentModalOpen(true)}>Create Appointment</button>
             }
 
-            <AppointmentAgenda appointments={appointments} />
+            <AppointmentAgenda appointments={appointments} categories={categories} />
         </>
         }
         </>

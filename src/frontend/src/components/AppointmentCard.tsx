@@ -99,7 +99,7 @@ const DeleteButton = ({ appointment }: { appointment: Appointment }) => {
     );
 }
 
-export default ({ appointment }: { appointment: Appointment }) => {
+export default ({ appointment, onEdit }: { appointment: Appointment, onEdit: (_: Appointment) => void }) => {
     const { loginState } = useContext(LoginContext);
 
     const isOwner = () => loginState instanceof LoggedIn 
@@ -116,7 +116,10 @@ export default ({ appointment }: { appointment: Appointment }) => {
             <div className="appointment-methods">
                 <BookButton appointment={appointment} />
                 {isOwner() &&
+                <>
                     <DeleteButton appointment={appointment} />
+                    <button onClick={() => onEdit(appointment)}>Edit</button>
+                </>
                 }
             </div>
         </div>

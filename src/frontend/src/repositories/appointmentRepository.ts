@@ -13,6 +13,7 @@ export interface IAppointmentRepository {
     book(id: number): ResultPromise<Unit,Error>;
     unBook(id: number): ResultPromise<Unit,Error>;
     create(dto: AppointmentDTO): ResultPromise<Appointment,Error>;
+    update(dto: AppointmentDTO): ResultPromise<Unit,Error>;
     delete(id: number): ResultPromise<Unit,Error>;
 };
 
@@ -70,6 +71,9 @@ export class AppointmentRepository implements IAppointmentRepository {
     create = (dto: AppointmentDTO): ResultPromise<Appointment,Error> =>
         safeApiFetchWithBodyAs<AppointmentDTO>(`${this.config.apiUrl}/Appointment`, 'POST', dto)
             .andThen(this.dtoToEntity);
+
+    update = (dto: AppointmentDTO): ResultPromise<Unit,Error> =>
+        safeApiFetchWithBodyAsUnit(`https://localhost:44347/Appointment/${dto.id}`, 'PUT', dto);
 
     delete = (id: number): ResultPromise<Unit,Error> =>
         safeApiFetchAsUnit(`${this.config.apiUrl}/Appointment/${id}`, 'DELETE');
