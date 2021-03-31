@@ -82,7 +82,6 @@ export default ({ owner, onClose }: {
 
     return (
         <>
-        {/* {createCategoryState instanceof Failed && <p>Error while creating category: {createCategoryState.error.message}</p>} */}
         <form onSubmit={handleSubmit} className="category-editor-form">
             <div className="editor-inputs">
                 <label htmlFor="name">Name</label>

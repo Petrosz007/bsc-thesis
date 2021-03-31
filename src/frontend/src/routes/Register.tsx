@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { DIContext } from "../components/contexts/DIContext";
 import { LoggedIn, LoginContext } from "../components/contexts/LoginProvider";
+import { NotificationContext } from "../components/contexts/NotificationProvider";
 import { Failed, Loaded, Loading, useApiCall, useLogin } from "../hooks/apiCallHooks";
 import { useEffectAsync } from "../hooks/utilities";
 import { RegisterDTO } from "../logic/dtos";
@@ -90,6 +91,8 @@ const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => 
 export default () => {
     const { loginState } = useContext(LoginContext);
     const { accountRepo } = useContext(DIContext);
+    const { notificationDispatch } = useContext(NotificationContext);
+
     const history = useHistory();
 
     const [_loginStatus, login] = useLogin();
@@ -101,6 +104,9 @@ export default () => {
     , []);
 
     useEffectAsync(async () => {
+        if(registerStatus instanceof Failed) {
+            notificationDispatch({ type: 'addError', message: `Error while registering: ${registerStatus.error}` });
+        }
         if(registerStatus instanceof Loaded) {
             await login(registerStatus.value.userName, registerStatus.value.password);
             history.push('/');
@@ -115,7 +121,6 @@ export default () => {
 
     return (
         <>
-            {registerStatus instanceof Failed && <div>Error: {registerStatus.error.message}</div> }
             {registerStatus instanceof Loading && <div>Registering...</div> }
             <RegisterForm onSubmit={register}/>
         </>

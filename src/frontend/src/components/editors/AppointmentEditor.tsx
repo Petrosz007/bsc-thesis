@@ -37,6 +37,7 @@ export default ({ categories, onClose }: {
 
     const { dataDispatch } = useContext(DataContext);
     const { appointmentRepo } = useContext(DIContext);
+    const { notificationDispatch } = useContext(NotificationContext);
 
     const [users, setUsers] = useState<User[]>([]);
     const [closeAfterLoad, setCloseAfterLoad] = useState(false);
@@ -68,6 +69,7 @@ export default ({ categories, onClose }: {
     useEffect(() => {
         if(createAppointmentState instanceof Failed) {
             console.error('Error in AppointmentEditor: ', createAppointmentState.error);
+            notificationDispatch({ type: 'addError', message: `Error in AppointmentEditor: ${createAppointmentState.error}` });
         }
         if(createAppointmentState instanceof Loaded){
             if(closeAfterLoad) {
@@ -84,7 +86,6 @@ export default ({ categories, onClose }: {
 
     return (
         <>
-        {createAppointmentState instanceof Failed && <p>Error while creating appointment: {createAppointmentState.error.message}</p>}
         <form onSubmit={handleSubmit} className="appointment-editor-form">
             <div className="editor-inputs">
                 <label htmlFor="startTimeDate">Start</label>
