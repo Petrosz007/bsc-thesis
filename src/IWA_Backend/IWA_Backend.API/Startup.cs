@@ -58,7 +58,6 @@ namespace IWA_Backend.API
             services.AddTransient<CategoryLogic>();
             services.AddTransient<UserLogic>();
 
-            services.AddTransient<AppointmentMapper>();
             services.AddAutoMapper(typeof(Startup));
 
             ConfigureControllers(services);

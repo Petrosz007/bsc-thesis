@@ -66,8 +66,7 @@ namespace IWA_Backend.Tests.UnitTests.Mappers
             };
 
             // Act
-            var result = new Category();
-            CategoryMapper.OntoEntity(result, dto, allowedCustomers, owner);
+            var result = CategoryMapper.IntoEntity(dto, allowedCustomers, owner);
 
             // Assert
             Assert.Equal(dto.Id, result.Id);

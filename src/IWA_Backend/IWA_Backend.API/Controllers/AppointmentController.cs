@@ -19,11 +19,9 @@ namespace IWA_Backend.API.Controllers
     public class AppointmentController : ControllerBase
     {
         private readonly AppointmentLogic Logic;
-        private readonly AppointmentMapper Mapper;
-        public AppointmentController(AppointmentLogic logic, AppointmentMapper mapper)
+        public AppointmentController(AppointmentLogic logic)
         {
             Logic = logic;
-            Mapper = mapper;
         }
 
         private string? CurrentUserName => User.Identity?.Name;
@@ -34,7 +32,7 @@ namespace IWA_Backend.API.Controllers
             try
             {
                 var appointment = Logic.GetAppointmentById(id, CurrentUserName);
-                var appointmentDTO = Mapper.ToDTO(appointment);
+                var appointmentDTO = AppointmentMapper.ToDTO(appointment);
                 return Ok(appointmentDTO);
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
@@ -47,7 +45,7 @@ namespace IWA_Backend.API.Controllers
             try
             {
                 var appointments = Logic.GetContractorsAppointments(contractorUserName, CurrentUserName);
-                var appointmentDTOs = appointments.Select(Mapper.ToDTO);
+                var appointmentDTOs = appointments.Select(AppointmentMapper.ToDTO);
                 return Ok(appointmentDTOs);
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
@@ -86,7 +84,7 @@ namespace IWA_Backend.API.Controllers
         public ActionResult<IEnumerable<AppointmentDTO>> GetBookedAppointments()
         {
             var appointments = Logic.GetBookedAppointments(CurrentUserName!);
-            var appointmentDTOs = appointments.Select(Mapper.ToDTO);
+            var appointmentDTOs = appointments.Select(AppointmentMapper.ToDTO);
             return Ok(appointmentDTOs);
         }
 
@@ -96,9 +94,8 @@ namespace IWA_Backend.API.Controllers
         {
             try
             {
-                var appointment = Mapper.ToEntity(appointmentDTO);
-                await Logic.CreateAppointmentAsync(appointment, CurrentUserName);
-                var createdAppointmentDTO = Mapper.ToDTO(appointment);
+                var appointment = await Logic.CreateAppointmentAsync(appointmentDTO, CurrentUserName);
+                var createdAppointmentDTO = AppointmentMapper.ToDTO(appointment);
                 return CreatedAtAction(nameof(GetAppointmentById), new { id = appointment.Id }, createdAppointmentDTO);
             }
             catch(NotFoundException ex) { return NotFound(ex.Message); }
@@ -115,8 +112,7 @@ namespace IWA_Backend.API.Controllers
                 if (id != appointmentDTO.Id)
                     return BadRequest($"URL path id '{id}' is not equal to the appointment id '{appointmentDTO.Id}'");
 
-                var appointment = Mapper.ToEntity(appointmentDTO);
-                await Logic.UpdateAppointmentAsync(appointment, CurrentUserName);
+                await Logic.UpdateAppointmentAsync(appointmentDTO, CurrentUserName);
                 return NoContent();
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }

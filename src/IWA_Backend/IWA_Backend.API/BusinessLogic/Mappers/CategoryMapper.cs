@@ -7,7 +7,7 @@ namespace IWA_Backend.API.BusinessLogic.Mappers
 {
     public static class CategoryMapper
     {
-        public static void OntoEntity(Category entity, CategoryDTO dto, IEnumerable<User> users, User owner)
+        public static Category OntoEntity(Category entity, CategoryDTO dto, IEnumerable<User> users, User owner)
         {
             entity.Id = dto.Id;
             entity.Name = dto.Name;
@@ -19,8 +19,13 @@ namespace IWA_Backend.API.BusinessLogic.Mappers
 
             entity.AllowedUsers.Clear();
             entity.AllowedUsers.AddRange(users);
+
+            return entity;
         }
 
+        public static Category IntoEntity(CategoryDTO dto, IEnumerable<User> users, User owner) =>
+            OntoEntity(new(), dto, users, owner);
+        
         public static CategoryDTO ToDTO(Category entity) =>
             new ()
             {

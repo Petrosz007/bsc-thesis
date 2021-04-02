@@ -62,13 +62,12 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 
         public async Task<Category> CreateCategoryAsync(CategoryDTO categoryDto, string? userName)
         {
-            var category = new Category();
             var allowedUsers = categoryDto.AllowedUserNames
                 .Select(UserRepository.GetByUserName)
                 .ToList();
             var owner = UserRepository.GetByUserName(userName);
             
-            CategoryMapper.OntoEntity(category, categoryDto, allowedUsers, owner);
+            var category = CategoryMapper.IntoEntity(categoryDto, allowedUsers, owner);
             
             await CategoryRepository.CreateAsync(category);
 

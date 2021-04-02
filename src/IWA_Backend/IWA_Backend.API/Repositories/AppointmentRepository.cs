@@ -47,8 +47,6 @@ namespace IWA_Backend.API.Repositories
 
         public async Task UpdateAsync(Appointment appointment)
         {
-            //Context.DetachLocal(appointment);
-            //Context.DetachLocal(appointment.AttendeeOnAppointmentsJoin);
             Context.Update(appointment);
             await Context.SaveChangesAsync();
         }
