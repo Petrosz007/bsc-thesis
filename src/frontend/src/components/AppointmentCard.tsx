@@ -99,16 +99,16 @@ const DeleteButton = ({ appointment }: { appointment: Appointment }) => {
     );
 }
 
-export default ({ appointment, onEdit }: { appointment: Appointment, onEdit: (_: Appointment) => void }) => {
+export const AppointmentCardEditable = ({ appointment, onEdit }: { appointment: Appointment, onEdit: (_: Appointment) => void }) => {
     const { loginState } = useContext(LoginContext);
 
-    const isOwner = () => loginState instanceof LoggedIn 
+    const isOwner = () => loginState instanceof LoggedIn
         && appointment.category.owner.userName === loginState.user.userName;
 
     return (
         <div className="appointmentCard">
             <span className="appointment-header">{appointment.category.name}</span>
-            <div className="appointment-descripton">
+            <div className="appointment-description">
                 <p>{appointment.category.description}</p>
                 {/* <p><FormattedDate date={appointment.startTime}/> - <HourDuration startTime={appointment.startTime} endTime={appointment.endTime}/></p> */}
                 <p>{appointment.category.price} Ft</p>
@@ -121,6 +121,22 @@ export default ({ appointment, onEdit }: { appointment: Appointment, onEdit: (_:
                     <button onClick={() => onEdit(appointment)}>Edit</button>
                 </>
                 }
+            </div>
+        </div>
+    );
+}
+
+export const AppointmentCard = ({ appointment }: { appointment: Appointment }) => {
+    return (
+        <div className="appointmentCard">
+            <span className="appointment-header">{appointment.category.name}</span>
+            <div className="appointment-description">
+                <p>{appointment.category.description}</p>
+                {/* <p><FormattedDate date={appointment.startTime}/> - <HourDuration startTime={appointment.startTime} endTime={appointment.endTime}/></p> */}
+                <p>{appointment.category.price} Ft</p>
+            </div>
+            <div className="appointment-methods">
+                <BookButton appointment={appointment} />
             </div>
         </div>
     );

@@ -5,13 +5,14 @@ import { Failed, Idle, Loaded, Loading, useApiCall } from "../hooks/apiCallHooks
 import { User } from "../logic/entities";
 import React, { useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router";
-import AppointmentAgenda from "../components/AppointmentAgenda";
+import {AppointmentAgendaEditable} from "../components/AppointmentAgenda";
 import Modal from "../components/Modal";
 import { AppointmentEditorCreate } from "../components/editors/AppointmentEditor";
 import CategoryEditor from "../components/editors/CategoryEditor";
 import { NotificationContext } from "../components/contexts/NotificationProvider";
 
 import './OwnAppointments.scss'
+import CategoryCard from "../components/CategoryCard";
 
 const OwnAppointments = ({ user }: { user: User }) => {
     const { dataState, dataDispatch } = useContext(DataContext);
@@ -66,8 +67,11 @@ const OwnAppointments = ({ user }: { user: User }) => {
                 ? <p>Can't create appointments without categories, create a category first!</p>
                 : <button onClick={() => setIsAppointmentModalOpen(true)}>Create Appointment</button>
             }
-
-            <AppointmentAgenda appointments={appointments} categories={categories} />
+            
+            {categories.map(category => 
+                <CategoryCard category={category}/>
+            )}
+            <AppointmentAgendaEditable appointments={appointments} categories={categories} />
         </>
         }
         </>

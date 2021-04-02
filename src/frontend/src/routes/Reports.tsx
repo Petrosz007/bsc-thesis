@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { Redirect } from "react-router-dom";
-import AppointmentAgenda from "../components/AppointmentAgenda";
-import AppointmentCard from "../components/AppointmentCard";
 import DataProvider, { DataContext } from "../components/contexts/DataProvider";
 import { DIContext } from "../components/contexts/DIContext";
 import { LoggedIn, LoggedOut, LoginContext } from "../components/contexts/LoginProvider";
