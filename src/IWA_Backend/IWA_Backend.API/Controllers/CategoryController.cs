@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace IWA_Backend.API.Controllers
 {
@@ -19,11 +20,9 @@ namespace IWA_Backend.API.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly CategoryLogic Logic;
-        private readonly IDTOMapper<Category, CategoryDTO> Mapper;
-        public CategoryController(CategoryLogic logic, IDTOMapper<Category, CategoryDTO> mapper)
+        public CategoryController(CategoryLogic logic)
         {
             Logic = logic;
-            Mapper = mapper;
         }
 
         private string? CurrentUserName => User.Identity?.Name;
@@ -34,7 +33,7 @@ namespace IWA_Backend.API.Controllers
             try
             {
                 var category = Logic.GetCategoryById(id, CurrentUserName);
-                var categoryDTO = Mapper.ToDTO(category);
+                var categoryDTO = CategoryMapper.ToDTO(category);
                 return Ok(categoryDTO);
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
@@ -47,7 +46,7 @@ namespace IWA_Backend.API.Controllers
             try
             {
                 var categories = Logic.GetContractorsCategories(userName, CurrentUserName);
-                var categoriesDTO = categories.Select(Mapper.ToDTO);
+                var categoriesDTO = categories.Select(CategoryMapper.ToDTO);
                 return Ok(categoriesDTO);
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
@@ -64,9 +63,9 @@ namespace IWA_Backend.API.Controllers
                     Id = 0,
                     OwnerUserName = CurrentUserName!,
                 };
-                var category = Mapper.ToEntity(dto);
-                await Logic.CreateCategoryAsync(category, CurrentUserName);
-                var createdCategory = Mapper.ToDTO(category);
+                
+                var category = await Logic.CreateCategoryAsync(dto, CurrentUserName);
+                var createdCategory = CategoryMapper.ToDTO(category);
                 return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, createdCategory);
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
@@ -84,8 +83,7 @@ namespace IWA_Backend.API.Controllers
                     OwnerUserName = CurrentUserName!,
                 };
 
-                var category = Mapper.ToEntity(categoryDTO);
-                await Logic.UpdateCategoryAsync(category, CurrentUserName);
+                await Logic.UpdateCategoryAsync(dto, CurrentUserName);
                 return NoContent();
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }

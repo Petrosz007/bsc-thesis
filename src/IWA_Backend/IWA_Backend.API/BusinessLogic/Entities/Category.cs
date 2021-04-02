@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace IWA_Backend.API.BusinessLogic.Entities
 {
-    public record Category
+    public class Category
     {
         [Key]
         [Required]
@@ -16,7 +13,7 @@ namespace IWA_Backend.API.BusinessLogic.Entities
         [Required]
         public string Description { get; set; } = null!;
         [Required]
-        public virtual List<User> AllowedUsers { get; set; } = new List<User>();
+        public virtual List<User> AllowedUsers { get; init; } = new ();
         [Required]
         public bool EveryoneAllowed { get; set; }
         [Required]
@@ -26,6 +23,6 @@ namespace IWA_Backend.API.BusinessLogic.Entities
         [Required]
         public int Price { get; set; }
 
-        public virtual List<AllowedUserOnCategories> AllowedUserOnCategoriesJoin { get; set; }  = null!;
+        public virtual List<AllowedUserOnCategories> AllowedUserOnCategoriesJoin { get; }  = null!;
     }
 }

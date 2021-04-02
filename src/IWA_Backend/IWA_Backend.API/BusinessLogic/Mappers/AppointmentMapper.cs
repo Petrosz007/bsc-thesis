@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IWA_Backend.API.BusinessLogic.Mappers
 {
-    public class AppointmentMapper : IDTOMapper<Appointment, AppointmentDTO>
+    public class AppointmentMapper
     {
         private readonly ICategoryRepository CategoryRepository;
         private readonly IUserRepository UserRepository;

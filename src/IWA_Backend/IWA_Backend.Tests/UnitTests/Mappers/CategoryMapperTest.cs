@@ -18,38 +18,31 @@ namespace IWA_Backend.Tests.UnitTests.Mappers
         public void ToDTO()
         {
             // Arrange
-            var category = new Category { Id = 20 };
-            var owner = new User { UserName = "owner" };
-            var allowedUsers = new List<User> { new User { UserName = "test1" }, new User { UserName = "test2" } };
-
-            var mockRepo = new Mock<IUserRepository>();
-            var mapper = new CategoryMapper(mockRepo.Object);
-
-            var data = new Category
+            var entity = new Category
             {
                 Id = 10,
                 Name = "Test Category",
                 Description = "Description of test category",
-                AllowedUsers = allowedUsers,
+                AllowedUsers = new List<User> { new() { UserName = "test1" }, new() { UserName = "test2" } },
                 EveryoneAllowed = false,
-                Owner = owner,
+                Owner = new User { UserName = "owner" },
                 MaxAttendees = 12,
                 Price = 5000,
             };
 
             // Act
-            var result = mapper.ToDTO(data);
+            var result = CategoryMapper.ToDTO(entity);
 
             // Assert
-            Assert.Equal(data.Id, result.Id);
-            Assert.Equal(data.Name, result.Name);
-            Assert.Equal(data.Description, result.Description);
-            Assert.Equal(data.EveryoneAllowed, result.EveryoneAllowed);
-            Assert.Equal(data.Owner.UserName, result.OwnerUserName);
-            Assert.Equal(data.MaxAttendees, result.MaxAttendees);
-            Assert.Equal(data.Price, result.Price);
+            Assert.Equal(entity.Id, result.Id);
+            Assert.Equal(entity.Name, result.Name);
+            Assert.Equal(entity.Description, result.Description);
+            Assert.Equal(entity.EveryoneAllowed, result.EveryoneAllowed);
+            Assert.Equal(entity.Owner.UserName, result.OwnerUserName);
+            Assert.Equal(entity.MaxAttendees, result.MaxAttendees);
+            Assert.Equal(entity.Price, result.Price);
 
-            var dataAllowedUsers = data.AllowedUsers.Select(a => a.UserName);
+            var dataAllowedUsers = entity.AllowedUsers.Select(a => a.UserName);
             Assert.True(dataAllowedUsers.SequenceEqual(result.AllowedUserNames));
         }
 
@@ -60,13 +53,7 @@ namespace IWA_Backend.Tests.UnitTests.Mappers
             var owner = new User { UserName = "owner" };
             var allowedCustomers = new List<User> { new User { UserName = "test1" }, new User { UserName = "test2" } };
 
-            var mockRepo = new Mock<IUserRepository>();
-            mockRepo.Setup(r => r.GetByUserName("owner")).Returns(owner);
-            mockRepo.Setup(r => r.GetByUserName("test1")).Returns(allowedCustomers[0]);
-            mockRepo.Setup(r => r.GetByUserName("test2")).Returns(allowedCustomers[1]);
-            var mapper = new CategoryMapper(mockRepo.Object);
-
-            var data = new CategoryDTO
+            var dto = new CategoryDTO
             {
                 Id = 10,
                 Name = "Test Category",
@@ -79,19 +66,20 @@ namespace IWA_Backend.Tests.UnitTests.Mappers
             };
 
             // Act
-            var result = mapper.ToEntity(data);
+            var result = new Category();
+            CategoryMapper.OntoEntity(result, dto, allowedCustomers, owner);
 
             // Assert
-            Assert.Equal(data.Id, result.Id);
-            Assert.Equal(data.Name, result.Name);
-            Assert.Equal(data.Description, result.Description);
-            Assert.Equal(data.EveryoneAllowed, result.EveryoneAllowed);
-            Assert.Equal(data.OwnerUserName, result.Owner.UserName);
-            Assert.Equal(data.MaxAttendees, result.MaxAttendees);
-            Assert.Equal(data.Price, result.Price);
+            Assert.Equal(dto.Id, result.Id);
+            Assert.Equal(dto.Name, result.Name);
+            Assert.Equal(dto.Description, result.Description);
+            Assert.Equal(dto.EveryoneAllowed, result.EveryoneAllowed);
+            Assert.Equal(dto.OwnerUserName, result.Owner.UserName);
+            Assert.Equal(dto.MaxAttendees, result.MaxAttendees);
+            Assert.Equal(dto.Price, result.Price);
 
             var resultAllowedUserNames = result.AllowedUsers.Select(a => a.UserName);
-            Assert.True(data.AllowedUserNames.SequenceEqual(resultAllowedUserNames));
+            Assert.True(dto.AllowedUserNames.SequenceEqual(resultAllowedUserNames));
         }
     }
 }
