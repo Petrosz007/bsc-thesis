@@ -72,7 +72,7 @@ namespace IWA_Backend.Tests.IntegrationTests
 
                 // Act
                 var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "contractor1", Password = "kebab" });
-                var response = await client.PutAsJsonAsync($"/User/{userName}", user);
+                var response = await client.PutAsJsonAsync($"/User", user);
 
                 // Assert
                 Assert.True(loginResponse.IsSuccessStatusCode);
@@ -104,7 +104,7 @@ namespace IWA_Backend.Tests.IntegrationTests
 
                 // Act
                 var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "contractor1", Password = "kebab" });
-                var response = await client.PutAsJsonAsync($"/User/{userName}", user);
+                var response = await client.PutAsJsonAsync($"/User", user);
 
                 // Assert
                 Assert.True(loginResponse.IsSuccessStatusCode);
@@ -132,37 +132,11 @@ namespace IWA_Backend.Tests.IntegrationTests
                 };
 
                 // Act
-                var response = await client.PutAsJsonAsync($"/User/{userName}", user);
+                var response = await client.PutAsJsonAsync($"/User", user);
 
                 // Assert
                 Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
                 Assert.StartsWith("http://localhost/Account/Login", response?.Headers?.Location?.OriginalString);
-            }
-
-            [Fact]
-            public async Task UnauthorisedLoggedIn()
-            {
-                // Arrange
-                var client = Factory.CreateClient();
-                var userName = "contractor2";
-                var user = new UserUpdateDTO
-                {
-                    Email = "newmail@example.com",
-                    Name = "Most már nem Karcsi",
-                    ContractorPage = new ContractorPageDTO
-                    {
-                        Title = "Ez már nem karcsi oldala",
-                        Bio = "New bio",
-                    },
-                };
-
-                // Act
-                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "contractor1", Password = "kebab" });
-                var response = await client.PutAsJsonAsync($"/User/{userName}", user);
-
-                // Assert
-                Assert.True(loginResponse.IsSuccessStatusCode);
-                Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
             }
         }
     }

@@ -8,13 +8,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using IWA_Backend.API.BusinessLogic.DTOs;
+using IWA_Backend.API.BusinessLogic.Mappers;
 using Xunit;
 
 namespace IWA_Backend.Tests.UnitTests.Logic
 {
     public class UserLogicTest
     {
-        public class GetById
+        private readonly Mock<IUserRepository> MockUserRepo = new();
+        private readonly IMapper Mapper;
+        private readonly UserLogic Logic;
+        
+        protected UserLogicTest()
+        {
+            Mapper = new MapperConfiguration(c => c.AddProfile<AutoMapping>()).CreateMapper();
+            Logic = new(MockUserRepo.Object, Mapper);
+        }
+        public class GetById : UserLogicTest
         {
             [Fact]
             public void Successful()
@@ -25,12 +37,10 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                    UserName = "TestUser",
                 };
 
-                var mockRepo = new Mock<IUserRepository>();
-                mockRepo.Setup(r => r.GetByUserName("TestUser")).Returns(user);
-                var logic = new UserLogic(mockRepo.Object);
+                MockUserRepo.Setup(r => r.GetByUserName("TestUser")).Returns(user);
 
                 // Act
-                var result = logic.GetUserByUserName("TestUser");
+                var result = Logic.GetUserByUserName("TestUser");
 
                 // Assert
                 Assert.Equal(user, result);
@@ -40,17 +50,15 @@ namespace IWA_Backend.Tests.UnitTests.Logic
             public void NotFound()
             {
                 // Arrange
-                var mockRepo = new Mock<IUserRepository>();
-                mockRepo.Setup(r => r.GetByUserName("TestUser")).Throws(new NotFoundException(""));
-                var logic = new UserLogic(mockRepo.Object);
+                MockUserRepo.Setup(r => r.GetByUserName("TestUser")).Throws(new NotFoundException(""));
 
                 // Act
                 // Assert
-                Assert.Throws<NotFoundException>(() => logic.GetUserByUserName("TestUser"));
+                Assert.Throws<NotFoundException>(() => Logic.GetUserByUserName("TestUser"));
             }
         }
 
-        public class Update
+        public class Update : UserLogicTest
         {
             [Fact]
             public async Task Successful()
@@ -60,51 +68,29 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 {
                     UserName = "Test User",
                 };
-                var mockRepo = new Mock<IUserRepository>();
-                mockRepo.Setup(r => r.Exists(user.UserName)).Returns(true);
-                var logic = new UserLogic(mockRepo.Object);
 
-                // Act
-                await logic.UpdateUserAsync(user, "Test User");
-
-                // Assert
-                mockRepo.Verify(r => r.UpdateAsync(user), Times.Once());
-            }
-
-            [Fact]
-            public async Task Unauthorized()
-            {
-                // Arrange
-                var user = new User
+                var dto = new UserUpdateDTO
                 {
-                    UserName = "Test User",
+                    Name = "Test User Changed",
+                    Email = "newemail@exmaple.com",
+                    ContractorPage = new ContractorPageDTO
+                    {
+                        Title = "New title",
+                        Bio = "New bio",
+                    },
                 };
-                var mockRepo = new Mock<IUserRepository>();
-                mockRepo.Setup(r => r.Exists(user.UserName)).Returns(true);
-                var logic = new UserLogic(mockRepo.Object);
+                
+                MockUserRepo.Setup(r => r.GetByUserName(user.UserName)).Returns(user);
 
                 // Act
-                // Assert
-                await Assert.ThrowsAsync<UnauthorisedException>(() => logic.UpdateUserAsync(user, "Not the test user"));
-                mockRepo.Verify(r => r.UpdateAsync(user), Times.Never());
-            }
+                await Logic.UpdateUserAsync(dto, "Test User");
 
-            [Fact]
-            public async Task NotFound()
-            {
-                // Arrange
-                var user = new User
-                {
-                    UserName = "Test User",
-                };
-                var mockRepo = new Mock<IUserRepository>();
-                mockRepo.Setup(r => r.Exists(user.UserName)).Returns(false);
-                var logic = new UserLogic(mockRepo.Object);
-
-                // Act
                 // Assert
-                await Assert.ThrowsAsync<NotFoundException>(() => logic.UpdateUserAsync(user, "Test User"));
-                mockRepo.Verify(r => r.UpdateAsync(user), Times.Never());
+                MockUserRepo.Verify(r => r.UpdateAsync(user), Times.Once());
+                Assert.Equal(dto.Name, user.Name);
+                Assert.Equal(dto.Email, user.Email);
+                Assert.Equal(dto.ContractorPage?.Title, user.ContractorPage?.Title);
+                Assert.Equal(dto.ContractorPage?.Bio, user.ContractorPage?.Bio);
             }
         }
     }
