@@ -73,7 +73,7 @@ export class AppointmentRepository implements IAppointmentRepository {
             .andThen(this.dtoToEntity);
 
     update = (dto: AppointmentDTO): ResultPromise<Unit,Error> =>
-        safeApiFetchWithBodyAsUnit(`https://localhost:44347/Appointment/${dto.id}`, 'PUT', dto);
+        safeApiFetchWithBodyAsUnit(`${this.config.apiUrl}/Appointment/${dto.id}`, 'PUT', dto);
 
     delete = (id: number): ResultPromise<Unit,Error> =>
         safeApiFetchAsUnit(`${this.config.apiUrl}/Appointment/${id}`, 'DELETE');

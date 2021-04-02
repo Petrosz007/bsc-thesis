@@ -1,16 +1,18 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, {useContext, useState, useEffect, useCallback} from "react";
 import { useApiCall, Failed, Loaded } from "../../hooks/apiCallHooks";
 import { useHandleChange } from "../../hooks/useEditorForm";
-import { CategoryDTO } from "../../logic/dtos";
-import { User } from "../../logic/entities";
+import {AppointmentDTO, CategoryDTO} from "../../logic/dtos";
+import {Category, User} from "../../logic/entities";
 import { DataContext } from "../contexts/DataProvider";
 import { DIContext } from "../contexts/DIContext";
 import UserAdder from "./UserAdder";
 
 import './CategoryEditor.scss';
 import { NotificationContext } from "../contexts/NotificationProvider";
+import {ResultPromise} from "../../utilities/result";
 
 interface CategoryEditdata {
+    id: number;
     name: string;
     description: string;
     everyoneAllowed: boolean;
@@ -20,29 +22,46 @@ interface CategoryEditdata {
     createAnother: boolean;
 }
 
-export default ({ owner, onClose }: {
+const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose }: {
+    initialCategory?: Category,
+    apiCall: (_: CategoryDTO) => ResultPromise<Category, Error>,
     owner: User,
     onClose: () => void,
 }) => {
-    const initialCategoryEditorState: CategoryEditdata = {
-        name: '',
-        description: '',
-        everyoneAllowed: true,
-        maxAttendees: 1,
-        price: 0,
-        createAnother: true,
-    };
+    const initialCategoryEditorState: CategoryEditdata = 
+        initialCategory === undefined
+            ? {
+                id: 0,
+                name: '',
+                description: '',
+                everyoneAllowed: true,
+                maxAttendees: 1,
+                price: 0,
+                createAnother: false,
+            }
+            : {
+                id: initialCategory.id,
+                name: initialCategory.name,
+                description: initialCategory.description,
+                everyoneAllowed: initialCategory.everyoneAllowed,
+                maxAttendees: initialCategory.maxAttendees,
+                price: initialCategory.price,
+                createAnother: false,
+            }
 
     const { dataDispatch } = useContext(DataContext);
     const { notificationDispatch } = useContext(NotificationContext);
-    const { categoryRepo } = useContext(DIContext);
 
     const [closeAfterLoad, setCloseAfterLoad] = useState(false);
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<User[]>(
+        initialCategory === undefined
+            ? []
+            : initialCategory.allowedUsers
+    );
     const [state, setState] = useState(initialCategoryEditorState);
 
     const [createCategoryState, createCategory] = useApiCall((dto: CategoryDTO) => 
-        categoryRepo.create(dto)
+        apiCall(dto)
             .sideEffect(category => {
                 console.log('Created', category);
                 dataDispatch({ type: 'updateCategory', category });
@@ -57,8 +76,7 @@ export default ({ owner, onClose }: {
             ...state,
             allowedUserNames: users.map(u => u.userName),
             ownerUserName: owner.userName,
-            id: 0,
-        })
+        });
         event.preventDefault();
     }
 
@@ -111,5 +129,42 @@ export default ({ owner, onClose }: {
             </div>
         </form>
         </>
+    );
+}
+
+export const CategoryEditorCreate = ({ owner, onClose }: {
+    owner: User,
+    onClose: () => void,
+}) => {
+    const { categoryRepo } = useContext(DIContext);
+    
+    return (
+        <CategoryEditorBase 
+            apiCall={categoryRepo.create}
+            owner={owner}
+            onClose={onClose} 
+        />
+    );
+}
+
+export const CategoryEditorUpdate = ({ category, owner, onClose }: {
+    category: Category,
+    owner: User,
+    onClose: () => void,
+}) => {
+    const { categoryRepo } = useContext(DIContext);
+
+    const update = useCallback((dto: CategoryDTO) =>
+            categoryRepo.update(dto)
+            .andThen(_ => categoryRepo.getById(dto.id))
+    , []);
+    
+    return (
+        <CategoryEditorBase
+            apiCall={update}
+            initialCategory={category}
+            owner={owner}
+            onClose={onClose}
+        />
     );
 }

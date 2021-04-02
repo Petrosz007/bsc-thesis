@@ -8,11 +8,11 @@ import { Redirect } from "react-router";
 import {AppointmentAgendaEditable} from "../components/AppointmentAgenda";
 import Modal from "../components/Modal";
 import { AppointmentEditorCreate } from "../components/editors/AppointmentEditor";
-import CategoryEditor from "../components/editors/CategoryEditor";
 import { NotificationContext } from "../components/contexts/NotificationProvider";
+import {CategoriesEditable, CategoryCardEditable} from "../components/CategoryCard";
 
 import './OwnAppointments.scss'
-import CategoryCard from "../components/CategoryCard";
+import {CategoryEditorCreate} from "../components/editors/CategoryEditor";
 
 const OwnAppointments = ({ user }: { user: User }) => {
     const { dataState, dataDispatch } = useContext(DataContext);
@@ -53,7 +53,7 @@ const OwnAppointments = ({ user }: { user: User }) => {
         <>
             {isCategoryModalOpen &&
                 <Modal>
-                    <CategoryEditor owner={user} onClose={() => setIsCategoryModalOpen(false)} />
+                    <CategoryEditorCreate owner={user} onClose={() => setIsCategoryModalOpen(false)} />
                 </Modal>
             }
             {isAppointmentModalOpen &&
@@ -68,9 +68,8 @@ const OwnAppointments = ({ user }: { user: User }) => {
                 : <button onClick={() => setIsAppointmentModalOpen(true)}>Create Appointment</button>
             }
             
-            {categories.map(category => 
-                <CategoryCard category={category}/>
-            )}
+
+            <CategoriesEditable owner={user} categories={categories} />
             <AppointmentAgendaEditable appointments={appointments} categories={categories} />
         </>
         }

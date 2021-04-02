@@ -55,7 +55,11 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
     const { dataDispatch } = useContext(DataContext);
     const { notificationDispatch } = useContext(NotificationContext);
 
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<User[]>(
+        initialAppointment === undefined
+            ? []
+            : initialAppointment.attendees
+    );
     const [closeAfterLoad, setCloseAfterLoad] = useState(false);
     const [state, setState] = useState(initialAppointmentEditorState);
 
@@ -92,7 +96,7 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
             startTime: new Date(`${state.startTimeDate} ${state.startTimeTime}`).toISOString(),
             endTime: new Date(`${state.endTimeDate} ${state.endTimeTime}`).toISOString(),
             attendeeUserNames: users.map(user => user.userName),
-        }, !state.createAnother);
+        });
 
         event.preventDefault();
     }
@@ -164,7 +168,11 @@ export const AppointmentEditorCreate = ({ categories, onClose }: {
     const { appointmentRepo } = useContext(DIContext);
 
     return (
-        <AppointmentEditorBase apiCall={appointmentRepo.create} categories={categories} onClose={onClose} />
+        <AppointmentEditorBase
+            apiCall={appointmentRepo.create}
+            categories={categories}
+            onClose={onClose}
+        />
     );
 }
 
@@ -181,6 +189,11 @@ export const AppointmentEditorUpdate = ({ appointment, categories, onClose }: {
     , []);
 
     return (
-        <AppointmentEditorBase apiCall={update} initialAppointment={appointment} categories={categories} onClose={onClose} />
+        <AppointmentEditorBase
+            apiCall={update}
+            initialAppointment={appointment}
+            categories={categories}
+            onClose={onClose}
+        />
     );
 }
