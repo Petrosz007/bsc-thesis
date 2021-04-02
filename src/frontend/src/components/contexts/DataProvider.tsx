@@ -57,6 +57,10 @@ const reducer = (state: DataState, action: DataAction): DataState => {
             return {
                 ...state,
                 categories: setValue(state.categories, action.category, c => c.id),
+                appointments: state.appointments.map(a => ({
+                    ...a,
+                    category: a.category.id === action.category.id ? action.category : a.category,
+                })),
             };
         case 'setCategories':
             return {
