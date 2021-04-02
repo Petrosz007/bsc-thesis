@@ -232,5 +232,58 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 MockCategoryRepo.Verify(r => r.DeleteAsync(It.IsAny<Category>()), Times.Never());
             }
         }
+
+        public class GetContractorsCategories : CategoryLogicTest
+        {
+            [Fact]
+            public void ContractorNotFound()
+            {
+                // Arrange
+                string contractorUserName = "Owner";
+                string userName = "Test User";
+                MockUserRepo.Setup(r => r.Exists(userName)).Returns(false);
+
+                // Act
+                // Assert
+                Assert.Throws<NotFoundException>(() => Logic.GetContractorsCategories(contractorUserName, userName));
+            }
+            
+            [Fact]
+            public void Successful()
+            {
+                // Arrange
+                var owner = new User { UserName = "Owner" };
+                var user = new User { UserName = "Test User" };
+                
+                var categories = new List<Category>
+                {
+                    new()
+                    {
+                        Owner = owner,
+                        EveryoneAllowed = true,
+                    },
+                    new()
+                    {
+                        Owner = owner,
+                        EveryoneAllowed = false,
+                    },
+                    new()
+                    {
+                        Owner = owner,
+                        EveryoneAllowed = false,
+                        AllowedUsers = new List<User> { user },
+                    },
+                };
+                
+                MockUserRepo.Setup(r => r.Exists(owner.UserName)).Returns(true);
+                MockCategoryRepo.Setup(r => r.GetUsersCategories(owner.UserName)).Returns(categories.AsQueryable());
+
+                // Act
+                var result = Logic.GetContractorsCategories(owner.UserName, user.UserName);
+                
+                // Assert
+                Assert.True(new List<Category> {categories[0], categories[2]}.SequenceEqual(result));
+            }
+        }
     }
 }

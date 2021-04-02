@@ -41,7 +41,7 @@ namespace IWA_Backend.API.Controllers
         }
 
         [HttpGet("Contractor/{userName}")]
-        public ActionResult<IEnumerable<CategoryDTO>> GetOwnCategories(string userName)
+        public ActionResult<IEnumerable<CategoryDTO>> GetContractorsCategories(string userName)
         {
             try
             {

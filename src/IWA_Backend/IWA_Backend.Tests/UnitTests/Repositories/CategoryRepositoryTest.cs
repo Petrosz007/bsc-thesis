@@ -195,5 +195,40 @@ namespace IWA_Backend.Tests.UnitTests.Repositories
             // Assert
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void GetUsersCategories()
+        {
+            // Arrange
+            var categories = new List<Category>
+            {
+                new()
+                {
+                    Owner = new() { UserName = "Owner" },
+                },
+                new()
+                {
+                    Owner = new() { UserName = "Not Owner" },
+                },
+                new()
+                {
+                    Owner = new() { UserName = "Owner" },
+                },
+                new()
+                {
+                    Owner = new() { UserName = "Not Owner" },
+                },
+            };
+            var mockContext = new MockDbContextBuilder { Categories = categories }.Build();
+            var repo = new CategoryRepository(mockContext.Object);
+
+            
+
+            // Act
+            var result = repo.GetUsersCategories("Owner");
+
+            // Assert
+            Assert.True(new List<Category> { categories[0], categories[2] }.SequenceEqual(result));
+        }
     }
 }

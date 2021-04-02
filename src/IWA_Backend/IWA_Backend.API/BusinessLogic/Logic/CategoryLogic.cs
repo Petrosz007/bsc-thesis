@@ -57,6 +57,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             var categories = CategoryRepository.GetUsersCategories(contractorUserName)
                 .ToList()
                 .Where(category => HasReadAccess(category, userName));
+            
             return categories;
         }
 

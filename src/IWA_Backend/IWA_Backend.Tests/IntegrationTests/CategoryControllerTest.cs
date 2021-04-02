@@ -408,5 +408,67 @@ namespace IWA_Backend.Tests.IntegrationTests
                 Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
             }
         }
+        
+        [Collection("Sequential")]
+        public class GetOwnCategories : CategoryControllerTest
+        {
+            [Fact]
+            public async Task NotLoggedIn()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                var userName = "contractor1";
+                var ids = new[] { 1 };
+                var testCategories = Context.Categories
+                    .Where(a => ids.Contains(a.Id))
+                    .ToList()
+                    .Select(CategoryMapper.ToDTO);
+
+                // Act
+                var response = await client.GetAsync($"/Category/Contractor/{userName}");
+
+                // Assert
+                Assert.True(response.IsSuccessStatusCode);
+                var categories = await response.Content.ReadAsAsync<IEnumerable<CategoryDTO>>();
+                Assert.True(testCategories.All(c => c.ValuesEqual(categories.First(cat => cat.Id == c.Id))));
+            }
+            
+            [Fact]
+            public async Task LoggedIn()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                var userName = "contractor1";
+                var ids = new[] { 1, 2 };
+                var testCategories = Context.Categories
+                    .Where(a => ids.Contains(a.Id))
+                    .ToList()
+                    .Select(CategoryMapper.ToDTO);
+
+                // Act
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "customer1", Password = "kebab" });
+                var response = await client.GetAsync($"/Category/Contractor/{userName}");
+
+                // Assert
+                Assert.True(loginResponse.IsSuccessStatusCode);
+                Assert.True(response.IsSuccessStatusCode);
+                var categories = await response.Content.ReadAsAsync<IEnumerable<CategoryDTO>>();
+                Assert.True(testCategories.All(c => c.ValuesEqual(categories.First(cat => cat.Id == c.Id))));
+            }
+
+            [Fact]
+            public async Task NotFound()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                var userName = "Fake user";
+
+                // Act
+                var response = await client.GetAsync($"/Category/Contractor/{userName}");
+
+                // Assert
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
     }
 }

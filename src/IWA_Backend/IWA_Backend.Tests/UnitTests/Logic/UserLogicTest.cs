@@ -26,6 +26,7 @@ namespace IWA_Backend.Tests.UnitTests.Logic
             Mapper = new MapperConfiguration(c => c.AddProfile<AutoMapping>()).CreateMapper();
             Logic = new(MockUserRepo.Object, Mapper);
         }
+        
         public class GetById : UserLogicTest
         {
             [Fact]
