@@ -1,16 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useApiCall, Failed, Loaded } from "../../hooks/apiCallHooks";
 import { useHandleChange } from "../../hooks/useEditorForm";
 import { AppointmentDTO } from "../../logic/dtos";
-import { Category, User } from "../../logic/entities";
+import { Appointment, Category, User } from "../../logic/entities";
 import { DataContext } from "../contexts/DataProvider";
 import { DIContext } from "../contexts/DIContext";
 import UserAdder from "./UserAdder";
 
 import './AppointmentEditor.scss';
 import { NotificationContext } from "../contexts/NotificationProvider";
+import { ResultPromise } from "../../utilities/result";
 
 interface AppointmentEditdata {
+    id: number;
     startTimeDate: string;
     startTimeTime: string;
     endTimeDate: string;
@@ -21,30 +23,48 @@ interface AppointmentEditdata {
     createAnother: boolean;
 }
 
-export default ({ categories, onClose }: {
+const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClose }: {
+    initialAppointment?: Appointment,
+    apiCall: (_x: AppointmentDTO) => ResultPromise<Appointment,Error>,
     categories: Category[],
     onClose: () => void,
 }) => {
-    const initialAppointmentEditorState: AppointmentEditdata = {
-        startTimeDate: new Date().toISOString().slice(0,10),
-        startTimeTime: new Date().toISOString().slice(11,14) + "00",
-        endTimeDate: new Date(Date.now() + 60*60*1000).toISOString().slice(0,10),
-        endTimeTime: new Date(Date.now() + 60*60*1000).toISOString().slice(11,14) + "00",
-        categoryId: categories[0].id,
-        maxAttendees: 1,
-        createAnother: false,
-    };
+    const initialAppointmentEditorState: AppointmentEditdata = 
+        initialAppointment === undefined
+        ? {
+            id: 0,
+            startTimeDate: new Date().toISOString().slice(0,10),
+            startTimeTime: new Date().toISOString().slice(11,14) + "00",
+            endTimeDate: new Date(Date.now() + 60*60*1000).toISOString().slice(0,10),
+            endTimeTime: new Date(Date.now() + 60*60*1000).toISOString().slice(11,14) + "00",
+            categoryId: categories[0].id,
+            maxAttendees: 1,
+            createAnother: false,
+        }
+        : {
+            id: initialAppointment.id,
+            startTimeDate: initialAppointment.startTime.toISOString().slice(0,10),
+            startTimeTime: initialAppointment.startTime.toISOString().slice(11,16),
+            endTimeDate: initialAppointment.endTime.toISOString().slice(0,10),
+            endTimeTime: initialAppointment.endTime.toISOString().slice(11,16),
+            categoryId: initialAppointment.category.id,
+            maxAttendees: initialAppointment.maxAttendees,
+            createAnother: false,
+        }
 
     const { dataDispatch } = useContext(DataContext);
-    const { appointmentRepo } = useContext(DIContext);
     const { notificationDispatch } = useContext(NotificationContext);
 
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<User[]>(
+        initialAppointment === undefined
+            ? []
+            : initialAppointment.attendees
+    );
     const [closeAfterLoad, setCloseAfterLoad] = useState(false);
     const [state, setState] = useState(initialAppointmentEditorState);
 
     const [createAppointmentState, createAppointment] = useApiCall((dto: AppointmentDTO) => 
-        appointmentRepo.create(dto)
+        apiCall(dto)
             .sideEffect(appointment => {
                 console.log('Created', appointment);
                 dataDispatch({ type: 'updateAppointment', appointment });
@@ -76,8 +96,7 @@ export default ({ categories, onClose }: {
             startTime: new Date(`${state.startTimeDate} ${state.startTimeTime}`).toISOString(),
             endTime: new Date(`${state.endTimeDate} ${state.endTimeTime}`).toISOString(),
             attendeeUserNames: users.map(user => user.userName),
-            id: 0,
-        }, !state.createAnother);
+        });
 
         event.preventDefault();
     }
@@ -139,5 +158,42 @@ export default ({ categories, onClose }: {
             </div>
         </form>
         </>
+    );
+}
+
+export const AppointmentEditorCreate = ({ categories, onClose }: {
+    categories: Category[],
+    onClose: () => void,
+}) => {
+    const { appointmentRepo } = useContext(DIContext);
+
+    return (
+        <AppointmentEditorBase
+            apiCall={appointmentRepo.create}
+            categories={categories}
+            onClose={onClose}
+        />
+    );
+}
+
+export const AppointmentEditorUpdate = ({ appointment, categories, onClose }: {
+    appointment: Appointment,
+    categories: Category[],
+    onClose: () => void,
+}) => {
+    const { appointmentRepo } = useContext(DIContext);
+
+    const update = useCallback((dto: AppointmentDTO) =>
+        appointmentRepo.update(dto)
+            .andThen(_ => appointmentRepo.getById(dto.id))
+    , []);
+
+    return (
+        <AppointmentEditorBase
+            apiCall={update}
+            initialAppointment={appointment}
+            categories={categories}
+            onClose={onClose}
+        />
     );
 }

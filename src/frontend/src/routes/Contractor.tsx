@@ -1,4 +1,3 @@
-import AppointmentCard from "../components/AppointmentCard";
 import DataProvider, { DataContext } from "../components/contexts/DataProvider";
 import { DIContext } from "../components/contexts/DIContext";
 import { LoginContext } from "../components/contexts/LoginProvider";
@@ -6,10 +5,9 @@ import { Failed, Idle, Loaded, Loading, useApiCall } from "../hooks/apiCallHooks
 import React, { useContext, useEffect } from "react";
 import { Switch, useParams, useRouteMatch } from "react-router";
 import { Route } from "react-router-dom";
-import { Appointment, User } from "../logic/entities";
-import { Dictionary, groupBy } from "../utilities/listExtensions";
-import AppointmentAgenda from "../components/AppointmentAgenda";
+import { User } from "../logic/entities";
 import { NotificationContext } from "../components/contexts/NotificationProvider";
+import {AppointmentAgenda} from "../components/AppointmentAgenda";
 
 const ContractorInfo = ({ user }: { user: User }) => {
     return (
@@ -59,7 +57,7 @@ const ContractorPage = () => {
         {state instanceof Loaded && 
         <>
             <ContractorInfo user={state.value[1]}/>
-            <AppointmentAgenda appointments={dataState.appointments}/>
+            <AppointmentAgenda appointments={dataState.appointments} />
         </>
         }
         </>

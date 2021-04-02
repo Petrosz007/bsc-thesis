@@ -5,13 +5,14 @@ import { Failed, Idle, Loaded, Loading, useApiCall } from "../hooks/apiCallHooks
 import { User } from "../logic/entities";
 import React, { useContext, useEffect, useState } from "react";
 import { Redirect } from "react-router";
-import AppointmentAgenda from "../components/AppointmentAgenda";
+import {AppointmentAgendaEditable} from "../components/AppointmentAgenda";
 import Modal from "../components/Modal";
-import AppointmentEditor from "../components/editors/AppointmentEditor";
-import CategoryEditor from "../components/editors/CategoryEditor";
+import { AppointmentEditorCreate } from "../components/editors/AppointmentEditor";
 import { NotificationContext } from "../components/contexts/NotificationProvider";
+import {CategoriesEditable, CategoryCardEditable} from "../components/CategoryCard";
 
 import './OwnAppointments.scss'
+import {CategoryEditorCreate} from "../components/editors/CategoryEditor";
 
 const OwnAppointments = ({ user }: { user: User }) => {
     const { dataState, dataDispatch } = useContext(DataContext);
@@ -52,12 +53,12 @@ const OwnAppointments = ({ user }: { user: User }) => {
         <>
             {isCategoryModalOpen &&
                 <Modal>
-                    <CategoryEditor owner={user} onClose={() => setIsCategoryModalOpen(false)} />
+                    <CategoryEditorCreate owner={user} onClose={() => setIsCategoryModalOpen(false)} />
                 </Modal>
             }
             {isAppointmentModalOpen &&
                 <Modal>
-                    <AppointmentEditor categories={categories} onClose={() => setIsAppointmentModalOpen(false)} />
+                    <AppointmentEditorCreate categories={categories} onClose={() => setIsAppointmentModalOpen(false)} />
                 </Modal>
             }
 
@@ -66,8 +67,10 @@ const OwnAppointments = ({ user }: { user: User }) => {
                 ? <p>Can't create appointments without categories, create a category first!</p>
                 : <button onClick={() => setIsAppointmentModalOpen(true)}>Create Appointment</button>
             }
+            
 
-            <AppointmentAgenda appointments={appointments} />
+            <CategoriesEditable owner={user} categories={categories} />
+            <AppointmentAgendaEditable appointments={appointments} categories={categories} />
         </>
         }
         </>

@@ -1,14 +1,15 @@
 import { CategoryDTO } from "../logic/dtos";
 import { Category } from "../logic/entities";
-import { ResultPromise } from "../utilities/result";
+import {ResultPromise, Unit} from "../utilities/result";
 import { IUserRepository } from "./userRepository";
-import { safeApiFetchAs, safeApiFetchWithBodyAs } from "./utilities";
+import {safeApiFetchAs, safeApiFetchWithBodyAs, safeApiFetchWithBodyAsUnit} from "./utilities";
 import {Config} from "../config";
 
 export interface ICategoryRepository {
     getById(id: number): ResultPromise<Category,Error>;
     getContractorsCategories(username: string): ResultPromise<Category[],Error>;
     create(dto: CategoryDTO): ResultPromise<Category,Error>;
+    update(dto: CategoryDTO): ResultPromise<Unit,Error>;
 };
 
 export class CategoryRepository implements ICategoryRepository {
@@ -52,4 +53,7 @@ export class CategoryRepository implements ICategoryRepository {
     create = (dto: CategoryDTO): ResultPromise<Category,Error> => 
         safeApiFetchWithBodyAs<CategoryDTO>(`${this.config.apiUrl}/Category`, 'POST', dto)
             .andThen(this.dtoToEntity);
+    
+    update = (dto: CategoryDTO): ResultPromise<Unit,Error> => 
+        safeApiFetchWithBodyAsUnit(`${this.config.apiUrl}/Category/${dto.id}`, 'PUT', dto);
 }
