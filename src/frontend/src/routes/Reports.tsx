@@ -9,23 +9,21 @@ import { LoggedIn, LoggedOut, LoginContext } from "../components/contexts/LoginP
 import { NotificationContext } from "../components/contexts/NotificationProvider";
 import { Failed, Idle, Loaded, Loading, useApiCall } from "../hooks/apiCallHooks";
 import { Appointment, Category, User } from "../logic/entities";
+import { downloadReportPdf } from "../logic/pdfReportGenerator";
+import { createReport } from "../logic/reportGenerator";
 import { Dictionary, groupBy, uniques } from "../utilities/listExtensions";
 
 import './Report.scss';
 
-const ReportDisplay = ({ users, appointments, categories }: { users: User[], appointments: Appointment[], categories: Category[] }) => {
-    useEffect(() => console.log(categories), []);
+const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User, users: User[], appointments: Appointment[], categories: Category[] }) => {
     const [selectedUser, setSelectedUser] = useState(users[0]);
 
     const usersAppointments = appointments.filter(a => a.attendees.some(u => u.userName === selectedUser.userName));
 
-    const categoryGroups = groupBy(usersAppointments, a => `${a.category.id}`);
-    const usersCategories = Dictionary.keys(categoryGroups)
-        .map(id => parseInt(id))
-        .map(id => categories.find(c => c.id === id) ?? categories[0]);
+    const report = createReport(usersAppointments, categories, owner, selectedUser);
 
-    const totalPrice = usersCategories.reduce((acc, x) => 
-        acc + categoryGroups[x.id].length * x.price
+    const totalPrice = report.entries.reduce((acc, x) => 
+        acc + x.count * x.category.price
         , 0);
 
     return (
@@ -33,24 +31,26 @@ const ReportDisplay = ({ users, appointments, categories }: { users: User[], app
             User:
             <select value={selectedUser.userName} onChange={e => setSelectedUser(users.find(u => u.userName === e.target.value) ?? users[0])}>
                 {users.map(user =>
-                    <option value={user.userName}>{user.name} ({user.userName})</option>
+                    <option value={user.userName} key={user.userName}>{user.name} ({user.userName})</option>
                 )}
             </select>
             {/* <AppointmentAgenda appointments={usersAppointments} /> */}
             <table className="report-table">
                 <thead>
-                    <th>Kategória</th>
-                    <th>Ár / alkalom</th>
-                    <th>Alkalom</th>
-                    <th>Összesen</th>
+                    <tr>
+                        <th>Kategória</th>
+                        <th>Ár / alkalom</th>
+                        <th>Alkalom</th>
+                        <th>Összesen</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    {usersCategories.map(category => 
-                        <tr key={category.id}>
-                            <td>{category.name}</td>
-                            <td>{category.price} Ft</td>
-                            <td>{categoryGroups[category.id].length} db</td>
-                            <td>{categoryGroups[category.id].length * category.price} Ft</td>    
+                    {report.entries.map(entry => 
+                        <tr key={entry.category.id}>
+                            <td>{entry.category.name}</td>
+                            <td>{entry.category.price} Ft</td>
+                            <td>{entry.count} db</td>
+                            <td>{entry.count * entry.category.price} Ft</td>
                         </tr>
                     )}
                     <tr>
@@ -60,7 +60,8 @@ const ReportDisplay = ({ users, appointments, categories }: { users: User[], app
                         <td>{totalPrice} Ft</td>
                     </tr>
                 </tbody>
-            </table>    
+            </table>  
+            <button onClick={() => downloadReportPdf(report)}>Download Report</button>  
         </div>
     );
 }
@@ -103,7 +104,7 @@ const Reports = ({ user }: { user: User }) => {
         {state instanceof Loaded && 
             (users.length === 0
                 ? <div>No users attended your appointments.</div>
-                : <ReportDisplay users={users} appointments={appointments} categories={categories} />
+                : <ReportDisplay owner={user} users={users} appointments={appointments} categories={categories} />
             )}
         </>
     );

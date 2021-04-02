@@ -28,3 +28,12 @@ export interface Appointment {
     attendees: User[];
     maxAttendees: number;
 };
+
+export interface Report {
+    owner: User;
+    customer: User;
+    entries: {
+        category: Category;
+        count: number;
+    }[]; 
+}

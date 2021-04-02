@@ -4,6 +4,7 @@ import { ResultPromise, Unit } from "../utilities/result";
 import { ICategoryRepository } from "./categoryRepository";
 import { IUserRepository } from "./userRepository";
 import { parseResponseAs, safeApiFetchAs, safeApiFetchAsUnit, safeApiFetchWithBodyAs, safeApiFetchWithBodyAsUnit } from "./utilities";
+import {Config} from "../config";
 
 export interface IAppointmentRepository {
     getById(id: number): ResultPromise<Appointment,Error>;
@@ -17,6 +18,7 @@ export interface IAppointmentRepository {
 
 export class AppointmentRepository implements IAppointmentRepository {
     constructor(
+        private readonly config: Config,
         private readonly userRepo: IUserRepository, 
         private readonly categoryRepo: ICategoryRepository
     ) {}
@@ -48,27 +50,27 @@ export class AppointmentRepository implements IAppointmentRepository {
         
 
     getById = (id: number): ResultPromise<Appointment,Error> =>
-        safeApiFetchAs<AppointmentDTO>(`https://localhost:44347/Appointment/${id}`, 'GET')
+        safeApiFetchAs<AppointmentDTO>(`${this.config.apiUrl}/Appointment/${id}`, 'GET')
             .andThen(this.dtoToEntity);
 
     getContractorsAppointments = (contractorUserName: string): ResultPromise<Appointment[],Error> =>
-        safeApiFetchAs<AppointmentDTO[]>(`https://localhost:44347/Appointment/Contractor/${contractorUserName}`, 'GET')
+        safeApiFetchAs<AppointmentDTO[]>(`${this.config.apiUrl}/Appointment/Contractor/${contractorUserName}`, 'GET')
             .andThen(this.dtosToEntities);
 
     getBooked = (): ResultPromise<Appointment[],Error> =>
-        safeApiFetchAs<AppointmentDTO[]>(`https://localhost:44347/Appointment/Booked`, 'GET')
+        safeApiFetchAs<AppointmentDTO[]>(`${this.config.apiUrl}/Appointment/Booked`, 'GET')
             .andThen(this.dtosToEntities);
 
     book = (id: number): ResultPromise<Unit,Error> =>
-        safeApiFetchWithBodyAsUnit(`https://localhost:44347/Appointment/${id}/Book`, 'POST');
+        safeApiFetchWithBodyAsUnit(`${this.config.apiUrl}/Appointment/${id}/Book`, 'POST');
 
     unBook = (id: number): ResultPromise<Unit,Error> =>
-        safeApiFetchWithBodyAsUnit(`https://localhost:44347/Appointment/${id}/UnBook`, 'POST');
+        safeApiFetchWithBodyAsUnit(`${this.config.apiUrl}/Appointment/${id}/UnBook`, 'POST');
 
     create = (dto: AppointmentDTO): ResultPromise<Appointment,Error> =>
-        safeApiFetchWithBodyAs<AppointmentDTO>(`https://localhost:44347/Appointment`, 'POST', dto)
+        safeApiFetchWithBodyAs<AppointmentDTO>(`${this.config.apiUrl}/Appointment`, 'POST', dto)
             .andThen(this.dtoToEntity);
 
     delete = (id: number): ResultPromise<Unit,Error> =>
-        safeApiFetchAsUnit(`https://localhost:44347/Appointment/${id}`, 'DELETE');
+        safeApiFetchAsUnit(`${this.config.apiUrl}/Appointment/${id}`, 'DELETE');
 };

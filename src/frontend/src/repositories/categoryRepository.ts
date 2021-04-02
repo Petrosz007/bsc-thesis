@@ -3,6 +3,7 @@ import { Category } from "../logic/entities";
 import { ResultPromise } from "../utilities/result";
 import { IUserRepository } from "./userRepository";
 import { safeApiFetchAs, safeApiFetchWithBodyAs } from "./utilities";
+import {Config} from "../config";
 
 export interface ICategoryRepository {
     getById(id: number): ResultPromise<Category,Error>;
@@ -12,6 +13,7 @@ export interface ICategoryRepository {
 
 export class CategoryRepository implements ICategoryRepository {
     constructor(
+        private readonly config: Config,
         private readonly userRepo: IUserRepository
     ) {}
 
@@ -40,14 +42,14 @@ export class CategoryRepository implements ICategoryRepository {
                 .andThen(categoryDtos => ResultPromise.all(categoryDtos.map(this.dtoToEntity)));
 
     getById = (id: number): ResultPromise<Category,Error> =>
-        safeApiFetchAs<CategoryDTO>(`https://localhost:44347/Category/${id}`, 'GET')
+        safeApiFetchAs<CategoryDTO>(`${this.config.apiUrl}/Category/${id}`, 'GET')
             .andThen(this.dtoToEntity);
 
     getContractorsCategories = (userName: string): ResultPromise<Category[],Error> =>
-        safeApiFetchAs<CategoryDTO[]>(`https://localhost:44347/Category/Contractor/${userName}`, 'GET')
+        safeApiFetchAs<CategoryDTO[]>(`${this.config.apiUrl}/Category/Contractor/${userName}`, 'GET')
             .andThen(this.dtosToEntities);
 
     create = (dto: CategoryDTO): ResultPromise<Category,Error> => 
-        safeApiFetchWithBodyAs<CategoryDTO>(`https://localhost:44347/Category`, 'POST', dto)
+        safeApiFetchWithBodyAs<CategoryDTO>(`${this.config.apiUrl}/Category`, 'POST', dto)
             .andThen(this.dtoToEntity);
 }

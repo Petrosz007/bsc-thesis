@@ -1,6 +1,7 @@
 import { LoginDTO, RegisterDTO } from "../logic/dtos";
 import { ResultPromise, Unit } from "../utilities/result";
 import { safeApiFetchWithBodyAs, safeApiFetchWithBodyAsUnit } from "./utilities";
+import {Config} from "../config";
 
 export interface IAccountRepository {
     login(userName: string, password: string): ResultPromise<Unit,Error>;
@@ -9,14 +10,18 @@ export interface IAccountRepository {
 }
 
 export class AccountRepository implements IAccountRepository {
+    constructor(
+        private readonly config: Config
+    ) {}
+    
     login = (userName: string, password: string): ResultPromise<Unit,Error> =>
-        safeApiFetchWithBodyAsUnit(`https://localhost:44347/Account/Login`, 'POST', {
+        safeApiFetchWithBodyAsUnit(`${this.config.apiUrl}/Account/Login`, 'POST', {
             userName, password
         } as LoginDTO);
 
     logout = (): ResultPromise<Unit,Error> => 
-        safeApiFetchWithBodyAsUnit(`https://localhost:44347/Account/Logout`, 'POST');
+        safeApiFetchWithBodyAsUnit(`${this.config.apiUrl}/Account/Logout`, 'POST');
 
     register = (registerDto: RegisterDTO): ResultPromise<Unit,Error> =>
-        safeApiFetchWithBodyAsUnit(`https://localhost:44347/Account/Register`, 'POST', registerDto);
+        safeApiFetchWithBodyAsUnit(`${this.config.apiUrl}/Account/Register`, 'POST', registerDto);
 }
