@@ -18,11 +18,6 @@ namespace IWA_Backend.Tests.Utilities
         protected readonly TestWebApplicationFactory<TestStartup> Factory = new();
         protected IWAContext Context =>
             Factory.Services.GetRequiredService<IWAContext>();
-        protected IDTOMapper<Appointment, AppointmentDTO> AppointmentMapper =>
-            Factory.Services.GetRequiredService<IDTOMapper<Appointment, AppointmentDTO>>();
-
-        protected IDTOMapper<Category, CategoryDTO> CategoryMapper =>
-            Factory.Services.GetRequiredService<IDTOMapper<Category, CategoryDTO>>();
 
         protected UserManager<User> UserManager =>
             Factory.Services.GetRequiredService<UserManager<User>>();

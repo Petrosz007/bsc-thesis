@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IWA_Backend.API.BusinessLogic.DTOs;
+using IWA_Backend.API.BusinessLogic.Mappers;
 
 namespace IWA_Backend.API.BusinessLogic.Logic
 {
@@ -30,9 +32,8 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             return everyoneAllowed || isOwner || isInCategory;
         }
 
-        public bool HasWriteAccess(int categoryId, string? userName)
+        public static bool HasWriteAccess(Category category, string? userName)
         {
-            var category = CategoryRepository.GetById(categoryId);
             var isOwner = category.Owner.UserName == userName;
 
             return isOwner;
@@ -56,19 +57,36 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             var categories = CategoryRepository.GetUsersCategories(contractorUserName)
                 .ToList()
                 .Where(category => HasReadAccess(category, userName));
+            
             return categories;
         }
 
-        public async Task CreateCategoryAsync(Category category, string? userName)
+        public async Task<Category> CreateCategoryAsync(CategoryDTO categoryDto, string? userName)
         {
+            var allowedUsers = categoryDto.AllowedUserNames
+                .Select(UserRepository.GetByUserName)
+                .ToList();
+            var owner = UserRepository.GetByUserName(userName);
+            
+            var category = CategoryMapper.IntoEntity(categoryDto, allowedUsers, owner);
+            
             await CategoryRepository.CreateAsync(category);
+
+            return category;
         }
 
-        public async Task UpdateCategoryAsync(Category category, string? userName)
+        public async Task UpdateCategoryAsync(CategoryDTO categoryDto, string? userName)
         {
-            if (!HasWriteAccess(category.Id, userName))
-                throw new UnauthorisedException("Unauthorised to update this appointment");
+            var category = CategoryRepository.GetById(categoryDto.Id);
+            var allowedUsers = categoryDto.AllowedUserNames
+                .Select(UserRepository.GetByUserName)
+                .ToList();
 
+            if (!HasWriteAccess(category, userName))
+                throw new UnauthorisedException("Unauthorised to update this category");
+
+            CategoryMapper.OntoEntity(category, categoryDto, allowedUsers, category.Owner);
+            
             await CategoryRepository.UpdateAsync(category);
         }
 
@@ -76,7 +94,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
         {
             var category = CategoryRepository.GetById(categoryId);
 
-            if (!HasWriteAccess(category.Id, userName))
+            if (!HasWriteAccess(category, userName))
                 throw new UnauthorisedException("Unauthorised to delete this category.");
 
             await CategoryRepository.DeleteAsync(category);

@@ -43,7 +43,6 @@ namespace IWA_Backend.API.Repositories
 
         public async Task UpdateAsync(Category category)
         {
-            Context.DetachLocal(category);
             Context.Update(category);
             await Context.SaveChangesAsync();
         }

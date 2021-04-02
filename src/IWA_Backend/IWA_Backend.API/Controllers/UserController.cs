@@ -37,19 +37,12 @@ namespace IWA_Backend.API.Controllers
             catch (NotFoundException ex) { return NotFound(ex.Message); }
         }
 
-        [HttpPut("{userName}")]
+        [HttpPut]
         [Authorize]
-        public async Task<ActionResult> UpdateUser(string userName, [FromBody] UserUpdateDTO userUpdateDTO)
+        public async Task<ActionResult> UpdateUser([FromBody] UserUpdateDTO userUpdateDTO)
         {
-            try
-            {
-                var user = Logic.GetUserByUserName(userName);
-                var updatedUser = Mapper.Map(userUpdateDTO, user);
-                await Logic.UpdateUserAsync(updatedUser, CurrentUserName);
-                return NoContent();
-            }
-            catch (NotFoundException ex) { return NotFound(ex.Message); }
-            catch (UnauthorisedException ex) { return Unauthorized(ex.Message); }
+            await Logic.UpdateUserAsync(userUpdateDTO, CurrentUserName);
+            return NoContent();
         }
 
         [HttpGet("Self")]
