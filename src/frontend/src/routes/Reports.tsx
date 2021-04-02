@@ -20,11 +20,6 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
 
     const usersAppointments = appointments.filter(a => a.attendees.some(u => u.userName === selectedUser.userName));
 
-    // const categoryGroups = groupBy(usersAppointments, a => `${a.category.id}`);
-    // const usersCategories = Dictionary.keys(categoryGroups)
-    //     .map(id => parseInt(id))
-    //     .map(id => categories.find(c => c.id === id) ?? categories[0]);
-
     const report = createReport(usersAppointments, categories, owner, selectedUser);
 
     const totalPrice = report.entries.reduce((acc, x) => 

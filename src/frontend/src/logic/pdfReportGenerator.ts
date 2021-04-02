@@ -36,13 +36,6 @@ const createPdfDocDefinition = (report: Report) => {
             },
             {
                 style: 'table',
-                // layout: {
-                //     fillColor: (rowIndex, _node, _columnIndex) => {
-                //         if(rowIndex === 0) return null;
-                //         if(rowIndex === numberOfRows - 1) return null;
-                //         return (rowIndex % 2 === 1) ? '#F0F0F0' : null;
-                //     },
-                // },
                 layout: 'lightHorizontalLines',
                 table: {
                     widths: ['*','auto','auto','auto'],
