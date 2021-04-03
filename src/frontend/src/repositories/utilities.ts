@@ -44,7 +44,7 @@ export const safeApiFetchWithBodyAs = <T>(url: string, method: 'POST' | 'PUT', d
             'Content-Type': 'application/json',
         },
         method,
-        body: data === undefined ? '' : JSON.stringify(data),
+        body: JSON.stringify(data) ?? '',
     })
     .andThen(r => safeParseResponseAs<T>(r));
 

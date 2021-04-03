@@ -41,6 +41,11 @@ namespace IWA_Backend.API.Repositories
             Context.Categories
                 .Where(category => category.Owner.UserName == userName);
 
+        public bool IsUserInAnAppointmentOfACategory(int categoryId, string? userName) =>
+            Context.Appointments
+                .Where(a => a.Category.Id == categoryId)
+                .Any(appointment => appointment.Attendees.Any(u => u.UserName == userName));
+
         public async Task UpdateAsync(Category category)
         {
             Context.Update(category);

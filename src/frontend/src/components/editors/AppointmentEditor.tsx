@@ -118,6 +118,15 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
             }
         }
     }, [createAppointmentState, closeAfterLoad]);
+    
+    const allowedUsers = useCallback((): User[]|undefined => {
+        if(initialAppointment === undefined) return undefined;
+        if(initialAppointment.category.everyoneAllowed) return undefined;
+        
+        return [...initialAppointment.category.allowedUsers, initialAppointment.category.owner];
+    }, [initialAppointment]);
+    
+    useEffect(() => console.log(allowedUsers()), [initialAppointment]);
 
     return (
         <>
@@ -145,7 +154,7 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
 
             <div className="editor-user-adder">
                 <label htmlFor="attendees">Attendees</label>
-                <UserAdder users={users} setUsers={setUsers} />
+                <UserAdder users={users} setUsers={setUsers} allowedUsers={allowedUsers()} />
             </div>
 
             <div className="editor-footer">

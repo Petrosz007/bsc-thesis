@@ -4,17 +4,28 @@ import { User } from "../../logic/entities";
 import { setValue } from "../../utilities/listExtensions";
 import { DIContext } from "../contexts/DIContext";
 import { NotificationContext } from "../contexts/NotificationProvider";
+import {ResultPromise} from "../../utilities/result";
 
-export default ({ users, setUsers }: { users: User[], setUsers: React.Dispatch<React.SetStateAction<User[]>> }) => {
+export default ({ users, setUsers, allowedUsers }: { 
+    users: User[],
+    setUsers: React.Dispatch<React.SetStateAction<User[]>>,
+    allowedUsers?: User[],
+}) => {
     const { userRepo } = useContext(DIContext);
     const { notificationDispatch } = useContext(NotificationContext);
 
     const [userName, setUserName] = useState("");
 
     const [addState, add] = useApiCall(() =>
-        userRepo.getByUserName(userName).sideEffect(user => {
-            setUsers(prevState => setValue(prevState, user, u => u.userName));
-        })
+        userRepo.getByUserName(userName)
+            .andThen(user =>
+                allowedUsers === undefined || allowedUsers.some(u => u.userName === user.userName)
+                    ? ResultPromise.ok<User,Error>(user)
+                    : ResultPromise.err<User,Error>(new Error(`${user.userName} is not allowed on this category. Edit the category accordingly.`))
+            )
+            .sideEffect(user => {
+                setUsers(prevState => setValue(prevState, user, u => u.userName));
+            })
     , [userName]);
 
     useEffect(() => {

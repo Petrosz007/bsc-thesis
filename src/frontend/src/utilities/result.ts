@@ -127,12 +127,14 @@ export class ResultPromise<T,E> {
         (...args) => g(f(...args));
 
     static all = <T,E>(values: readonly ResultPromise<T,E>[]): ResultPromise<T[],E> => ResultPromise.of(
-        Promise.all(values.map(x => x.promise)).then(results =>
-            results.reduce((acc, x) =>
-                acc.isErr()
-                    ? acc
-                    : x.map(y => [...acc.value, y])
-            , Result.ok([] as T[])))
+        Promise.all(values.map(x => x.promise))
+            .then(results =>
+                results.reduce((acc, x) =>
+                    acc.isErr()
+                        ? acc
+                        : x.map(y => [...(acc.value ?? []), y])
+                , Result.ok<T[],E>([] as T[])))
+            .catch(err => Result.err<T[],E>(err))
     );
 
     match = <U>(

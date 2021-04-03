@@ -21,22 +21,19 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             UserRepository = userRepository;
         }
 
-        public static bool HasReadAccess(Category category, string? userName)
+        public bool HasReadAccess(Category category, string? userName)
         {
-            bool everyoneAllowed = category.EveryoneAllowed;
-            // TODO: If owner.UserName == null and userName is null this condition is true
-            // Should not happen, because every user is registered with one
-            bool isOwner = category.Owner.UserName == userName;
-            bool isInCategory = category.AllowedUsers.Any(user => user.UserName == userName);
-
-            return everyoneAllowed || isOwner || isInCategory;
+            if (category.EveryoneAllowed) return true;
+            if (category.Owner.UserName == userName) return true;
+            if (category.AllowedUsers.Any(user => user.UserName == userName)) return true;
+            if (CategoryRepository.IsUserInAnAppointmentOfACategory(category.Id, userName)) return true;
+            
+            return false;
         }
 
         public static bool HasWriteAccess(Category category, string? userName)
         {
-            var isOwner = category.Owner.UserName == userName;
-
-            return isOwner;
+            return category.Owner.UserName == userName;
         }
 
         public Category GetCategoryById(int id, string? userName)
