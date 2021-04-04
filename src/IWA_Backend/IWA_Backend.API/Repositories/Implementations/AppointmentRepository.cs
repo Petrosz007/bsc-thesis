@@ -1,12 +1,11 @@
-﻿using IWA_Backend.API.BusinessLogic.Entities;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using IWA_Backend.API.BusinessLogic.Entities;
 using IWA_Backend.API.BusinessLogic.Exceptions;
 using IWA_Backend.API.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using IWA_Backend.API.Repositories.Interfaces;
 
-namespace IWA_Backend.API.Repositories
+namespace IWA_Backend.API.Repositories.Implementations
 {
     public class AppointmentRepository : IAppointmentRepository
     {

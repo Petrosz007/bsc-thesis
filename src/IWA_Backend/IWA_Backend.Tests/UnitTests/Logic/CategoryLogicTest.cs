@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IWA_Backend.API.BusinessLogic.Mappers;
+using IWA_Backend.API.Repositories.Interfaces;
 using Xunit;
 
 namespace IWA_Backend.Tests.UnitTests.Logic

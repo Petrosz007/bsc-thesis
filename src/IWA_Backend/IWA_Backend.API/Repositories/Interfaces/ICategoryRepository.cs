@@ -1,10 +1,7 @@
-﻿using IWA_Backend.API.BusinessLogic.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using IWA_Backend.API.BusinessLogic.Entities;
 
-namespace IWA_Backend.API.Repositories
+namespace IWA_Backend.API.Repositories.Interfaces
 {
     public interface ICategoryRepository : ICrudRepository<Category, int>
     {

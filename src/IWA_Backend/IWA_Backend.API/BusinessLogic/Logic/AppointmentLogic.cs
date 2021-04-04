@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using IWA_Backend.API.BusinessLogic.DTOs;
 using IWA_Backend.API.BusinessLogic.Mappers;
+using IWA_Backend.API.Repositories.Interfaces;
 
 namespace IWA_Backend.API.BusinessLogic.Logic
 {

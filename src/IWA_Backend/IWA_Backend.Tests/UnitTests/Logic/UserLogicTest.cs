@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using IWA_Backend.API.BusinessLogic.DTOs;
 using IWA_Backend.API.BusinessLogic.Mappers;
+using IWA_Backend.API.Repositories.Interfaces;
 using Xunit;
 
 namespace IWA_Backend.Tests.UnitTests.Logic
