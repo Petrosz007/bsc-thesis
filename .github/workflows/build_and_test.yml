@@ -62,8 +62,8 @@ jobs:
 
       - name: Build frontend
         run: yarn build
-          env:
-            CI: false
+        env:
+          CI: false
       
       # TODO: Add unit testing when it is ready
       # - run: yarn test
