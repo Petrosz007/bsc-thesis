@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using IWA_Backend.API.BusinessLogic.Entities;
 using IWA_Backend.API.BusinessLogic.Exceptions;
@@ -30,18 +31,20 @@ namespace IWA_Backend.API.Repositories.Implementations
             Context.Appointments
                 .Any(a => a.Id == id);
 
-        public IQueryable<Appointment> GetBookedAppointments(string userName) =>
+        public IEnumerable<Appointment> GetBookedAppointments(string userName) =>
             Context.Appointments
-                .Where(a => a.Attendees.Any(u => u.UserName == userName));
+                .Where(a => a.Attendees.Any(u => u.UserName == userName))
+                .ToList();
 
         public Appointment GetById(int id) =>
             Context.Appointments
                 .FirstOrDefault(appointment => appointment.Id == id)
                 ?? throw new NotFoundException($"Appointment with id '{id}' not found.");
 
-        public IQueryable<Appointment> GetContractorsAllAppointments(string contractorUserName) =>
-        Context.Appointments
-                .Where(a => a.Category.Owner.UserName == contractorUserName);
+        public IEnumerable<Appointment> GetContractorsAllAppointments(string contractorUserName) =>
+            Context.Appointments
+                .Where(a => a.Category.Owner.UserName == contractorUserName)
+                .ToList();
 
 
         public async Task UpdateAsync(Appointment appointment)
