@@ -8,7 +8,7 @@ import './AppointmentAgenda.scss';
 import Modal from "./Modal";
 import { AppointmentEditorUpdate } from "./editors/AppointmentEditor";
 import {DateTime, Duration, Interval} from "luxon";
-import DatePicker from "./inputs/DatePicker";
+import {DatePicker, DateRangePicker} from "./inputs/DatePicker";
 
 const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }: { 
     appointments: Appointment[],
@@ -19,15 +19,14 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
     const startOfTheMonth = DateTime.now().set({ day: 1, hour: 0, minute: 0, second: 0, millisecond: 0 });
     const endOfTheMonth = DateTime.now().set({ day: DateTime.now().daysInMonth, hour: 23, minute: 59, second: 59, millisecond: 59 });
     
-    const [startDate, setStartDate] = useState(startOfTheMonth);
-    const [endDate, setEndDate] = useState(endOfTheMonth);
+    const [dateInterval, setDateInterval] = useState(Interval.fromDateTimes(startOfTheMonth, endOfTheMonth));
     
     const selectableCategories = uniques(appointments.map(a => a.category), c => `${c.id}`);
     const [selectedCategories, setSelectedCategories] = useState(selectableCategories);
     
     const sortedAppointments = [...appointments]
         .filter(a => selectedCategories.some(category => a.category.id === category.id))
-        .filter(a => Interval.fromDateTimes(startDate, endDate).contains(a.startTime))
+        .filter(a => dateInterval.contains(a.startTime))
         .filter(a => showFull || a.maxAttendees > a.attendees.length)
         .sort((left, right) => left.startTime.toMillis() - right.startTime.toMillis());
     
@@ -50,10 +49,7 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
                     }}
                     isMulti
             />
-            Start:
-            <DatePicker valueDate={startDate} onChangeDate={setStartDate} maxDate={endDate} />
-            End:
-            <DatePicker valueDate={endDate} onChangeDate={setEndDate} minDate={startDate} />
+            <DateRangePicker value={dateInterval} onChange={setDateInterval} />
             <table className="agenda-table">
                 <tbody>
                 {Dictionary.keys(dictionary).map(key =>

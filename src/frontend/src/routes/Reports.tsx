@@ -15,7 +15,7 @@ import Select from "react-select";
 import './Report.scss';
 import UserName from "../components/UserName";
 import {DateTime, Interval} from "luxon";
-import DatePicker from "../components/inputs/DatePicker";
+import {DatePicker, DateRangePicker} from "../components/inputs/DatePicker";
 
 const ReportTable = ({ report }: { report: Report }) => {
     const totalPrice = report.entries.reduce((acc, x) =>
@@ -57,12 +57,12 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
     const endOfTheMonth = DateTime.now().set({ day: DateTime.now().daysInMonth, hour: 23, minute: 59, second: 59, millisecond: 59 });
     
     const [selectedUser, setSelectedUser] = useState(users[0]);
-    const [startDate, setStartDate] = useState(startOfTheMonth);
-    const [endDate, setEndDate] = useState(endOfTheMonth);
+    const [dateInterval, setDateInterval] = useState(Interval.fromDateTimes(startOfTheMonth, endOfTheMonth));
 
     const usersAppointments = appointments
         .filter(a => a.attendees.some(u => u.userName === selectedUser.userName))
-        .filter(a => Interval.fromDateTimes(startDate, endDate).contains(a.startTime));
+        .filter(a => dateInterval.contains(a.startTime))
+        .sort((left, right) => left.startTime.toMillis() - right.startTime.toMillis());
 
     const report = createReport(usersAppointments, categories, owner, selectedUser);
 
@@ -74,10 +74,7 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
                     filterOption={(option: any, searchText) => `${option.value.name} @${option.value.userName}`.toUpperCase().includes(searchText.toUpperCase())}
                     value={{ value: selectedUser, label: <UserName user={selectedUser} /> }}
             />
-            Start: 
-            <DatePicker valueDate={startDate} onChangeDate={setStartDate} maxDate={endDate} />
-            End: 
-            <DatePicker valueDate={endDate} onChangeDate={setEndDate} minDate={startDate} />
+            <DateRangePicker value={dateInterval} onChange={setDateInterval} />
             <ReportTable report={report} />
             <ul>
             {usersAppointments.map(a => 
