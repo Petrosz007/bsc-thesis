@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using IWA_Backend.API.BusinessLogic.DTOs;
+using IWA_Backend.API.Repositories.Interfaces;
 
 namespace IWA_Backend.API.BusinessLogic.Logic
 {
@@ -26,6 +27,9 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             var user = UserRepository.GetByUserName(userName);
             return user;
         }
+
+        public IEnumerable<User> GetContractors() =>
+            UserRepository.GetContractors();
 
         public async Task UpdateUserAsync(UserUpdateDTO userUpdateDto, string? userName)
         {

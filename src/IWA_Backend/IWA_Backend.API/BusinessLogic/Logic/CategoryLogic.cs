@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using IWA_Backend.API.BusinessLogic.DTOs;
 using IWA_Backend.API.BusinessLogic.Mappers;
+using IWA_Backend.API.Repositories.Interfaces;
 
 namespace IWA_Backend.API.BusinessLogic.Logic
 {
@@ -52,7 +53,6 @@ namespace IWA_Backend.API.BusinessLogic.Logic
                 throw new NotFoundException($"Contractor with username {contractorUserName} not found.");
 
             var categories = CategoryRepository.GetUsersCategories(contractorUserName)
-                .ToList()
                 .Where(category => HasReadAccess(category, userName));
             
             return categories;
@@ -61,8 +61,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
         public async Task<Category> CreateCategoryAsync(CategoryDTO categoryDto, string? userName)
         {
             var allowedUsers = categoryDto.AllowedUserNames
-                .Select(UserRepository.GetByUserName)
-                .ToList();
+                .Select(UserRepository.GetByUserName);
             var owner = UserRepository.GetByUserName(userName);
             
             var category = CategoryMapper.IntoEntity(categoryDto, allowedUsers, owner);
@@ -76,8 +75,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
         {
             var category = CategoryRepository.GetById(categoryDto.Id);
             var allowedUsers = categoryDto.AllowedUserNames
-                .Select(UserRepository.GetByUserName)
-                .ToList();
+                .Select(UserRepository.GetByUserName);
 
             if (!HasWriteAccess(category, userName))
                 throw new UnauthorisedException("Unauthorised to update this category");

@@ -7,17 +7,39 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.Data.Common;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using IWA_Backend.API.Contexts.DbInitialiser;
 
 namespace IWA_Backend.Tests.Utilities
 {
-    public class TestWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup>
+    public class TestWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup>, IDisposable
         where TStartup : class
     {
+        private readonly DbConnection SqLiteConnection;
+
+        public TestWebApplicationFactory()
+        {
+            SqLiteConnection = CreateSqLiteDbConnection();
+        }
+        
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                SqLiteConnection.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        private static DbConnection CreateSqLiteDbConnection()
+        {
+            var keepAliveConnection = new SqliteConnection("Filename=:memory:");
+            keepAliveConnection.Open();
+            return keepAliveConnection;
+        }
+        
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(async services =>
@@ -28,13 +50,10 @@ namespace IWA_Backend.Tests.Utilities
 
                 services.Remove(descriptor);
 
-                var keepAliveConnection = new SqliteConnection("Filename=:memory:");
-                keepAliveConnection.Open();
-
                 services.AddDbContext<IWAContext>(options =>
                     options
                         .UseLazyLoadingProxies()
-                        .UseSqlite(keepAliveConnection));
+                        .UseSqlite(SqLiteConnection));
 
                 var serviceProvider = services.BuildServiceProvider();
                 using var scope = serviceProvider.CreateScope();

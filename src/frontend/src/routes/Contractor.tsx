@@ -8,6 +8,7 @@ import { Route } from "react-router-dom";
 import { User } from "../logic/entities";
 import { NotificationContext } from "../components/contexts/NotificationProvider";
 import {AppointmentAgenda} from "../components/AppointmentAgenda";
+import {ContractorCard} from "../components/ContractorCard";
 
 const ContractorInfo = ({ user }: { user: User }) => {
     return (
@@ -56,10 +57,43 @@ const ContractorPage = () => {
         
         {state instanceof Loaded && 
         <>
-            <ContractorInfo user={state.value[1]}/>
+            <ContractorCard contractor={state.value[1]}/>
             <AppointmentAgenda appointments={dataState.appointments} showFull={false} />
         </>
         }
+        </>
+    );
+}
+
+const ContractorBrowser = () => {
+    const { userRepo } = useContext(DIContext);
+    const { notificationDispatch } = useContext(NotificationContext);
+
+    const [state, refreshData] = useApiCall(() =>
+        userRepo.getContractors()
+    , []);
+
+    useEffect(() => {
+        if(state instanceof Failed) {
+            console.error("Error in index.tsx, appointment state result match", state.error);
+            notificationDispatch({ type: 'addError', message: `Error in Contractor: ${state.error}` });
+        }
+        else if(state instanceof Idle) {
+            refreshData();
+        }
+    }, [state]);
+    
+    return (
+        <>
+            {state instanceof Loading && <div>Loading...</div>}
+
+            {state instanceof Loaded &&
+            <>
+                {state.value.map(contractor =>
+                    <ContractorCard contractor={contractor}/>
+                )}
+            </>
+            }
         </>
     );
 }
@@ -76,7 +110,7 @@ export default () => {
                         <ContractorPage />
                     </Route>
                     <Route path={match.path}>
-                        <h3>No contractor username in url</h3>
+                        <ContractorBrowser />
                     </Route>
                 </Switch>
             </div>

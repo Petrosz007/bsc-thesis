@@ -13,7 +13,6 @@ namespace IWA_Backend.Tests.IntegrationTests
 {
     public class AccountControllerTest : IntegrationTestBase
     {
-        [Collection("Sequential")]
         public class Login : AccountControllerTest
         {
             [Fact]
@@ -45,7 +44,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class Logout : AccountControllerTest
         {
             [Fact]
@@ -82,7 +80,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class Register : AccountControllerTest
         {
             [Fact]

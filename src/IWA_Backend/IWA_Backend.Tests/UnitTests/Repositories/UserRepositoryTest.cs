@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IWA_Backend.API.Repositories.Implementations;
 using Xunit;
 
 namespace IWA_Backend.Tests.UnitTests.Repositories
@@ -77,6 +78,40 @@ namespace IWA_Backend.Tests.UnitTests.Repositories
             // Act
             // Assert
             Assert.Throws<NotFoundException>(() => repo.GetByUserName("Nonexistent"));
+        }
+        
+        [Fact]
+        public void getContractors()
+        {
+            // Arrange
+            var users = new List<User>
+            {
+                new()
+                {
+                    UserName = "test1",
+                    Email = "email1",
+                    ContractorPage = new(),
+                },
+                new()
+                {
+                    UserName = "test2",
+                    Email = "email2",
+                },
+                new()
+                {
+                    UserName = "test3",
+                    Email = "email3",
+                    ContractorPage = new(),
+                },
+            };
+            var mockContext = new MockDbContextBuilder { Users = users }.Build();
+            var repo = new UserRepository(mockContext.Object);
+
+            // Act
+            var result = repo.GetContractors();
+            
+            // Assert
+            Assert.True(new[] {users[0], users[2]}.SequenceEqual(result));
         }
 
         [Fact]

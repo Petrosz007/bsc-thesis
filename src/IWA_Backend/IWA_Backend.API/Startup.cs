@@ -19,6 +19,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using IWA_Backend.API.Contexts.DbInitialiser;
+using IWA_Backend.API.Repositories.Implementations;
+using IWA_Backend.API.Repositories.Interfaces;
 
 namespace IWA_Backend.API
 {
@@ -31,6 +34,7 @@ namespace IWA_Backend.API
         }
 
         public IConfiguration Configuration { get; }
+        protected virtual ISeedData SeedData => new LiveSeedData();
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -48,6 +52,7 @@ namespace IWA_Backend.API
                 })
                 .AddEntityFrameworkStores<IWAContext>();
 
+            services.AddSingleton<ISeedData>(SeedData);
             services.AddTransient<DbInitialiser>();
 
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
@@ -90,7 +95,7 @@ namespace IWA_Backend.API
                 .EnableSensitiveDataLogging()
                 .UseMySql(Configuration.GetConnectionString("MySqlServer"), new MySqlServerVersion(new Version(10, 5, 3))));
         }
-
+        
         protected virtual void ConfigureControllers(IServiceCollection services)
         {
             services.AddControllers();

@@ -1,12 +1,12 @@
-﻿using IWA_Backend.API.BusinessLogic.Entities;
-using IWA_Backend.API.BusinessLogic.Exceptions;
-using IWA_Backend.API.Contexts;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IWA_Backend.API.BusinessLogic.Entities;
+using IWA_Backend.API.BusinessLogic.Exceptions;
+using IWA_Backend.API.Contexts;
+using IWA_Backend.API.Repositories.Interfaces;
 
-namespace IWA_Backend.API.Repositories
+namespace IWA_Backend.API.Repositories.Implementations
 {
     public class CategoryRepository : ICategoryRepository
     {
@@ -37,9 +37,10 @@ namespace IWA_Backend.API.Repositories
                 .FirstOrDefault(category => category.Id == id)
                 ?? throw new NotFoundException($"Category with id '{id}' not found.");
 
-        public IQueryable<Category> GetUsersCategories(string? userName) =>
+        public IEnumerable<Category> GetUsersCategories(string? userName) =>
             Context.Categories
-                .Where(category => category.Owner.UserName == userName);
+                .Where(category => category.Owner.UserName == userName)
+                .ToList();
 
         public bool IsUserInAnAppointmentOfACategory(int categoryId, string? userName) =>
             Context.Appointments

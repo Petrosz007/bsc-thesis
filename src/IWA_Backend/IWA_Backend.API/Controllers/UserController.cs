@@ -36,6 +36,14 @@ namespace IWA_Backend.API.Controllers
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
         }
+        
+        [HttpGet("Contractors")]
+        public ActionResult<UserInfoDTO> GetContractors()
+        {
+            var contractors = Logic.GetContractors();
+            var contractorDTOs = contractors.Select(c => Mapper.Map<UserInfoDTO>(c));
+            return Ok(contractorDTOs);
+        }
 
         [HttpPut]
         [Authorize]
