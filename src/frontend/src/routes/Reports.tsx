@@ -10,6 +10,7 @@ import {Appointment, Category, Report, User} from "../logic/entities";
 import { downloadReportPdf } from "../logic/pdfReportGenerator";
 import { createReport } from "../logic/reportGenerator";
 import { Dictionary, groupBy, uniques } from "../utilities/listExtensions";
+import Select from "react-select";
 
 import './Report.scss';
 
@@ -62,12 +63,10 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
     return (
         <div>
             User:
-            <select value={selectedUser.userName}
-                    onChange={e => setSelectedUser(users.find(u => u.userName === e.target.value) ?? users[0])}>
-                {users.map(user =>
-                    <option value={user.userName} key={user.userName}>{user.name} ({user.userName})</option>
-                )}
-            </select>
+            <Select options={users.map(u => ({ value: u, label: `${u.name} (@${u.userName})` }))}
+                    onChange={e => setSelectedUser(e?.value ?? users[0])}
+                    value={{ value: users[0], label: `${users[0].name} (@${users[0].userName})` }}
+            />
             Start: 
             <input type="date" 
                    value={startDate.toISOString().slice(0,10)} 

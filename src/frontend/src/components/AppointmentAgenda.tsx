@@ -2,6 +2,7 @@ import React, { ReactElement, useState } from "react";
 import { Appointment, Category } from "../logic/entities";
 import {Dictionary, groupBy, uniques} from "../utilities/listExtensions";
 import {AppointmentCard, AppointmentCardEditable} from "./AppointmentCard";
+import Select from 'react-select';
 
 import './AppointmentAgenda.scss';
 import Modal from "./Modal";
@@ -12,10 +13,10 @@ const AppointmentAgendaBase = ({ appointments, categories, editable }: { appoint
     const [endDate, setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
     
     const selectableCategories = uniques(appointments.map(a => a.category), c => `${c.id}`);
-    const [selectedCategories, setSelectedCategories] = useState<string[]>(selectableCategories.map(c => `${c.id}`));
+    const [selectedCategories, setSelectedCategories] = useState(selectableCategories);
     
     const sortedAppointments = [...appointments]
-        .filter(a => selectedCategories.some(categoryId => `${a.category.id}` === categoryId))
+        .filter(a => selectedCategories.some(category => a.category.id === category.id))
         .filter(a => a.startTime >= startDate && a.startTime <= endDate)
         .sort((left, right) => left.startTime.getTime() - right.startTime.getTime());
     
@@ -31,14 +32,13 @@ const AppointmentAgendaBase = ({ appointments, categories, editable }: { appoint
                 </Modal>
             }
             Categories:
-            <select value={selectedCategories}
-                    onChange={e => setSelectedCategories(Array.from(e.target.selectedOptions, x => x.value))}
-                    multiple={true}
-            >
-                {selectableCategories.map(category =>
-                    <option value={`${category.id}`} key={category.id}>{category.name}</option>
-                )}
-            </select>
+            <Select options={selectableCategories.map(c => ({ value: c, label: c.name }))}
+                    onChange={e => {
+                        const arr = Array.isArray(e) ? e : [];
+                        setSelectedCategories(arr.length !== 0 ? e.map(x => x.value) : selectableCategories);
+                    }}
+                    isMulti
+            />
             Start:
             <input type="date"
                    value={startDate.toISOString().slice(0,10)}
