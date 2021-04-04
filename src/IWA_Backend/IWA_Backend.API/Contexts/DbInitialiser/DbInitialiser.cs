@@ -46,15 +46,18 @@ namespace IWA_Backend.API.Contexts.DbInitialiser
 
         public async Task ReseedDataAsync(bool addId = true)
         {
-            Context.Database.EnsureDeleted();
-            await Context.SaveChangesAsync();
+            await Context.Database.EnsureDeletedAsync();
             Initialise();
             await SeedDataAsync(addId);
         }
 
         public async Task SeedDataAsync(bool addId = true)
         {
-            foreach (var user in SeedData.Users)
+            var users = SeedData.Users();
+            var categories = SeedData.Categories(users);
+            var appointments = SeedData.Appointments(categories, users);
+            
+            foreach (var user in users)
             {
                 await UserManager.CreateAsync(user, "kebab");
             }
@@ -72,7 +75,7 @@ namespace IWA_Backend.API.Contexts.DbInitialiser
 
 
             int categoryId = 1;
-            foreach (var category in SeedData.Categories)
+            foreach (var category in categories)
             {
                 if (addId)
                     category.Id = categoryId++;
@@ -81,7 +84,7 @@ namespace IWA_Backend.API.Contexts.DbInitialiser
             await Context.SaveChangesAsync();
 
             int appointmentId = 1;
-            foreach(var appointment in SeedData.Appointments)
+            foreach(var appointment in appointments)
             {
                 if (addId)
                     appointment.Id = appointmentId++;

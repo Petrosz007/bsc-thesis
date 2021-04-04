@@ -5,8 +5,8 @@ namespace IWA_Backend.API.Contexts.DbInitialiser
 {
     public interface ISeedData
     {
-        List<User> Users { get; }
-        List<Category> Categories { get; }
-        List<Appointment> Appointments { get; }
+        List<User> Users();
+        List<Category> Categories(List<User> users);
+        List<Appointment> Appointments(List<Category> categories, List<User> users);
     }
 }
