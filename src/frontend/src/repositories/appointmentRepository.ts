@@ -37,7 +37,7 @@ export class AppointmentRepository implements IAppointmentRepository {
                         attendeeResults.map(attendees => (
                         {
                             id: appointmentDto.id,
-                            maxAttendees: appointmentDto.id,
+                            maxAttendees: appointmentDto.maxAttendees,
                             startTime: new Date(appointmentDto.startTime),
                             endTime: new Date(appointmentDto.endTime),
                             category,

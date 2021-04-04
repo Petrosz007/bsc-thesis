@@ -8,7 +8,12 @@ import './AppointmentAgenda.scss';
 import Modal from "./Modal";
 import { AppointmentEditorUpdate } from "./editors/AppointmentEditor";
 
-const AppointmentAgendaBase = ({ appointments, categories, editable }: { appointments: Appointment[], categories?: Category[], editable: boolean }) => {
+const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }: { 
+    appointments: Appointment[],
+    categories?: Category[],
+    editable: boolean,
+    showFull: boolean
+}) => {
     const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
     const [endDate, setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
     
@@ -18,6 +23,7 @@ const AppointmentAgendaBase = ({ appointments, categories, editable }: { appoint
     const sortedAppointments = [...appointments]
         .filter(a => selectedCategories.some(category => a.category.id === category.id))
         .filter(a => a.startTime >= startDate && a.startTime <= endDate)
+        .filter(a => showFull || a.maxAttendees > a.attendees.length)
         .sort((left, right) => left.startTime.getTime() - right.startTime.getTime());
     
     const dictionary = groupBy(sortedAppointments, a => a.startTime.toDateString());
@@ -73,14 +79,14 @@ const AppointmentAgendaBase = ({ appointments, categories, editable }: { appoint
     );
 }
 
-export const AppointmentAgenda = ({ appointments }: { appointments: Appointment[] }) => {
+export const AppointmentAgenda = ({ appointments, showFull = true }: { appointments: Appointment[], showFull?: boolean }) => {
     return (
-        <AppointmentAgendaBase appointments={appointments} editable={false} />
+        <AppointmentAgendaBase appointments={appointments} editable={false} showFull={showFull} />
     );
 }
 
-export const AppointmentAgendaEditable = ({ appointments, categories }: { appointments: Appointment[], categories: Category[] }) => {
+export const AppointmentAgendaEditable = ({ appointments, categories, showFull = true }: { appointments: Appointment[], categories: Category[], showFull?: boolean }) => {
     return (
-        <AppointmentAgendaBase appointments={appointments} categories={categories} editable={true} />
+        <AppointmentAgendaBase appointments={appointments} categories={categories} editable={true} showFull={showFull} />
     );
 }

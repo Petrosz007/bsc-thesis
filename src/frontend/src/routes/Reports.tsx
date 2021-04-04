@@ -66,6 +66,7 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
             User:
             <Select options={users.map(u => ({ value: u, label: <UserName user={u} /> }))}
                     onChange={e => setSelectedUser(e?.value ?? users[0])}
+                    filterOption={(option: any, searchText) => `${option.value.name} @${option.value.userName}`.toUpperCase().includes(searchText.toUpperCase())}
                     value={{ value: selectedUser, label: <UserName user={selectedUser} /> }}
             />
             Start: 

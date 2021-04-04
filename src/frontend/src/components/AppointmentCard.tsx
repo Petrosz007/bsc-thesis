@@ -110,8 +110,7 @@ export const AppointmentCardEditable = ({ appointment, onEdit }: { appointment: 
             <span className="appointment-header">{appointment.category.name}</span>
             <div className="appointment-description">
                 <p>{appointment.category.description}</p>
-                {/* <p><FormattedDate date={appointment.startTime}/> - <HourDuration startTime={appointment.startTime} endTime={appointment.endTime}/></p> */}
-                <p>{appointment.category.price} Ft</p>
+                <p>{appointment.category.price} Ft - {appointment.maxAttendees - appointment.attendees.length} szabad hely</p>
             </div>
             <div className="appointment-methods">
                 <BookButton appointment={appointment} />
@@ -132,8 +131,7 @@ export const AppointmentCard = ({ appointment }: { appointment: Appointment }) =
             <span className="appointment-header">{appointment.category.name}</span>
             <div className="appointment-description">
                 <p>{appointment.category.description}</p>
-                {/* <p><FormattedDate date={appointment.startTime}/> - <HourDuration startTime={appointment.startTime} endTime={appointment.endTime}/></p> */}
-                <p>{appointment.category.price} Ft</p>
+                <p>{appointment.category.price} Ft - {appointment.maxAttendees - appointment.attendees.length} szabad hely</p>
             </div>
             <div className="appointment-methods">
                 <BookButton appointment={appointment} />

@@ -57,7 +57,7 @@ const ContractorPage = () => {
         {state instanceof Loaded && 
         <>
             <ContractorInfo user={state.value[1]}/>
-            <AppointmentAgenda appointments={dataState.appointments} />
+            <AppointmentAgenda appointments={dataState.appointments} showFull={false} />
         </>
         }
         </>
