@@ -50,6 +50,7 @@ export default ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
             <p>Időpontfoglaló Webes Alkalmazás</p>
             <div className="navRight">
                 <NavLink to="/" exact={true}>Home</NavLink>
+                <NavLink to="/contractor">Contractors</NavLink>
                 {loginState instanceof LoggedOut && 
                     <LoggedOutConponent /> 
                 }

@@ -9,6 +9,7 @@ namespace IWA_Backend.API.Repositories
     public interface IUserRepository
     {
         User GetByUserName(string? userName);
+        IEnumerable<User> GetContractors();
         Task UpdateAsync(User user);
         bool Exists(string? userName);
     }

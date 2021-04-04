@@ -23,6 +23,11 @@ namespace IWA_Backend.API.Repositories
                 .FirstOrDefault(user => user.UserName == id)
                 ?? throw new NotFoundException($"User with user name '{id}' not found.");
 
+        public IEnumerable<User> GetContractors() =>
+            Context.Users
+                .Where(user => user.ContractorPage != null)
+                .ToList();
+
         public async Task UpdateAsync(User user)
         {
             Context.DetachLocal(user);

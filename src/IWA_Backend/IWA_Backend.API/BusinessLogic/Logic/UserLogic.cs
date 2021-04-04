@@ -27,6 +27,9 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             return user;
         }
 
+        public IEnumerable<User> GetContractors() =>
+            UserRepository.GetContractors();
+
         public async Task UpdateUserAsync(UserUpdateDTO userUpdateDto, string? userName)
         {
             var user = UserRepository.GetByUserName(userName);
