@@ -1,6 +1,6 @@
 import { Report } from "./entities";
 import * as pdfMake from "pdfmake/build/pdfmake";
-import { TDocumentDefinitions } from "pdfmake/interfaces";
+import type { TDocumentDefinitions } from "pdfmake/interfaces";
 
 export const downloadReportPdf = (report: Report) => {
     const docDefinition = createPdfDocDefinition(report);

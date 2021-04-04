@@ -5,6 +5,7 @@ import { setValue } from "../../utilities/listExtensions";
 import { DIContext } from "../contexts/DIContext";
 import { NotificationContext } from "../contexts/NotificationProvider";
 import {ResultPromise} from "../../utilities/result";
+import UserName from "../UserName";
 
 export default ({ users, setUsers, allowedUsers }: { 
     users: User[],
@@ -46,7 +47,7 @@ export default ({ users, setUsers, allowedUsers }: {
                 : <button onClick={e => {add(); e.preventDefault()}}>Add</button>}<br/>
             {users.map(user => 
                 <React.Fragment key={user.userName}>
-                    <span>{user.name} ({user.userName})</span>
+                    <UserName user={user} />
                     <button onClick={e => {remove(user.userName); e.preventDefault()}}>X</button>
                     <br/>
                 </React.Fragment>
