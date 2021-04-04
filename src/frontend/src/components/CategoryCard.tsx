@@ -35,7 +35,7 @@ export const CategoriesEditable = ({ owner, categories }: { owner: User, categor
         }
         <div>
             {categories.map(category =>
-                <CategoryCardEditable category={category} onEdit={c => setCategoryToEdit(c)}/>
+                <CategoryCardEditable category={category} onEdit={c => setCategoryToEdit(c)} key={category.id} />
             )}
         </div>
         </>

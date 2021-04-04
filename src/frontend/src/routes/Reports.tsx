@@ -13,6 +13,7 @@ import { Dictionary, groupBy, uniques } from "../utilities/listExtensions";
 import Select from "react-select";
 
 import './Report.scss';
+import UserName from "../components/UserName";
 
 const ReportTable = ({ report }: { report: Report }) => {
     const totalPrice = report.entries.reduce((acc, x) =>
@@ -63,9 +64,9 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
     return (
         <div>
             User:
-            <Select options={users.map(u => ({ value: u, label: `${u.name} (@${u.userName})` }))}
+            <Select options={users.map(u => ({ value: u, label: <UserName user={u} /> }))}
                     onChange={e => setSelectedUser(e?.value ?? users[0])}
-                    value={{ value: users[0], label: `${users[0].name} (@${users[0].userName})` }}
+                    value={{ value: selectedUser, label: <UserName user={selectedUser} /> }}
             />
             Start: 
             <input type="date" 
