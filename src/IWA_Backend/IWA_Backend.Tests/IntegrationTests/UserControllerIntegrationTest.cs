@@ -15,7 +15,6 @@ namespace IWA_Backend.Tests.IntegrationTests
 {
     public class UserControllerIntegrationTest : IntegrationTestBase
     {
-        [Collection("Sequential")]
         public class GetByUserName : UserControllerIntegrationTest
         {
             [Fact]
@@ -50,7 +49,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
         
-        [Collection("Sequential")]
         public class GetContractors : UserControllerIntegrationTest
         {
             [Fact]
@@ -70,7 +68,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class Update : UserControllerIntegrationTest
         {
             [Fact]
@@ -134,7 +131,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class GetSelf : UserControllerIntegrationTest
         {
             [Fact]
