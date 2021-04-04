@@ -58,8 +58,6 @@ namespace IWA_Backend.API
             services.AddTransient<CategoryLogic>();
             services.AddTransient<UserLogic>();
 
-            services.AddTransient<IDTOMapper<Appointment, AppointmentDTO>, AppointmentMapper>();
-            services.AddTransient<IDTOMapper<Category, CategoryDTO>, CategoryMapper>();
             services.AddAutoMapper(typeof(Startup));
 
             ConfigureControllers(services);
@@ -68,13 +66,29 @@ namespace IWA_Backend.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IWA_Backend.API", Version = "v1" });
             });
+
+            services.AddCors(o => o.AddPolicy("Allow All Policy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
+            services.AddCors(o => o.AddPolicy("Localhost", builder =>
+            {
+                builder.WithOrigins("http://localhost:8100")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            }));
         }
 
         protected virtual void ConfigureDb(IServiceCollection services)
         {
             services.AddDbContext<IWAContext>(options => options
                 .UseLazyLoadingProxies()
-                .UseSqlServer(Configuration.GetConnectionString("SqlServer")));
+                .EnableSensitiveDataLogging()
+                .UseMySql(Configuration.GetConnectionString("MySqlServer"), new MySqlServerVersion(new Version(10, 5, 3))));
         }
 
         protected virtual void ConfigureControllers(IServiceCollection services)
@@ -92,6 +106,9 @@ namespace IWA_Backend.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IWA_Backend.API v1"));
             }
 
+            //app.UseCors("Allow All Policy");
+            app.UseCors("Localhost");
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -103,6 +120,7 @@ namespace IWA_Backend.API
             {
                 endpoints.MapControllers();
             });
+
 
             dbInitialiser.Initialise();
         }

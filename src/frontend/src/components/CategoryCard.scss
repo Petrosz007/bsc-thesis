@@ -1,0 +1,27 @@
+@use "./styles/variables" as var;
+
+div.category-card {
+    $borderRadius: 5px;
+
+    width: 600px;
+    display: grid;
+    grid-template-columns: 75% 25%;
+    grid-template-rows: 30px auto;
+
+    .category-header {
+        grid-column: 1 / 3;
+        grid-row: 1 / 2;
+        color: var.$mainDark;
+
+        font-size: 1.3rem;
+    }
+
+    div.category-description {
+        grid-column: 1 / 2;
+        grid-row: 2 / 3;
+    }
+    div.category-methods {
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+    }
+}

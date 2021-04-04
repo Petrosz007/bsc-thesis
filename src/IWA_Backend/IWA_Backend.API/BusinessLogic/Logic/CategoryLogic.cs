@@ -5,40 +5,40 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IWA_Backend.API.BusinessLogic.DTOs;
+using IWA_Backend.API.BusinessLogic.Mappers;
 
 namespace IWA_Backend.API.BusinessLogic.Logic
 {
     public class CategoryLogic
     {
-        private readonly ICategoryRepository Repository;
+        private readonly ICategoryRepository CategoryRepository;
+        private readonly IUserRepository UserRepository;
 
-        public CategoryLogic(ICategoryRepository repository)
+        public CategoryLogic(ICategoryRepository categoryRepository, IUserRepository userRepository)
         {
-            Repository = repository;
+            CategoryRepository = categoryRepository;
+            UserRepository = userRepository;
         }
 
-        public static bool HasReadAccess(Category category, string? userName)
+        public bool HasReadAccess(Category category, string? userName)
         {
-            bool everyoneAllowed = category.EveryoneAllowed;
-            // TODO: If owner.UserName == null and userName is null this condition is true
-            // Should not happen, because every user is registered with one
-            bool isOwner = category.Owner.UserName == userName;
-            bool isInCategory = category.AllowedUsers.Any(user => user.UserName == userName);
-
-            return everyoneAllowed || isOwner || isInCategory;
+            if (category.EveryoneAllowed) return true;
+            if (category.Owner.UserName == userName) return true;
+            if (category.AllowedUsers.Any(user => user.UserName == userName)) return true;
+            if (CategoryRepository.IsUserInAnAppointmentOfACategory(category.Id, userName)) return true;
+            
+            return false;
         }
 
-        public bool HasWriteAccess(int categoryId, string? userName)
+        public static bool HasWriteAccess(Category category, string? userName)
         {
-            var category = Repository.GetById(categoryId);
-            var isOwner = category.Owner.UserName == userName;
-
-            return isOwner;
+            return category.Owner.UserName == userName;
         }
 
         public Category GetCategoryById(int id, string? userName)
         {
-            var category = Repository.GetById(id);
+            var category = CategoryRepository.GetById(id);
 
             if (!HasReadAccess(category, userName))
                 throw new UnauthorisedException($"You are unauthorized to view this category.");
@@ -46,27 +46,55 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             return category;
         }
 
-        public async Task CreateCategoryAsync(Category category, string? userName)
+        public IEnumerable<Category> GetContractorsCategories(string contractorUserName, string? userName)
         {
-            await Repository.CreateAsync(category);
+            if (!UserRepository.Exists(contractorUserName))
+                throw new NotFoundException($"Contractor with username {contractorUserName} not found.");
+
+            var categories = CategoryRepository.GetUsersCategories(contractorUserName)
+                .ToList()
+                .Where(category => HasReadAccess(category, userName));
+            
+            return categories;
         }
 
-        public async Task UpdateCategoryAsync(Category category, string? userName)
+        public async Task<Category> CreateCategoryAsync(CategoryDTO categoryDto, string? userName)
         {
-            if (!HasWriteAccess(category.Id, userName))
-                throw new UnauthorisedException("Unauthorised to update this appointment");
+            var allowedUsers = categoryDto.AllowedUserNames
+                .Select(UserRepository.GetByUserName)
+                .ToList();
+            var owner = UserRepository.GetByUserName(userName);
+            
+            var category = CategoryMapper.IntoEntity(categoryDto, allowedUsers, owner);
+            
+            await CategoryRepository.CreateAsync(category);
 
-            await Repository.UpdateAsync(category);
+            return category;
+        }
+
+        public async Task UpdateCategoryAsync(CategoryDTO categoryDto, string? userName)
+        {
+            var category = CategoryRepository.GetById(categoryDto.Id);
+            var allowedUsers = categoryDto.AllowedUserNames
+                .Select(UserRepository.GetByUserName)
+                .ToList();
+
+            if (!HasWriteAccess(category, userName))
+                throw new UnauthorisedException("Unauthorised to update this category");
+
+            CategoryMapper.OntoEntity(category, categoryDto, allowedUsers, category.Owner);
+            
+            await CategoryRepository.UpdateAsync(category);
         }
 
         public async Task DeleteCategoryAsync(int categoryId, string? userName)
         {
-            var category = Repository.GetById(categoryId);
+            var category = CategoryRepository.GetById(categoryId);
 
-            if (!HasWriteAccess(category.Id, userName))
+            if (!HasWriteAccess(category, userName))
                 throw new UnauthorisedException("Unauthorised to delete this category.");
 
-            await Repository.DeleteAsync(category);
+            await CategoryRepository.DeleteAsync(category);
         }
     }
 }

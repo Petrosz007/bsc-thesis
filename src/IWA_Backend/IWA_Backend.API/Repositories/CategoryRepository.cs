@@ -37,10 +37,17 @@ namespace IWA_Backend.API.Repositories
                 .FirstOrDefault(category => category.Id == id)
                 ?? throw new NotFoundException($"Category with id '{id}' not found.");
 
+        public IQueryable<Category> GetUsersCategories(string? userName) =>
+            Context.Categories
+                .Where(category => category.Owner.UserName == userName);
+
+        public bool IsUserInAnAppointmentOfACategory(int categoryId, string? userName) =>
+            Context.Appointments
+                .Where(a => a.Category.Id == categoryId)
+                .Any(appointment => appointment.Attendees.Any(u => u.UserName == userName));
 
         public async Task UpdateAsync(Category category)
         {
-            Context.DetachLocal(category);
             Context.Update(category);
             await Context.SaveChangesAsync();
         }

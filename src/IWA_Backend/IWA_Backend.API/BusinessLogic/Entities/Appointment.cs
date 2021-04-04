@@ -20,5 +20,7 @@ namespace IWA_Backend.API.BusinessLogic.Entities
         public virtual List<User> Attendees { get; set; } = new List<User>();
         [Required]
         public int MaxAttendees { get; set; }
+
+        public virtual List<AttendeeOnAppointments> AttendeeOnAppointmentsJoin { get; set; } = null!;
     }
 }

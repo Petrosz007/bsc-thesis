@@ -72,7 +72,7 @@ namespace IWA_Backend.Tests.IntegrationTests
 
                 // Act
                 var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "contractor1", Password = "kebab" });
-                var response = await client.PutAsJsonAsync($"/User/{userName}", user);
+                var response = await client.PutAsJsonAsync($"/User", user);
 
                 // Assert
                 Assert.True(loginResponse.IsSuccessStatusCode);
@@ -83,32 +83,6 @@ namespace IWA_Backend.Tests.IntegrationTests
                 Assert.Equal(user.Name, dbUser.Name);
                 Assert.Equal(user.ContractorPage.Title, dbUser.ContractorPage?.Title);
                 Assert.Equal(user.ContractorPage.Bio, dbUser.ContractorPage?.Bio);
-            }
-
-            [Fact]
-            public async Task NotFound()
-            {
-                // Arrange
-                var client = Factory.CreateClient();
-                var userName = "Fake User";
-                var user = new UserUpdateDTO
-                {
-                    Email = "newmail@example.com",
-                    Name = "Most már nem Karcsi",
-                    ContractorPage = new ContractorPageDTO
-                    {
-                        Title = "Ez már nem karcsi oldala",
-                        Bio = "New bio",
-                    },
-                };
-
-                // Act
-                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "contractor1", Password = "kebab" });
-                var response = await client.PutAsJsonAsync($"/User/{userName}", user);
-
-                // Assert
-                Assert.True(loginResponse.IsSuccessStatusCode);
-                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             }
 
             [Fact]
@@ -132,37 +106,50 @@ namespace IWA_Backend.Tests.IntegrationTests
                 };
 
                 // Act
-                var response = await client.PutAsJsonAsync($"/User/{userName}", user);
+                var response = await client.PutAsJsonAsync($"/User", user);
 
                 // Assert
                 Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
                 Assert.StartsWith("http://localhost/Account/Login", response?.Headers?.Location?.OriginalString);
             }
+        }
 
+        [Collection("Sequential")]
+        public class GetSelf : UserControllerIntegrationTest
+        {
             [Fact]
-            public async Task UnauthorisedLoggedIn()
+            public async Task LoggedIn()
             {
                 // Arrange
                 var client = Factory.CreateClient();
-                var userName = "contractor2";
-                var user = new UserUpdateDTO
-                {
-                    Email = "newmail@example.com",
-                    Name = "Most már nem Karcsi",
-                    ContractorPage = new ContractorPageDTO
-                    {
-                        Title = "Ez már nem karcsi oldala",
-                        Bio = "New bio",
-                    },
-                };
-
+                
                 // Act
-                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "contractor1", Password = "kebab" });
-                var response = await client.PutAsJsonAsync($"/User/{userName}", user);
+                var loginResponse = await client.PostAsJsonAsync("/Account/Login", new LoginDTO { UserName = "customer1", Password = "kebab" });
+                var response = await client.GetAsync("/User/Self");
 
+                
                 // Assert
                 Assert.True(loginResponse.IsSuccessStatusCode);
-                Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+                Assert.True(response.IsSuccessStatusCode);
+                var (isLoggedIn, userName) = await response.Content.ReadAsAsync<IsLoggedInDTO>();
+                Assert.True(isLoggedIn);
+                Assert.Equal("customer1", userName);
+            }
+            
+            [Fact]
+            public async Task NotLoggedIn()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                
+                // Act
+                var response = await client.GetAsync("/User/Self");
+                
+                // Assert
+                Assert.True(response.IsSuccessStatusCode);
+                var (isLoggedIn, userName) = await response.Content.ReadAsAsync<IsLoggedInDTO>();
+                Assert.False(isLoggedIn);
+                Assert.Null(userName);
             }
         }
     }

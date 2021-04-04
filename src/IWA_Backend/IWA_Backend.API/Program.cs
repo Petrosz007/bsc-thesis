@@ -39,11 +39,11 @@ namespace IWA_Backend.API
             dbInitialiser.Initialise();
             if (dbInitialiser.AnyCategories())
             {
-                await dbInitialiser.ReseedDataAsync();
+                await dbInitialiser.ReseedLiveTestDataAsync(false);
             }
             else
             {
-                await dbInitialiser.SeedDataAsync(false);
+                await dbInitialiser.SeedLiveTestDataAsync(false);
             }
         }
     }

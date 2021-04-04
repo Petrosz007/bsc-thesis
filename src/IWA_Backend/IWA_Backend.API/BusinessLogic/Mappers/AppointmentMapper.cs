@@ -8,18 +8,27 @@ using System.Threading.Tasks;
 
 namespace IWA_Backend.API.BusinessLogic.Mappers
 {
-    public class AppointmentMapper : IDTOMapper<Appointment, AppointmentDTO>
+    public static class AppointmentMapper
     {
-        private readonly ICategoryRepository CategoryRepository;
-        private readonly IUserRepository UserRepository;
-        public AppointmentMapper(ICategoryRepository categoryRepository, IUserRepository userRepository)
+        public static Appointment OntoEntity(Appointment entity, AppointmentDTO dto, Category category, IEnumerable<User> attendees)
         {
-            CategoryRepository = categoryRepository;
-            UserRepository = userRepository;
+            entity.Id = dto.Id;
+            entity.StartTime = dto.StartTime;
+            entity.EndTime = dto.EndTime;
+            entity.Category = category;
+            entity.MaxAttendees = dto.MaxAttendees;
+
+            entity.Attendees.Clear();
+            entity.Attendees.AddRange(attendees);
+
+            return entity;
         }
 
-        public AppointmentDTO ToDTO(Appointment entity) =>
-            new AppointmentDTO
+        public static Appointment IntoEntity(AppointmentDTO dto, Category category, IEnumerable<User> attendees) =>
+            OntoEntity(new(), dto, category, attendees);
+        
+        public static AppointmentDTO ToDTO(Appointment entity) =>
+            new()
             {
                 Id = entity.Id,
                 StartTime = entity.StartTime,
@@ -29,15 +38,5 @@ namespace IWA_Backend.API.BusinessLogic.Mappers
                 MaxAttendees = entity.MaxAttendees,
             };
 
-        public Appointment ToEntity(AppointmentDTO dto) =>
-            new Appointment
-            {
-                Id = dto.Id,
-                StartTime = dto.StartTime,
-                EndTime = dto.EndTime,
-                Category = CategoryRepository.GetById(dto.CategoryId),
-                Attendees = dto.AttendeeUserNames.Select(UserRepository.GetByUserName).ToList(),
-                MaxAttendees = dto.MaxAttendees,
-            };
     }
 }

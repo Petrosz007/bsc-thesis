@@ -5,16 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using IWA_Backend.API.BusinessLogic.DTOs;
 
 namespace IWA_Backend.API.BusinessLogic.Logic
 {
     public class UserLogic
     {
         private readonly IUserRepository UserRepository;
+        private readonly IMapper Mapper;
 
-        public UserLogic(IUserRepository userRepository)
+        public UserLogic(IUserRepository userRepository, IMapper mapper)
         {
             UserRepository = userRepository;
+            Mapper = mapper;
         }
 
         public User GetUserByUserName(string userName)
@@ -23,13 +27,11 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             return user;
         }
 
-        public async Task UpdateUserAsync(User user, string? userName)
+        public async Task UpdateUserAsync(UserUpdateDTO userUpdateDto, string? userName)
         {
-            if(user.UserName != userName)
-                throw new UnauthorisedException("Unauthorised to update user.");
+            var user = UserRepository.GetByUserName(userName);
 
-            if(!UserRepository.Exists(user.UserName))
-                throw new NotFoundException($"User with username '{user.UserName}' not found.");
+            Mapper.Map(userUpdateDto, user);
 
             await UserRepository.UpdateAsync(user);
         }
