@@ -56,13 +56,12 @@ namespace IWA_Backend.API.BusinessLogic.Logic
                 throw new NotFoundException($"Contractor with username {contractorUserName} not found.");
 
             var appointments = AppointmentRepository.GetContractorsAllAppointments(contractorUserName)
-                .ToList()
                 .Where(a => HasReadAccess(a, userName));
             return appointments;
         }
 
         public IEnumerable<Appointment> GetBookedAppointments(string currentUserName) =>
-            AppointmentRepository.GetBookedAppointments(currentUserName).ToList();
+            AppointmentRepository.GetBookedAppointments(currentUserName);
 
         public async Task BookAppointmentAsync(int appointmentId, string userName)
         {
@@ -99,8 +98,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
         {
             var category = CategoryRepository.GetById(appointmentDto.CategoryId);
             var attendees = appointmentDto.AttendeeUserNames
-                .Select(UserRepository.GetByUserName)
-                .ToList();
+                .Select(UserRepository.GetByUserName);
             
             if (!HasWriteAccess(category, userName))
                 throw new UnauthorisedException("Unauthorised to create this appointment.");
@@ -117,8 +115,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             var appointment = AppointmentRepository.GetById(appointmentDto.Id);
             var newCategory = CategoryRepository.GetById(appointmentDto.CategoryId);
             var attendees = appointmentDto.AttendeeUserNames
-                .Select(UserRepository.GetByUserName)
-                .ToList();
+                .Select(UserRepository.GetByUserName);
             
             if (!HasWriteAccess(appointment.Category, userName) || !HasWriteAccess(newCategory, userName))
                 throw new UnauthorisedException("Unauthorised to update this appointment");

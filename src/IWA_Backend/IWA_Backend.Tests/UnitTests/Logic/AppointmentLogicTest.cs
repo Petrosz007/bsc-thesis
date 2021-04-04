@@ -443,7 +443,7 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 // Arrange
                 var appointments = new List<Appointment>();
 
-                MockAppointmentRepo.Setup(r => r.GetBookedAppointments("Test User")).Returns(appointments.AsQueryable());
+                MockAppointmentRepo.Setup(r => r.GetBookedAppointments("Test User")).Returns(appointments);
 
                 // Act
                 var result = Logic.GetBookedAppointments("TestUser");
