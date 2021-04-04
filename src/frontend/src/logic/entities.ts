@@ -1,3 +1,5 @@
+import {DateTime} from "luxon";
+
 export interface ContractorPage {
     title: string;
     bio: string;
@@ -22,8 +24,8 @@ export interface Category {
 
 export interface Appointment {
     id: number;
-    startTime: Date;
-    endTime: Date;
+    startTime: DateTime;
+    endTime: DateTime;
     category: Category;
     attendees: User[];
     maxAttendees: number;

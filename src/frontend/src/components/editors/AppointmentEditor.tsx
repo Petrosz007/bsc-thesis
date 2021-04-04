@@ -10,6 +10,7 @@ import UserAdder from "./UserAdder";
 import './AppointmentEditor.scss';
 import { NotificationContext } from "../contexts/NotificationProvider";
 import { ResultPromise } from "../../utilities/result";
+import {DateTime} from "luxon";
 
 interface AppointmentEditdata {
     id: number;
@@ -33,20 +34,20 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
         initialAppointment === undefined
         ? {
             id: 0,
-            startTimeDate: new Date().toISOString().slice(0,10),
-            startTimeTime: new Date().toISOString().slice(11,14) + "00",
-            endTimeDate: new Date(Date.now() + 60*60*1000).toISOString().slice(0,10),
-            endTimeTime: new Date(Date.now() + 60*60*1000).toISOString().slice(11,14) + "00",
+            startTimeDate: DateTime.now().toISODate(),
+            startTimeTime: DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE),
+            endTimeDate: DateTime.now().plus({ hours: 1 }).toISODate(),
+            endTimeTime: DateTime.now().plus({ hours: 1 }).set({ minute: 0 }).toLocaleString(DateTime.TIME_24_SIMPLE),
             categoryId: categories[0].id,
             maxAttendees: 1,
             createAnother: false,
         }
         : {
             id: initialAppointment.id,
-            startTimeDate: initialAppointment.startTime.toISOString().slice(0,10),
-            startTimeTime: initialAppointment.startTime.toISOString().slice(11,16),
-            endTimeDate: initialAppointment.endTime.toISOString().slice(0,10),
-            endTimeTime: initialAppointment.endTime.toISOString().slice(11,16),
+            startTimeDate: initialAppointment.startTime.toISODate(),
+            startTimeTime: initialAppointment.startTime.toLocaleString(DateTime.TIME_24_SIMPLE),
+            endTimeDate: initialAppointment.endTime.toISODate(),
+            endTimeTime: initialAppointment.endTime.toLocaleString(DateTime.TIME_24_SIMPLE),
             categoryId: initialAppointment.category.id,
             maxAttendees: initialAppointment.maxAttendees,
             createAnother: false,
@@ -93,8 +94,8 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
         setCloseAfterLoad(!state.createAnother);
         createAppointment({ 
             ...state,
-            startTime: new Date(`${state.startTimeDate} ${state.startTimeTime}`).toISOString(),
-            endTime: new Date(`${state.endTimeDate} ${state.endTimeTime}`).toISOString(),
+            startTime: DateTime.fromISO(`${state.startTimeDate}T${state.startTimeTime}`).toUTC().toISO(),
+            endTime: DateTime.fromISO(`${state.endTimeDate}T${state.endTimeTime}`).toUTC().toISO(),
             attendeeUserNames: users.map(user => user.userName),
         });
 
