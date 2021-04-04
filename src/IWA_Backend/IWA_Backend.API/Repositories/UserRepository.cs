@@ -30,7 +30,6 @@ namespace IWA_Backend.API.Repositories
 
         public async Task UpdateAsync(User user)
         {
-            Context.DetachLocal(user);
             Context.Update(user);
             await Context.SaveChangesAsync();
         }

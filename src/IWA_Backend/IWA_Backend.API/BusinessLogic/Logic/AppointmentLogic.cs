@@ -24,21 +24,19 @@ namespace IWA_Backend.API.BusinessLogic.Logic
         
         public static bool HasReadAccess(Appointment appointment, string? userName)
         {
-            bool everyoneAllowed = appointment.Category.EveryoneAllowed;
-            // TODO: If owner.UserName == null and userName is null this condition is true
-            // Should not happen, because every user is registered with one
-            bool isOwner = appointment.Category.Owner.UserName == userName;
-            bool isAttendee = appointment.Attendees.Any(user => user.UserName == userName);
-            bool isInCategory = appointment.Category.AllowedUsers.Any(user => user.UserName == userName);
+            if(appointment.Category.EveryoneAllowed) return true;
+            if(appointment.Category.Owner.UserName == userName) return true;
+            if(appointment.Attendees.Any(user => user.UserName == userName)) return true;
+            if(appointment.Category.AllowedUsers.Any(user => user.UserName == userName)) return true;
 
-            return everyoneAllowed || isOwner || isAttendee || isInCategory;
+            return false;
         }
         
         public static bool HasWriteAccess(Category category, string? userName)
         {
-            var isOwner = category.Owner.UserName == userName;
+            if (category.Owner.UserName == userName) return true;
 
-            return isOwner;
+            return false;
         }
         
         public Appointment GetAppointmentById(int id, string? userName)

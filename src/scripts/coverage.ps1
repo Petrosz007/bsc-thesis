@@ -2,7 +2,7 @@ dotnet test `
     /p:CollectCoverage=true `
     /p:CoverletOutputFormat=lcov `
     /p:CoverletOutput=./lcov.info `
-    '/p:Exclude=\"[*]*DTOs.*,[*]*Entities.*,[*]*Exceptions.*,[*]*Migrations.*\"' `
+    '/p:Exclude=\"[*]*DTOs.*,[*]*Entities.*,[*]*Exceptions.*,[*]*Migrations.*,[*]*DbInitialiser.LiveSeedData*\"' `
     ..\IWA_Backend\IWA_Backend.Tests\
 reportgenerator "-reports:..\IWA_Backend\IWA_Backend.Tests\lcov.info" "-targetdir:coveragereport" -reporttypes:Html
 Invoke-Item coveragereport\index.htm
