@@ -59,6 +59,37 @@ namespace IWA_Backend.Tests.UnitTests.Logic
             }
         }
 
+        public class GetContractors : UserLogicTest
+        {
+            [Fact]
+            public void Successful()
+            {
+                // Arrange
+                var contractors = new List<User>
+                {
+                    new()
+                    {
+                        UserName = "Contractor1",
+                        ContractorPage = new(),
+                    },
+                    new()
+                    {
+                        UserName = "Contractor2",
+                        ContractorPage = new(),
+                    },
+                };
+
+                MockUserRepo.Setup(r => r.GetContractors()).Returns(contractors);
+
+                // Act
+                var result = Logic.GetContractors();
+                
+                // Assert
+                Assert.Equal(2, contractors.Count);
+                Assert.True(contractors.SequenceEqual(result));
+            }
+        }
+
         public class Update : UserLogicTest
         {
             [Fact]

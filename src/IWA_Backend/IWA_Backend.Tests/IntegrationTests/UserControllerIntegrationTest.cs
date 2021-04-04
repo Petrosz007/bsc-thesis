@@ -16,7 +16,7 @@ namespace IWA_Backend.Tests.IntegrationTests
     public class UserControllerIntegrationTest : IntegrationTestBase
     {
         [Collection("Sequential")]
-        public class GetByusername : UserControllerIntegrationTest
+        public class GetByUserName : UserControllerIntegrationTest
         {
             [Fact]
             public async Task Successful()
@@ -47,6 +47,26 @@ namespace IWA_Backend.Tests.IntegrationTests
 
                 // Assert
                 Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
+        
+        [Collection("Sequential")]
+        public class GetContractors : UserControllerIntegrationTest
+        {
+            [Fact]
+            public async Task Successful()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                var testContractors = Context.Users.Where(a => a.ContractorPage != null).ToList().Select(Mapper.Map<UserInfoDTO>);
+
+                // Act
+                var response = await client.GetAsync("/User/Contractors");
+
+                // Assert
+                Assert.True(response.IsSuccessStatusCode);
+                var contractors = await response.Content.ReadAsAsync<List<UserInfoDTO>>();
+                Assert.True(testContractors.SequenceEqual(contractors));
             }
         }
 
