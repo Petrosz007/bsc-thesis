@@ -10,8 +10,12 @@ interface DatePickerProps extends InputHTMLAttributes<HTMLInputElement> {
 };
 
 export const DatePicker = ({ valueDate, onChangeDate, minDate, maxDate, ...props}: DatePickerProps) => {
-    const handleChange = useCallback((e:  React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const date = DateTime.fromISO(e.target.value);
+        if(!date.isValid) return;
+        if(minDate !== undefined && date < minDate) return;
+        if(maxDate !== undefined && date > maxDate) return;
+        
         onChangeDate(date);
     }, [onChangeDate]);
     
