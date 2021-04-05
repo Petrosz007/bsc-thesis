@@ -51,16 +51,12 @@ const OwnAppointments = ({ user }: { user: User }) => {
         
         {state instanceof Loaded && 
         <>
-            {isCategoryModalOpen &&
-                <Modal>
+                <Modal isOpen={isCategoryModalOpen}>
                     <CategoryEditorCreate owner={user} onClose={() => setIsCategoryModalOpen(false)} />
                 </Modal>
-            }
-            {isAppointmentModalOpen &&
-                <Modal>
+                <Modal isOpen={isAppointmentModalOpen}>
                     <AppointmentEditorCreate categories={categories} onClose={() => setIsAppointmentModalOpen(false)} />
                 </Modal>
-            }
 
             <button onClick={() => setIsCategoryModalOpen(true)}>Create Category</button>
             {categories.length === 0

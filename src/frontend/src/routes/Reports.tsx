@@ -14,6 +14,8 @@ import Select from "react-select";
 
 import './Report.scss';
 import UserName from "../components/UserName";
+import {DateTime, Interval} from "luxon";
+import {DatePicker, DateRangePicker} from "../components/inputs/DatePicker";
 
 const ReportTable = ({ report }: { report: Report }) => {
     const totalPrice = report.entries.reduce((acc, x) =>
@@ -51,13 +53,16 @@ const ReportTable = ({ report }: { report: Report }) => {
 }
 
 const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User, users: User[], appointments: Appointment[], categories: Category[] }) => {
+    const startOfTheMonth = DateTime.now().set({ day: 1, hour: 0, minute: 0, second: 0, millisecond: 0 });
+    const endOfTheMonth = DateTime.now().set({ day: DateTime.now().daysInMonth, hour: 23, minute: 59, second: 59, millisecond: 59 });
+    
     const [selectedUser, setSelectedUser] = useState(users[0]);
-    const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
-    const [endDate, setEndDate] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0));
+    const [dateInterval, setDateInterval] = useState(Interval.fromDateTimes(startOfTheMonth, endOfTheMonth));
 
     const usersAppointments = appointments
         .filter(a => a.attendees.some(u => u.userName === selectedUser.userName))
-        .filter(a => a.startTime >= startDate && a.startTime <= endDate);
+        .filter(a => dateInterval.contains(a.startTime))
+        .sort((left, right) => left.startTime.toMillis() - right.startTime.toMillis());
 
     const report = createReport(usersAppointments, categories, owner, selectedUser);
 
@@ -69,22 +74,11 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
                     filterOption={(option: any, searchText) => `${option.value.name} @${option.value.userName}`.toUpperCase().includes(searchText.toUpperCase())}
                     value={{ value: selectedUser, label: <UserName user={selectedUser} /> }}
             />
-            Start: 
-            <input type="date" 
-                   value={startDate.toISOString().slice(0,10)} 
-                   onChange={e => setStartDate(new Date(e.target.value))} 
-                   max={endDate.toISOString().slice(0,10)}
-            />
-            End: 
-            <input type="date"
-                   value={endDate.toISOString().slice(0,10)}
-                   onChange={e => setEndDate(new Date(e.target.value))}
-                   min={startDate.toISOString().slice(0,10)}
-            />
+            <DateRangePicker value={dateInterval} onChange={setDateInterval} />
             <ReportTable report={report} />
             <ul>
             {usersAppointments.map(a => 
-                <li key={a.id}>{a.startTime.toISOString().slice(0,10)} - {a.category.name}</li>
+                <li key={a.id}>{a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)} - {a.category.name}</li>
             )}
             </ul>
             <button onClick={() => downloadReportPdf(report)}>Download Report</button>

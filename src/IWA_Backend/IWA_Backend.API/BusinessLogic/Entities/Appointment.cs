@@ -11,9 +11,9 @@ namespace IWA_Backend.API.BusinessLogic.Entities
         [Key]
         public int Id { get; set; }
         [Required]
-        public DateTime StartTime { get; set; }
+        public DateTimeOffset StartTime { get; set; }
         [Required]
-        public DateTime EndTime { get; set; }
+        public DateTimeOffset EndTime { get; set; }
         [Required]
         public virtual Category Category { get; set; } = null!;
         [Required]

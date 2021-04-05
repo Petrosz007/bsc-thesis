@@ -6,7 +6,7 @@ namespace IWA_Backend.API.Contexts.DbInitialiser
 {
     public class LiveSeedData : ISeedData
     {
-        public List<User> Users =>
+        public List<User> Users() =>
             new()
             {
                 new()
@@ -46,7 +46,7 @@ namespace IWA_Backend.API.Contexts.DbInitialiser
                     ContractorPage = null
                 },
             };
-        public List<Category> Categories =>
+        public List<Category> Categories(List<User> users) =>
             new()
             {
                 new()
@@ -58,44 +58,44 @@ namespace IWA_Backend.API.Contexts.DbInitialiser
                     EveryoneAllowed = true,
                     MaxAttendees = 10,
                     Price = 3000,
-                    Owner = Users[0],
+                    Owner = users[0],
                 },
                 new()
                 {
                     //Id = 2,
                     Name = "Korai Kőműves Kajakozás",
                     Description = "Karcsi kajakja kajak jó!",
-                    AllowedUsers = new List<User>{ Users[2], Users[3] },
+                    AllowedUsers = new List<User>{ users[2], users[3] },
                     EveryoneAllowed = false,
                     MaxAttendees = 2,
                     Price = 5000,
-                    Owner = Users[0],
+                    Owner = users[0],
                 },
                 new()
                 {
                     //Id = 3,
                     Name = "Angol C1 felkészítés",
                     Description = "Felkészítés az Angol C1 nyelvvizsgára",
-                    AllowedUsers = new List<User>{ Users[2] },
+                    AllowedUsers = new List<User>{ users[2] },
                     EveryoneAllowed = true,
                     MaxAttendees = 1,
                     Price = 3000,
-                    Owner = Users[1],
+                    Owner = users[1],
                 },
                 new()
                 {
                     //Id = 4,
                     Name = "Privát angol Konrádnak",
                     Description = "Karcsi kajakja kajak jó!",
-                    AllowedUsers = new List<User>{ Users[3] },
+                    AllowedUsers = new List<User>{ users[3] },
                     EveryoneAllowed = false,
                     MaxAttendees = 2,
                     Price = 5000,
-                    Owner = Users[1],
+                    Owner = users[1],
                 },
             };
         
-        public List<Appointment> Appointments =>
+        public List<Appointment> Appointments(List<Category> categories, List<User> users) =>
             new()
             {
                 new()
@@ -103,72 +103,72 @@ namespace IWA_Backend.API.Contexts.DbInitialiser
                     //Id = 1,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
-                    Category = Categories[0],
+                    Category = categories[0],
                     Attendees = new List<User>{ },
-                    MaxAttendees = Categories[0].MaxAttendees,
+                    MaxAttendees = categories[0].MaxAttendees,
                 },
                 new()
                 {
                     //Id = 2,
                     StartTime = DateTime.Now.AddHours(1),
                     EndTime = DateTime.Now.AddHours(2),
-                    Category = Categories[0],
-                    Attendees = new List<User>{ Users[2] },
-                    MaxAttendees = Categories[0].MaxAttendees,
+                    Category = categories[0],
+                    Attendees = new List<User>{ users[2] },
+                    MaxAttendees = categories[0].MaxAttendees,
                 },
                 new()
                 {
                     //Id = 3,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
-                    Category = Categories[1],
-                    Attendees = new List<User>{ Users[2] },
-                    MaxAttendees = Categories[1].MaxAttendees,
+                    Category = categories[1],
+                    Attendees = new List<User>{ users[2] },
+                    MaxAttendees = categories[1].MaxAttendees,
                 },
                 new()
                 {
                     //Id = 4,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
-                    Category = Categories[1],
-                    Attendees = new List<User>{ Users[3], Users[2] },
-                    MaxAttendees = Categories[1].MaxAttendees,
+                    Category = categories[1],
+                    Attendees = new List<User>{ users[3], users[2] },
+                    MaxAttendees = categories[1].MaxAttendees,
                 },
                 new()
                 {
                     //Id = 5,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
-                    Category = Categories[2],
+                    Category = categories[2],
                     Attendees = new List<User>{ },
-                    MaxAttendees = Categories[2].MaxAttendees,
+                    MaxAttendees = categories[2].MaxAttendees,
                 },
                 new()
                 {
                     //Id = 6,
                     StartTime = DateTime.Now.AddHours(1),
                     EndTime = DateTime.Now.AddHours(2),
-                    Category = Categories[2],
+                    Category = categories[2],
                     Attendees = new List<User>{ },
-                    MaxAttendees = Categories[2].MaxAttendees,
+                    MaxAttendees = categories[2].MaxAttendees,
                 },
                 new()
                 {
                     //Id = 7,
                     StartTime = DateTime.Now,
                     EndTime = DateTime.Now.AddHours(1),
-                    Category = Categories[3],
+                    Category = categories[3],
                     Attendees = new List<User>{ },
-                    MaxAttendees = Categories[3].MaxAttendees,
+                    MaxAttendees = categories[3].MaxAttendees,
                 },
                 new()
                 {
                     //Id = 8,
                     StartTime = DateTime.Now.AddHours(1),
                     EndTime = DateTime.Now.AddHours(2),
-                    Category = Categories[3],
+                    Category = categories[3],
                     Attendees = new List<User>{ },
-                    MaxAttendees = Categories[3].MaxAttendees,
+                    MaxAttendees = categories[3].MaxAttendees,
                 },
             };
     }

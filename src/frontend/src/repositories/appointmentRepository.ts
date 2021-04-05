@@ -5,6 +5,7 @@ import { ICategoryRepository } from "./categoryRepository";
 import { IUserRepository } from "./userRepository";
 import { parseResponseAs, safeApiFetchAs, safeApiFetchAsUnit, safeApiFetchWithBodyAs, safeApiFetchWithBodyAsUnit } from "./utilities";
 import {Config} from "../config";
+import {DateTime} from "luxon";
 
 export interface IAppointmentRepository {
     getById(id: number): ResultPromise<Appointment,Error>;
@@ -38,8 +39,8 @@ export class AppointmentRepository implements IAppointmentRepository {
                         {
                             id: appointmentDto.id,
                             maxAttendees: appointmentDto.maxAttendees,
-                            startTime: new Date(appointmentDto.startTime),
-                            endTime: new Date(appointmentDto.endTime),
+                            startTime: DateTime.fromISO(appointmentDto.startTime).setLocale('hu').toLocal(),
+                            endTime: DateTime.fromISO(appointmentDto.endTime).setLocale('hu').toLocal(),
                             category,
                             attendees,
                         } as Appointment))

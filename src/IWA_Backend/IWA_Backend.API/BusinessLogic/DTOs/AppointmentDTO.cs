@@ -10,9 +10,9 @@ namespace IWA_Backend.API.BusinessLogic.DTOs
     {
         public int Id { get; init; }
         [Required]
-        public DateTime StartTime { get; init; }
+        public DateTimeOffset StartTime { get; init; }
         [Required]
-        public DateTime EndTime { get; init; }
+        public DateTimeOffset EndTime { get; init; }
         [Required]
         public int CategoryId { get; init; }
         [Required]
