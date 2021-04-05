@@ -11,6 +11,12 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.514);
+    
+    &.visible {
+        .modal-content {
+            transform: translateY(0px) scale(1.0) rotateX(0deg) perspective(0px);
+        }
+    }
 }
 
 .modal-content {
@@ -20,4 +26,8 @@
     background-color: white;
     border-radius: 5px;
     padding: 15px;
+
+    transition: transform 150ms cubic-bezier(.23,1,.32,1);
+    transform-origin: top center;
+    transform: translateY(-100px) scale(0.95)  perspective(1000px) rotateX(-15deg);
 }

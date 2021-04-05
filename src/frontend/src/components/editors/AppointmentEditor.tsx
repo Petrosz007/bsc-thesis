@@ -24,11 +24,15 @@ interface AppointmentEditdata {
     createAnother: boolean;
 }
 
-const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClose }: {
+const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClose, labels }: {
     initialAppointment?: Appointment,
     apiCall: (_x: AppointmentDTO) => ResultPromise<Appointment,Error>,
     categories: Category[],
     onClose: () => void,
+    labels: {
+      createAnother: string,
+      submit: string,
+    },
 }) => {
     const initialAppointmentEditorState: AppointmentEditdata = 
         initialAppointment === undefined
@@ -107,16 +111,8 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
             console.error('Error in AppointmentEditor: ', createAppointmentState.error);
             notificationDispatch({ type: 'addError', message: `Error in AppointmentEditor: ${createAppointmentState.error}` });
         }
-        if(createAppointmentState instanceof Loaded){
-            if(closeAfterLoad) {
-                onClose();
-            } else {
-                setState(prevState => ({
-                    ...initialAppointmentEditorState,
-                    createAnother: prevState.createAnother,
-                }));
-                setUsers([]);
-            }
+        if(createAppointmentState instanceof Loaded && closeAfterLoad){
+            onClose();
         }
     }, [createAppointmentState, closeAfterLoad]);
     
@@ -160,11 +156,11 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
 
             <div className="editor-footer">
                 <div className="editor-footer-checkbox">
-                    <label htmlFor="createAnother">Create another</label>
                     <input type="checkbox" name="createAnother" checked={state.createAnother} onChange={handleChange} />
+                    <label htmlFor="createAnother">{labels.createAnother}</label>
                 </div>
-                <input className="editor-footer-submit" type="submit" value="Submit"/>
-                <button onClick={e => {e.preventDefault(); onClose();}}>Cancel</button>
+                <input className="editor-footer-submit" type="submit" value={labels.submit}/>
+                <button onClick={e => {e.preventDefault(); onClose();}}>Mégse</button>
             </div>
         </form>
         </>
@@ -182,6 +178,7 @@ export const AppointmentEditorCreate = ({ categories, onClose }: {
             apiCall={appointmentRepo.create}
             categories={categories}
             onClose={onClose}
+            labels={{ createAnother: 'Több létrehozása', submit: 'Létrehozás' }}
         />
     );
 }
@@ -204,6 +201,7 @@ export const AppointmentEditorUpdate = ({ appointment, categories, onClose }: {
             initialAppointment={appointment}
             categories={categories}
             onClose={onClose}
+            labels={{ createAnother: 'Maradok szerkeszteni', submit: 'Mentés' }}
         />
     );
 }

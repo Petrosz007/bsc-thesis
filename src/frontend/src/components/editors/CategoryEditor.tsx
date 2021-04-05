@@ -22,11 +22,15 @@ interface CategoryEditdata {
     createAnother: boolean;
 }
 
-const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose }: {
+const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose, labels }: {
     initialCategory?: Category,
     apiCall: (_: CategoryDTO) => ResultPromise<Category, Error>,
     owner: User,
     onClose: () => void,
+    labels: {
+        createAnother: string,
+        submit: string,
+    },
 }) => {
     const initialCategoryEditorState: CategoryEditdata = 
         initialCategory === undefined
@@ -85,16 +89,8 @@ const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose }: {
             // console.error('Error in CategoryEditor: ', createCategoryState.error);
             notificationDispatch({ type: 'addError', message: `Error in CategoryEditor: ${createCategoryState.error}` })
         }
-        if(createCategoryState instanceof Loaded){
-            if(closeAfterLoad) {
-                onClose();
-            } else {
-                setState(prevState => ({
-                    ...initialCategoryEditorState,
-                    createAnother: prevState.createAnother,
-                }));
-                setUsers([]);
-            }
+        if(createCategoryState instanceof Loaded && closeAfterLoad){
+            onClose();
         }
     }, [createCategoryState, closeAfterLoad]);
 
@@ -121,11 +117,11 @@ const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose }: {
 
             <div className="editor-footer">
                 <div className="editor-footer-checkbox">
-                    <label htmlFor="createAnother">Create another</label>
                     <input type="checkbox" name="createAnother" checked={state.createAnother} onChange={handleChange} />
+                    <label htmlFor="createAnother">{labels.createAnother}</label>
                 </div>
-                <input className="editor-footer-submit" type="submit" value="Submit"/>
-                <button onClick={e => {e.preventDefault(); onClose();}}>Cancel</button>
+                <input className="editor-footer-submit" type="submit" value={labels.submit} />
+                <button onClick={e => {e.preventDefault(); onClose();}}>Mégse</button>
             </div>
         </form>
         </>
@@ -142,7 +138,8 @@ export const CategoryEditorCreate = ({ owner, onClose }: {
         <CategoryEditorBase 
             apiCall={categoryRepo.create}
             owner={owner}
-            onClose={onClose} 
+            onClose={onClose}
+            labels={{ createAnother: 'Több létrehozása', submit: 'Létrehozás' }}
         />
     );
 }
@@ -165,6 +162,7 @@ export const CategoryEditorUpdate = ({ category, owner, onClose }: {
             initialCategory={category}
             owner={owner}
             onClose={onClose}
+            labels={{ createAnother: 'Maradok szerkeszteni', submit: 'Mentés' }}
         />
     );
 }

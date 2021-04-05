@@ -68,11 +68,13 @@ const BookButton = ({ appointment }: { appointment: Appointment }) => {
     if(bookingStatus instanceof Loading) return <span>Booking...</span>;
     if(unBookingStatus instanceof Loading) return <span>Unbooking...</span>;
 
-    return <>
-        {isAttendee()
-                ? <button onClick={() => unBook()}>Lemondás</button> 
-                : <button onClick={() => book()}>Foglalás</button>}
-    </>;
+    if(isAttendee())
+        return <button onClick={() => unBook()}>Lemondás</button>;
+    
+    if(appointment.maxAttendees > appointment.attendees.length)
+        return <button onClick={() => book()}>Foglalás</button>;
+    
+    return null;
 }
 
 const DeleteButton = ({ appointment }: { appointment: Appointment }) => {
