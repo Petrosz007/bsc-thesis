@@ -13,7 +13,6 @@ import {CategoriesEditable, CategoryCardEditable} from "../components/CategoryCa
 
 import './OwnAppointments.scss'
 import {CategoryEditorCreate} from "../components/editors/CategoryEditor";
-import {useIsModalOpen} from "../hooks/utilities";
 
 const OwnAppointments = ({ user }: { user: User }) => {
     const { dataState, dataDispatch } = useContext(DataContext);
