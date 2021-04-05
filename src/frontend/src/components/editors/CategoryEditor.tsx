@@ -78,7 +78,7 @@ const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose, labels }
         setCloseAfterLoad(!state.createAnother);
         createCategory({ 
             ...state,
-            allowedUserNames: users.map(u => u.userName),
+            allowedUserNames: state.everyoneAllowed ? [] : users.map(u => u.userName),
             ownerUserName: owner.userName,
         });
         event.preventDefault();
@@ -111,8 +111,10 @@ const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose, labels }
             </div>
             
             <div className="editor-user-adder">
-                <label htmlFor="allowedUsers">Allowed Users</label>
-                <UserAdder users={users} setUsers={setUsers} />
+                {!state.everyoneAllowed && <>
+                    <label htmlFor="allowedUsers">Allowed Users</label>
+                    <UserAdder users={users} setUsers={setUsers} />
+                </>}
             </div>
 
             <div className="editor-footer">
