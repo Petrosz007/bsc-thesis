@@ -39,8 +39,8 @@ export class AppointmentRepository implements IAppointmentRepository {
                         {
                             id: appointmentDto.id,
                             maxAttendees: appointmentDto.maxAttendees,
-                            startTime: DateTime.fromISO(appointmentDto.startTime).toLocal(),
-                            endTime: DateTime.fromISO(appointmentDto.endTime).toLocal(),
+                            startTime: DateTime.fromISO(appointmentDto.startTime).setLocale('hu').toLocal(),
+                            endTime: DateTime.fromISO(appointmentDto.endTime).setLocale('hu').toLocal(),
                             category,
                             attendees,
                         } as Appointment))

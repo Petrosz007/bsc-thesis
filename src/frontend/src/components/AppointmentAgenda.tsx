@@ -30,7 +30,7 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
         .filter(a => showFull || a.maxAttendees > a.attendees.length)
         .sort((left, right) => left.startTime.toMillis() - right.startTime.toMillis());
     
-    const dictionary = groupBy(sortedAppointments, a => a.startTime.setLocale('hu').toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY));
+    const dictionary = groupBy(sortedAppointments, a => a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY));
 
     const [appointmentToEdit, setAppointmentToEdit] = useState<Appointment|undefined>(undefined);
 
@@ -56,7 +56,12 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
                     dictionary[key].map((appointment, index) =>
                         <tr key={appointment.id}>
                             {index === 0 && <td rowSpan={dictionary[key].length} className="agenda-date">{key}</td>}
-                            <td className="agenda-time">{appointment.startTime.toLocaleString(DateTime.TIME_24_SIMPLE)} - {appointment.endTime.toLocaleString(DateTime.TIME_24_SIMPLE)}</td>
+                            <td className="agenda-time">
+                                {appointment.startTime.hasSame(appointment.endTime, 'day')
+                                    ? <>{appointment.startTime.toLocaleString(DateTime.TIME_24_SIMPLE)} - {appointment.endTime.toLocaleString(DateTime.TIME_24_SIMPLE)}</>
+                                    : <>{appointment.startTime.toLocaleString(DateTime.DATETIME_MED)}<br/>V<br/>{appointment.endTime.toLocaleString(DateTime.DATETIME_MED)}</>
+                                }
+                            </td>
                             <td className="agenda-detail">
                                 {editable
                                     ? <AppointmentCardEditable appointment={appointment} onEdit={a => setAppointmentToEdit(a)}/>
