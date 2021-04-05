@@ -44,8 +44,6 @@ const reducer = (state: NotificationData[], action: NotificationAction): Notific
 export default ({ children }: { children: React.ReactNode }) => {
     const [notifications, notificationDispatch] = useReducer(reducer, []);
 
-    useEffect(() => console.log(notifications), [notifications]);
-
     return (
         <NotificationContext.Provider value={{ notifications, notificationDispatch }}>
             <Notifications notifications={notifications} />
