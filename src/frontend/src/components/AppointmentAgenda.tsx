@@ -9,6 +9,7 @@ import Modal from "./Modal";
 import { AppointmentEditorUpdate } from "./editors/AppointmentEditor";
 import {DateTime, Duration, Interval} from "luxon";
 import {DatePicker, DateRangePicker} from "./inputs/DatePicker";
+import AppointmentViewer from "./AppointmentViewer";
 
 const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }: { 
     appointments: Appointment[],
@@ -33,12 +34,18 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
     const dictionary = groupBy(sortedAppointments, a => a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY));
 
     const [appointmentToEdit, setAppointmentToEdit] = useState<Appointment|undefined>(undefined);
+    const [appointmentToView, setAppointmentToView] = useState<Appointment|undefined>(undefined);
 
     return (
         <div>
             {appointmentToEdit !== undefined && categories !== undefined &&
                 <Modal>
                     <AppointmentEditorUpdate appointment={appointmentToEdit} categories={categories} onClose={() => setAppointmentToEdit(undefined)}  />
+                </Modal>
+            }
+            {appointmentToView !== undefined &&
+                <Modal>
+                    <AppointmentViewer appointment={appointmentToView} onClose={() => setAppointmentToView(undefined)}  />
                 </Modal>
             }
             Categories:
@@ -64,7 +71,7 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
                             </td>
                             <td className="agenda-detail">
                                 {editable
-                                    ? <AppointmentCardEditable appointment={appointment} onEdit={a => setAppointmentToEdit(a)}/>
+                                    ? <AppointmentCardEditable appointment={appointment} onEdit={a => setAppointmentToEdit(a)} onView={a => setAppointmentToView(a)}/>
                                     : <AppointmentCard appointment={appointment} />
                                 }
                             </td>

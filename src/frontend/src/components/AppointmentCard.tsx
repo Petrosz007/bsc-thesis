@@ -7,6 +7,8 @@ import { DataContext } from './contexts/DataProvider';
 
 import './AppointmentCard.scss';
 import { NotificationContext } from './contexts/NotificationProvider';
+import Modal from "./Modal";
+import AppointmentViewer from "./AppointmentViewer";
 
 const HourDuration = ({ startTime, endTime }: { startTime: Date, endTime: Date }) => {
     const minutes = Math.floor((endTime.getTime() - startTime.getTime()) / (1000 * 60));
@@ -101,7 +103,7 @@ const DeleteButton = ({ appointment }: { appointment: Appointment }) => {
     );
 }
 
-export const AppointmentCardEditable = ({ appointment, onEdit }: { appointment: Appointment, onEdit: (_: Appointment) => void }) => {
+export const AppointmentCardEditable = ({ appointment, onEdit, onView }: { appointment: Appointment, onEdit: (_: Appointment) => void, onView: (_: Appointment) => void }) => {
     const { loginState } = useContext(LoginContext);
 
     const isOwner = () => loginState instanceof LoggedIn
@@ -109,7 +111,7 @@ export const AppointmentCardEditable = ({ appointment, onEdit }: { appointment: 
 
     return (
         <div className="appointmentCard">
-            <span className="appointment-header">{appointment.category.name}</span>
+            <a className="appointment-header clickable" onClick={() => onView(appointment)}>{appointment.category.name}</a>
             <div className="appointment-description">
                 <p>{appointment.category.description}</p>
                 <p>{appointment.category.price} Ft - {appointment.maxAttendees - appointment.attendees.length} szabad hely</p>
