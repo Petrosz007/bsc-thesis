@@ -3,7 +3,7 @@ import { useApiCall, Failed, Loaded } from "../../hooks/apiCallHooks";
 import { useHandleChange } from "../../hooks/useEditorForm";
 import { AppointmentDTO } from "../../logic/dtos";
 import { Appointment, Category, User } from "../../logic/entities";
-import { DataContext } from "../contexts/DataProvider";
+import {DataAction, DataContext} from "../contexts/DataProvider";
 import { DIContext } from "../contexts/DIContext";
 import UserAdder from "./UserAdder";
 
@@ -181,9 +181,9 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
     const initialAppointmentEditorState: AppointmentEditdata = {
         ...initialAppointment,
         startTimeDate: initialAppointment.startTime.toISODate(),
-        startTimeTime: initialAppointment.startTime.toLocaleString(DateTime.TIME_24_SIMPLE),
+        startTimeTime: initialAppointment.startTime.toFormat('HH:MM'),
         endTimeDate: initialAppointment.endTime.toISODate(),
-        endTimeTime: initialAppointment.endTime.toLocaleString(DateTime.TIME_24_SIMPLE),
+        endTimeTime: initialAppointment.endTime.toFormat('HH:MM'),
         categoryId: initialAppointment.category.id,
         createAnother: false,
     };
@@ -216,12 +216,16 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
         attendeeUserNames: users.map(user => user.userName),
     }), [users, state]);
 
+    const dataDispatchAction = useCallback((appointment: Appointment) => ({ type: 'updateAppointment', appointment } as DataAction), []);
+    
     const allowedUsers = useCallback((): User[]|undefined => {
         if(initialAppointment === undefined) return undefined;
         if(initialAppointment.category.everyoneAllowed) return undefined;
 
         return [...initialAppointment.category.allowedUsers, initialAppointment.category.owner];
     }, [initialAppointment]);
+    
+    const selectOptions = categories.map(c => ({ value: c.id, label: c.name }));
 
     return (
         <EditorBase
@@ -231,7 +235,7 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
             editorStateToDto={editorStateToDto}
             labels={labels}
             onClose={onClose}
-            dataDispatchAction={appointment => ({ type: 'updateAppointment', appointment })}
+            dataDispatchAction={dataDispatchAction}
          >
             <label htmlFor="startTimeDate">Start</label>
             <div>
@@ -244,8 +248,8 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
                 <input type="time" name="endTimeTime" value={state.endTimeTime} onChange={handleChange} />
             </div>
             <label htmlFor="categoryId">Category</label>
-            <Select options={categories.map(c => ({ value: c.id, label: c.name }))}
-                    value={{ value: categories[0].id, label: categories[0].name }}
+            <Select options={selectOptions}
+                    value={selectOptions.find(x => x.value === state.categoryId)}
                     onChange={x => {
                         if(x === null) return;
                         setState({ ...state, categoryId: x.value });
@@ -294,7 +298,7 @@ export const AppointmentEditorUpdate = ({ appointment, categories, onClose }: {
     const update = useCallback((dto: AppointmentDTO) =>
         appointmentRepo.update(dto)
             .andThen(_ => appointmentRepo.getById(dto.id))
-    , []);
+    , [appointmentRepo]);
 
     return (
         <AppointmentEditorBase

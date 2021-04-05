@@ -1,12 +1,8 @@
-﻿import {Appointment, Category, User} from "../../logic/entities";
-import {AppointmentDTO} from "../../logic/dtos";
-import {ResultPromise} from "../../utilities/result";
-import {DateTime} from "luxon";
+﻿import {ResultPromise} from "../../utilities/result";
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import {DataAction, DataContext} from "../contexts/DataProvider";
 import {NotificationContext} from "../contexts/NotificationProvider";
 import {Failed, Loaded, useApiCall} from "../../hooks/apiCallHooks";
-import UserAdder from "./UserAdder";
 
 export function EditorBase<TEditorState extends { createAnother: boolean },TEntity,TDto>({
     state, editorStateToDto, apiCall, onClose, handleChange, labels, children, dataDispatchAction
@@ -15,7 +11,7 @@ export function EditorBase<TEditorState extends { createAnother: boolean },TEnti
     editorStateToDto: (_: TEditorState) => TDto,
     apiCall: (_x: TDto) => ResultPromise<TEntity,Error>,
     onClose: () => void,
-    handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+    handleChange: (event: React.ChangeEvent<HTMLInputElement & HTMLSelectElement>) => void
     labels: {
         createAnother: string,
         submit: string,
@@ -31,7 +27,6 @@ export function EditorBase<TEditorState extends { createAnother: boolean },TEnti
     const [makeApiCallState, makeApiCall] = useApiCall((dto: TDto) =>
             apiCall(dto)
                 .sideEffect(result => {
-                    console.log('result', result);
                     dataDispatch(dataDispatchAction(result));
                 })
         , [apiCall, dataDispatchAction]);
