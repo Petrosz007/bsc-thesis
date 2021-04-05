@@ -58,5 +58,14 @@ namespace IWA_Backend.API.Controllers
         {
             return Ok(new IsLoggedInDTO(CurrentUserName is not null, CurrentUserName));
         }
+        
+        [HttpGet("SelfInfo")]
+        [Authorize]
+        public ActionResult<IsLoggedInDTO> GetSelfInfo()
+        {
+            var user = Logic.GetUserByUserName(CurrentUserName!);
+            var userDto = Mapper.Map<UserSelfInfoDTO>(user);
+            return Ok(userDto);
+        }
     }
 }

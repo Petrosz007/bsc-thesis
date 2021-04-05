@@ -17,16 +17,6 @@ const LoggedOutConponent = () => {
 }
 
 const LoggedInComponent = ({ user }: { user: User }) => {
-    const [logoutState, logout] = useLogout();
-
-    useEffect(() => {
-        if(logoutState instanceof Failed) {
-            console.error('Logout failed', logoutState.error);
-        }
-    }, [logoutState]);
-
-    if(logoutState instanceof Loading) return <p>Logging out...</p>;
-
     return (
         <>
             <NavLink to="/booked">Booked</NavLink>
@@ -36,8 +26,7 @@ const LoggedInComponent = ({ user }: { user: User }) => {
                 <NavLink to="/reports">Reports</NavLink>
             </>
             }
-            <p>Hello {user.name}!</p>
-            <button className="buttonBase inverted" onClick={logout}>Log Out</button>
+            <NavLink to="/profile">{user.name}</NavLink>
         </>
     );
 }

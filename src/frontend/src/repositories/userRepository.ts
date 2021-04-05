@@ -1,5 +1,5 @@
 import { IsLoggedInDTO } from "../logic/dtos";
-import { User } from "../logic/entities";
+import {User, UserSelfInfo} from "../logic/entities";
 import { ResultPromise } from "../utilities/result";
 import { safeApiFetchAs } from "./utilities";
 import {Config} from "../config";
@@ -8,6 +8,7 @@ export interface IUserRepository {
     getByUserName(userName: string): ResultPromise<User,Error>;
     getSelf(): ResultPromise<string,Error|'NotLoggedIn'>;
     getContractors(): ResultPromise<User[], Error>;
+    getSelfInfo(): ResultPromise<UserSelfInfo, Error>;
 };
 
 export class UserRepository implements IUserRepository {
@@ -26,4 +27,7 @@ export class UserRepository implements IUserRepository {
 
     getContractors = (): ResultPromise<User[], Error> =>
         safeApiFetchAs<User[]>(`${this.config.apiUrl}/User/Contractors`, 'GET');
+
+    getSelfInfo = (): ResultPromise<UserSelfInfo, Error> =>
+        safeApiFetchAs<UserSelfInfo>(`${this.config.apiUrl}/User/SelfInfo`, 'GET');
 }
