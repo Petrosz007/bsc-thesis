@@ -3,14 +3,16 @@ using System;
 using IWA_Backend.API.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IWA_Backend.API.Migrations
 {
     [DbContext(typeof(IWAContext))]
-    partial class IWAContextModelSnapshot : ModelSnapshot
+    [Migration("20210410180956_Avatar")]
+    partial class Avatar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

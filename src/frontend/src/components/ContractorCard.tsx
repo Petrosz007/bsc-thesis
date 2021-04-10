@@ -11,6 +11,7 @@ export const ContractorCard = ({ contractor }: { contractor: User }) => {
             <div className="contractor-description">
                 <p>{contractor.contractorPage?.title}</p>
                 <p>{contractor.contractorPage?.bio}</p>
+                <img src={`https://localhost:5001/User/Avatar/${contractor.userName}`} alt={`Avatar of ${contractor.name}`} />
             </div>
         </div>
     );

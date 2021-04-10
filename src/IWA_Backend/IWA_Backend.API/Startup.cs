@@ -58,6 +58,7 @@ namespace IWA_Backend.API
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IAvatarRepository, AvatarRepository>();
 
             services.AddTransient<AppointmentLogic>();
             services.AddTransient<CategoryLogic>();

@@ -15,5 +15,6 @@ namespace IWA_Backend.API.BusinessLogic.Entities
         public string Title { get; set; } = null!;
         [Required]
         public string Bio { get; set; } = null!;
+        public string? Avatar { get; set; }
     }
 }

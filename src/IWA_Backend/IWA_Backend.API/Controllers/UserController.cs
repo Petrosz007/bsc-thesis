@@ -5,9 +5,12 @@ using IWA_Backend.API.BusinessLogic.Logic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IWA_Backend.API.Repositories.Implementations;
+using Microsoft.AspNetCore.Http;
 
 namespace IWA_Backend.API.Controllers
 {
@@ -35,6 +38,30 @@ namespace IWA_Backend.API.Controllers
                 return Ok(userInfoDTO);
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
+        }
+        
+        [HttpGet("Avatar/{userName}")]
+        public async Task<ActionResult<UserInfoDTO>> GetAvatar(string userName)
+        {
+            try
+            {
+                var (bytes, mimeType) = await Logic.GetAvatarAsync(userName);
+                return new FileContentResult(bytes, mimeType);
+            }
+            catch (NotFoundException ex) { return NotFound(ex.Message); }
+        }
+        
+        [HttpPost("Avatar")]
+        [Authorize(Roles = "Contractor")]
+        public async Task<ActionResult<UserInfoDTO>> PostAvatar(IFormFile file)
+        {
+            try
+            {
+                await Logic.UpdateAvatar(file, CurrentUserName!);
+                return Ok();
+            }
+            catch (NotFoundException ex) { return NotFound(ex.Message); }
+            catch (InvalidAvatarFileException ex) { return BadRequest(ex.Message); }
         }
         
         [HttpGet("Contractors")]

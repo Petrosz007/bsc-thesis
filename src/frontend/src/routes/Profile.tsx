@@ -8,6 +8,7 @@ import {DIContext} from "../components/contexts/DIContext";
 import {NotificationContext} from "../components/contexts/NotificationProvider";
 import Modal from "../components/Modal";
 import {UserEditor} from "../components/editors/UserEditor";
+import AvatarUploader from "../components/editors/AvatarUploader";
 
 const UserSelfInfoDisplay = ({ user }: { user: UserSelfInfo }) => {
     const [logoutState, logout] = useLogout();
@@ -50,6 +51,7 @@ const ProfileInfo = ({ user }: { user: UserSelfInfo }) => {
                 </Modal>
             }
             <button onClick={() => setEditorOpen(true)}>Edit</button>
+            <AvatarUploader />
             <UserSelfInfoDisplay user={user} />
         </>
     );
