@@ -14,7 +14,7 @@ export const useCookieLogin = () => {
 
         if(loginState instanceof LoggedOut) {
             await userRepo.getSelf()
-                .andThen(userRepo.getByUserName)
+                .andThen(_ => userRepo.getSelfInfo())
                 .match(
                     user => {
                         loginDispatch({ type: 'login', user });

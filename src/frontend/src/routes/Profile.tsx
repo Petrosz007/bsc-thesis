@@ -1,11 +1,13 @@
-﻿import React, {useContext, useEffect} from "react";
+﻿import React, {useContext, useEffect, useState} from "react";
 import {LoggedIn, LoggedOut, LoginContext} from "../components/contexts/LoginProvider";
 import {Redirect} from "react-router";
-import DataProvider from "../components/contexts/DataProvider";
+import DataProvider, {DataContext} from "../components/contexts/DataProvider";
 import {User, UserSelfInfo} from "../logic/entities";
 import {Failed, Idle, Loaded, Loading, useApiCall, useLogout} from "../hooks/apiCallHooks";
 import {DIContext} from "../components/contexts/DIContext";
 import {NotificationContext} from "../components/contexts/NotificationProvider";
+import Modal from "../components/Modal";
+import {UserEditor} from "../components/editors/UserEditor";
 
 const UserSelfInfoDisplay = ({ user }: { user: UserSelfInfo }) => {
     const [logoutState, logout] = useLogout();
@@ -37,30 +39,18 @@ const UserSelfInfoDisplay = ({ user }: { user: UserSelfInfo }) => {
     )
 }
 
-const ProfileInfo = () => {
-    const { userRepo } = useContext(DIContext);
-    const { notificationDispatch } = useContext(NotificationContext);
-    
-    const [state, refreshData] = useApiCall(() => 
-        userRepo.getSelfInfo()
-        , []);
+const ProfileInfo = ({ user }: { user: UserSelfInfo }) => {
+    const [editorOpen, setEditorOpen] = useState(false);
 
-    useEffect(() => {
-        if(state instanceof Failed) {
-            console.error("Error in Profile.tsx", state.error);
-            notificationDispatch({ type: 'addError', message: `Error in Profile: ${state.error}` });
-        }
-        else if(state instanceof Idle) {
-            refreshData();
-        }
-    }, [state]);
-    
     return (
         <>
-        {state instanceof Loading && <p>Loading...</p>}
-        {state instanceof Loaded &&
-            <UserSelfInfoDisplay user={state.value} />
-        }
+            {editorOpen &&
+                <Modal>
+                    <UserEditor user={user} onClose={() => setEditorOpen(false)} />
+                </Modal>
+            }
+            <button onClick={() => setEditorOpen(true)}>Edit</button>
+            <UserSelfInfoDisplay user={user} />
         </>
     );
 }
@@ -73,7 +63,7 @@ export default () => {
 
     return (
         <DataProvider>
-            <ProfileInfo />
+            <ProfileInfo user={loginState.user}/>
         </DataProvider>
     )
 }

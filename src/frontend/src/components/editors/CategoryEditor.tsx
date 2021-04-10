@@ -1,16 +1,13 @@
-import React, {useContext, useState, useEffect, useCallback} from "react";
-import { useApiCall, Failed, Loaded } from "../../hooks/apiCallHooks";
+import React, {useContext, useState, useCallback} from "react";
 import { useHandleChange } from "../../hooks/useEditorForm";
-import {AppointmentDTO, CategoryDTO} from "../../logic/dtos";
+import {CategoryDTO} from "../../logic/dtos";
 import {Category, User} from "../../logic/entities";
-import { DataContext } from "../contexts/DataProvider";
 import { DIContext } from "../contexts/DIContext";
 import UserAdder from "./UserAdder";
-
-import './CategoryEditor.scss';
-import { NotificationContext } from "../contexts/NotificationProvider";
 import {ResultPromise} from "../../utilities/result";
 import {EditorBase} from "./EditorBase";
+
+import './CategoryEditor.scss';
 
 interface CategoryEditdata {
     id: number;
