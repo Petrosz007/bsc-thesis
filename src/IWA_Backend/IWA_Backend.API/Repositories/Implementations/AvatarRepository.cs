@@ -10,12 +10,18 @@ namespace IWA_Backend.API.Repositories.Implementations
 {
     public class AvatarRepository : IAvatarRepository
     {
+        private static string PathFromId(string id) =>
+            Path.Combine("Avatars", id);
+        
+        public bool Exists(string id) =>
+            File.Exists(PathFromId(id));
+
         public async Task<(byte[] Bytes, AvatarFileTypes FileType)> GetByIdAsync(string id)
         {
-            var filePath = Path.Combine("Avatars", id);
-            if (!File.Exists(filePath))
+            if (!Exists(id))
                 throw new NotFoundException($"Avatar not found with id: '{id}'");
             
+            var filePath = PathFromId(id);
             var extension = AvatarFileTypesExtensions.FromExtension(Path.GetExtension(filePath));
             var bytes = await File.ReadAllBytesAsync(filePath);
             return (bytes, extension);
@@ -27,7 +33,7 @@ namespace IWA_Backend.API.Repositories.Implementations
         public async Task<string> CreateAsync(IFormFile file, AvatarFileTypes extension)
         {
             var id = $"{Guid.NewGuid()}.{extension.GetExtension()}";
-            var filePath = Path.Combine("Avatars", id);
+            var filePath = PathFromId(id);
             
             using var stream = File.Create(filePath);
             await file.CopyToAsync(stream);
@@ -37,10 +43,12 @@ namespace IWA_Backend.API.Repositories.Implementations
 
         public Task DeleteAsync(string id)
         {
-            var filePath = Path.Combine("Avatars", id);
-            if (!File.Exists(filePath))
+            if (!Exists(id))
+            {
                 throw new NotFoundException($"Avatar not found with id: '{id}'");
+            }
             
+            var filePath = PathFromId(id);
             File.Delete(filePath);
 
             return Task.CompletedTask;

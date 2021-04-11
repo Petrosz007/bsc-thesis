@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using AutoMapper;
 using IWA_Backend.API.BusinessLogic.DTOs;
@@ -60,9 +61,18 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             var id = await AvatarRepository.CreateAsync(file, extension);
             user.ContractorPage!.Avatar = id;
             await UserRepository.UpdateAsync(user);
-            
-            if(previousAvatar is not null)
-                await AvatarRepository.DeleteAsync(previousAvatar);
+
+            if (previousAvatar is not null)
+            {
+                try
+                {
+                    await AvatarRepository.DeleteAsync(previousAvatar);
+                }
+                catch (NotFoundException)
+                {
+                    // TODO: log, that the file has been deleted from disk
+                }
+            }
         }
 
         public async Task<(byte[] Bytes, string MIMEType)> GetAvatarAsync(string? userName)
@@ -71,16 +81,14 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             if(user.ContractorPage is null)
                 throw new NotContractorException("User is not a contractor");
 
-            if (user.ContractorPage.Avatar is null)
-            {
-                var (bytes, extension) = await AvatarRepository.GetDefaultAsync();
-                return (bytes, extension.GetMIMEType());
-            }
-            else
-            {
-                var (bytes, extension) = await AvatarRepository.GetByIdAsync(user.ContractorPage.Avatar);
-                return (bytes, extension.GetMIMEType());
-            }
+            // Checking if the file is still on the filesystem
+            bool returnUsersAvatar = user.ContractorPage.Avatar is not null && AvatarRepository.Exists(user.ContractorPage.Avatar);
+            
+            var (bytes, extension) = returnUsersAvatar
+                ? await AvatarRepository.GetByIdAsync(user.ContractorPage.Avatar!)
+                : await AvatarRepository.GetDefaultAsync();
+            
+            return (bytes, extension.GetMIMEType());
         }
     }
 }
