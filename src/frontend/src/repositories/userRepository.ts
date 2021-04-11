@@ -1,7 +1,7 @@
 import {IsLoggedInDTO, UserEditDTO} from "../logic/dtos";
 import {User, UserSelfInfo} from "../logic/entities";
 import {ResultPromise, Unit} from "../utilities/result";
-import {safeApiFetchAs, safeApiFetchWithBodyAsUnit} from "./utilities";
+import {safeApiFetchAs, safeApiFetchFormDataAsUnit, safeApiFetchWithBodyAsUnit} from "./utilities";
 import {Config} from "../config";
 
 export interface IUserRepository {
@@ -10,6 +10,7 @@ export interface IUserRepository {
     getContractors(): ResultPromise<User[], Error>;
     getSelfInfo(): ResultPromise<UserSelfInfo, Error>;
     update(dto: UserEditDTO): ResultPromise<Unit, Error>;
+    updateAvatar(formData: FormData): ResultPromise<Unit, Error>;
 };
 
 export class UserRepository implements IUserRepository {
@@ -34,4 +35,7 @@ export class UserRepository implements IUserRepository {
     
     update = (dto: UserEditDTO): ResultPromise<Unit, Error> =>
         safeApiFetchWithBodyAsUnit(`${this.config.apiUrl}/User`, 'PUT', dto);
+
+    updateAvatar = (formData: FormData): ResultPromise<Unit, Error> =>
+        safeApiFetchFormDataAsUnit(`${this.config.apiUrl}/User/Avatar`, 'POST', formData);
 }

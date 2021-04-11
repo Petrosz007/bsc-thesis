@@ -1,8 +1,23 @@
-﻿import React, {useCallback, useState} from "react"
+﻿import React, {useCallback, useContext, useEffect, useState} from "react"
 import {safeApiFetchWithBodyAsUnit} from "../../repositories/utilities";
+import {DIContext} from "../contexts/DIContext";
+import {Failed, useApiCall} from "../../hooks/apiCallHooks";
+import {NotificationContext} from "../contexts/NotificationProvider";
 
 export default () => {
+    const { userRepo } = useContext(DIContext);
+    const { notificationDispatch } = useContext(NotificationContext);
     const [selectedFile, setSelectedFile] = useState<File|undefined>(undefined);
+    
+    const [updateState, updateAvatar] = useApiCall((formData: FormData) =>
+        userRepo.updateAvatar(formData)
+    , []);
+    
+    useEffect(() => {
+        if(updateState instanceof Failed) {
+            notificationDispatch({ type: 'addError', message: `Error updating Avatar: ${updateState.error.message}` });
+        }
+    }, [updateState]);
     
     const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -11,13 +26,8 @@ export default () => {
         
         const formData = new FormData();
         formData.append('file', selectedFile);
-        
-        await fetch(`https://localhost:5001/User/Avatar`, {
-            credentials: 'include',
-            mode: 'cors',
-            method: 'POST',
-            body: formData,
-        });
+
+        await updateAvatar(formData);
     }, [selectedFile]);
     
     return (
