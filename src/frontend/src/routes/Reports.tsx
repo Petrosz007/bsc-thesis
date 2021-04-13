@@ -67,7 +67,7 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
         return sorted;
     }, [appointments, selectedUser, dateInterval]);
 
-    const report = useMemo(() => createReport(usersAppointments, categories, owner, selectedUser), 
+    const report = useMemo(() => createReport(usersAppointments, categories, dateInterval, owner, selectedUser), 
         [usersAppointments, categories, owner, selectedUser]);
 
     return (
