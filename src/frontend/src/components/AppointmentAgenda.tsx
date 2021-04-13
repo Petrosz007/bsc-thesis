@@ -27,7 +27,15 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
     const [appointmentToView, setAppointmentToView] = useState<Appointment|undefined>(undefined);
     
     const selectableCategories = useMemo(() => uniques(appointments.map(a => a.category), c => `${c.id}`), [appointments]);
-    useEffect(() => setSelectedCategories(selectableCategories), [selectableCategories]);
+    // If there is a new category to be selected, only change the selected category, when there is none selected
+    // This way the filter doesn't get overwritten
+    useEffect(() => {
+        setSelectedCategories(prevSelectedCategories =>
+            prevSelectedCategories.length === 0
+                ? selectableCategories
+                : prevSelectedCategories
+        );
+    }, [selectableCategories]);
     
     const dictionary = useMemo(() => {
         const sorted = [...appointments]
@@ -38,8 +46,6 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
         return groupBy(sorted, a => a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY));
     }, [appointments, selectedCategories, dateInterval, showFull]);
 
-    useEffect(() => console.log('dictionary', dictionary), [dictionary]);
-    
     return (
         <div>
             {appointmentToEdit !== undefined && categories !== undefined &&
