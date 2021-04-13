@@ -51,7 +51,9 @@ const ProfileInfo = ({ user }: { user: UserSelfInfo }) => {
                 </Modal>
             }
             <button onClick={() => setEditorOpen(true)}>Edit</button>
-            <AvatarUploader />
+            {user.contractorPage !== null &&
+                <AvatarUploader />
+            }
             <UserSelfInfoDisplay user={user} />
         </>
     );
