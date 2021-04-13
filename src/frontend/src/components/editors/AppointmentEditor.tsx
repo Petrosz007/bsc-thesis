@@ -256,9 +256,9 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
                     }} 
             />
             <label htmlFor="maxAttendees">MaxAttendees</label>
-            <input type="number" name="maxAttendees" value={state.maxAttendees} min="1" onChange={handleChange} /><br/>
+            <input type="number" name="maxAttendees" value={state.maxAttendees} min={Math.max(1, users.length)} onChange={handleChange} /><br/>
             <label htmlFor="attendees">Attendees</label>
-            <UserAdder users={users} setUsers={setUsers} allowedUsers={allowedUsers()} />
+            <UserAdder users={users} setUsers={setUsers} allowedUsers={allowedUsers()} max={state.maxAttendees} />
         </EditorBase>
     );
 }

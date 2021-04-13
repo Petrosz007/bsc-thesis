@@ -7,10 +7,11 @@ import { NotificationContext } from "../contexts/NotificationProvider";
 import {ResultPromise} from "../../utilities/result";
 import UserName from "../UserName";
 
-export default ({ users, setUsers, allowedUsers }: { 
+export default ({ users, setUsers, allowedUsers, max }: { 
     users: User[],
     setUsers: React.Dispatch<React.SetStateAction<User[]>>,
     allowedUsers?: User[],
+    max?: number,
 }) => {
     const { userRepo } = useContext(DIContext);
     const { notificationDispatch } = useContext(NotificationContext);
@@ -44,7 +45,7 @@ export default ({ users, setUsers, allowedUsers }: {
             <input type="text" value={userName} onChange={e => setUserName(e.target.value)} />
             {addState instanceof Loading
                 ? <span>Loading...</span>
-                : <button onClick={e => {add(); e.preventDefault()}}>Add</button>}<br/>
+                : <button onClick={e => {add(); e.preventDefault()}} disabled={max !== undefined && users.length >= max}>Add</button>}<br/>
             {users.map(user => 
                 <React.Fragment key={user.userName}>
                     <UserName user={user} />
