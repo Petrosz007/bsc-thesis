@@ -82,7 +82,7 @@ namespace IWA_Backend.API
 
             services.AddCors(o => o.AddPolicy("Localhost", builder =>
             {
-                builder.WithOrigins("http://localhost:8100", "http://127.0.0.1:8100")
+                builder.WithOrigins(Configuration["CorsAllowUrls"].Split(','))
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
