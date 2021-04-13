@@ -7,7 +7,7 @@
     pointer-events: all;
 
     display: grid;
-    grid-template-columns: auto 30px;
+    grid-template-columns: auto 20px;
     grid-template-rows: auto;
 
     transition: all 150ms ease-in-out;
@@ -23,24 +23,32 @@
         overflow-wrap: anywhere;
     }
 
-    button {
+    svg {
         grid-column: 2 / 3;
-        height: 30px;
-        width: 30px;
+        height: 20px;
+        width: 20px;
+        align-self: start;
+        justify-self: right;
     }
 }
 
 .notification-error { 
-    background-color: #FDF2F5;
+    background-color: #fdf2f5;
     color: #CD3441;
+    fill: #CD3441;
     border-color: #c75861;
 }
 .notification-warning { background-color: yellow; }
-.notification-success { background-color: green; }
+.notification-success {
+    background-color: #f5fdf2;
+    color: #43cd34;
+    fill: #43cd34;
+    border-color: #58c75a; 
+}
 
 .notifications {
     z-index: 2;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
