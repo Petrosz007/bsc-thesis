@@ -53,6 +53,7 @@ namespace IWA_Backend.API.Controllers
         
         [HttpPost("Avatar")]
         [Authorize(Roles = "Contractor")]
+        [RequestSizeLimit(3_000_000)]
         public async Task<ActionResult<UserInfoDTO>> PostAvatar(IFormFile file)
         {
             try
