@@ -72,6 +72,14 @@ namespace IWA_Backend.API.Controllers
             var contractorDTOs = contractors.Select(c => Mapper.Map<UserInfoDTO>(c));
             return Ok(contractorDTOs);
         }
+        
+        [HttpGet("All")]
+        public ActionResult<UserInfoDTO> GetAllUsers()
+        {
+            var users = Logic.GetAllUsers();
+            var userDTOs = users.Select(c => Mapper.Map<UserInfoDTO>(c));
+            return Ok(userDTOs);
+        }
 
         [HttpPut]
         [Authorize]

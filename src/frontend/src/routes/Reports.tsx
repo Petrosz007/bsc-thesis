@@ -16,6 +16,7 @@ import './Report.scss';
 import UserName from "../components/UserName";
 import {DateTime, Interval} from "luxon";
 import {DatePicker, DateRangePicker} from "../components/inputs/DatePicker";
+import UserSelector from "../components/inputs/UserSelector";
 
 const ReportTable = ({ report }: { report: Report }) => {
     const totalPrice = report.entries.reduce((acc, x) =>
@@ -73,11 +74,8 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
     return (
         <div>
             User:
-            <Select options={users.map(u => ({ value: u, label: <UserName user={u} /> }))}
-                    onChange={e => setSelectedUser(e?.value ?? users[0])}
-                    filterOption={(option: any, searchText) => `${option.value.name} @${option.value.userName}`.toUpperCase().includes(searchText.toUpperCase())}
-                    value={{ value: selectedUser, label: <UserName user={selectedUser} /> }}
-            />
+            <UserSelector selectedUser={selectedUser} setSelectedUser={setSelectedUser} users={users} />
+
             <DateRangePicker value={dateInterval} onChange={setDateInterval} />
             <ReportTable report={report} />
             <ul>

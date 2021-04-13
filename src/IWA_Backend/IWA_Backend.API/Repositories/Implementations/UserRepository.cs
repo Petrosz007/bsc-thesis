@@ -18,6 +18,9 @@ namespace IWA_Backend.API.Repositories.Implementations
             Context.Users
                 .Any(u => u.UserName == userName);
 
+        public IEnumerable<User> GetAllUsers() =>
+            Context.Users.ToList();
+        
         public User GetByUserName(string? id) =>
             Context.Users
                 .FirstOrDefault(user => user.UserName == id)

@@ -8,6 +8,7 @@ export interface IUserRepository {
     getByUserName(userName: string): ResultPromise<User,Error>;
     getSelf(): ResultPromise<string,Error|'NotLoggedIn'>;
     getContractors(): ResultPromise<User[], Error>;
+    getAllUsers(): ResultPromise<User[], Error>;
     getSelfInfo(): ResultPromise<UserSelfInfo, Error>;
     update(dto: UserEditDTO): ResultPromise<Unit, Error>;
     updateAvatar(formData: FormData): ResultPromise<Unit, Error>;
@@ -29,6 +30,9 @@ export class UserRepository implements IUserRepository {
 
     getContractors = (): ResultPromise<User[], Error> =>
         safeApiFetchAs<User[]>(`${this.config.apiUrl}/User/Contractors`, 'GET');
+
+    getAllUsers = (): ResultPromise<User[], Error> =>
+        safeApiFetchAs<User[]>(`${this.config.apiUrl}/User/All`, 'GET');
 
     getSelfInfo = (): ResultPromise<UserSelfInfo, Error> =>
         safeApiFetchAs<UserSelfInfo>(`${this.config.apiUrl}/User/SelfInfo`, 'GET');

@@ -90,5 +90,8 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             
             return (bytes, extension.GetMIMEType());
         }
+
+        public IEnumerable<User> GetAllUsers() =>
+            UserRepository.GetAllUsers();
     }
 }
