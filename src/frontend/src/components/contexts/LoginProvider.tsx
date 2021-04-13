@@ -1,9 +1,9 @@
 import React, { createContext, useReducer, useState } from "react";
-import { User } from "../../logic/entities";
+import {User, UserSelfInfo} from "../../logic/entities";
 
 export class LoggedOut {}
 export class LoggedIn {
-    constructor(readonly user: User) {}
+    constructor(readonly user: UserSelfInfo) {}
 }
 export type LoginState = LoggedOut | LoggedIn;
 
@@ -18,7 +18,7 @@ export const LoginContext = createContext<LoginContextType>({
 });
 
 export type LoginAction =
-    | { type: 'login', user: User }
+    | { type: 'login', user: UserSelfInfo }
     | { type: 'logout' };
 
 const reducer = (state: LoginState, action: LoginAction): LoginState => {

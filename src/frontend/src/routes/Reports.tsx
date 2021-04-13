@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import { useContext } from "react";
 import { Redirect } from "react-router-dom";
 import DataProvider, { DataContext } from "../components/contexts/DataProvider";
@@ -53,18 +53,22 @@ const ReportTable = ({ report }: { report: Report }) => {
 }
 
 const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User, users: User[], appointments: Appointment[], categories: Category[] }) => {
-    const startOfTheMonth = DateTime.now().set({ day: 1, hour: 0, minute: 0, second: 0, millisecond: 0 });
-    const endOfTheMonth = DateTime.now().set({ day: DateTime.now().daysInMonth, hour: 23, minute: 59, second: 59, millisecond: 59 });
+    const startOfTheMonth = useMemo(() => DateTime.now().set({ day: 1, hour: 0, minute: 0, second: 0, millisecond: 0 }), []);
+    const endOfTheMonth = useMemo(() => DateTime.now().set({ day: DateTime.now().daysInMonth, hour: 23, minute: 59, second: 59, millisecond: 59 }), []);
     
     const [selectedUser, setSelectedUser] = useState(users[0]);
     const [dateInterval, setDateInterval] = useState(Interval.fromDateTimes(startOfTheMonth, endOfTheMonth));
+    
+    const usersAppointments = useMemo(() => {
+        const filtered =  appointments
+            .filter(a => a.attendees.some(u => u.userName === selectedUser.userName))
+            .filter(a => dateInterval.contains(a.startTime))
+        const sorted = [...filtered].sort((left, right) => left.startTime.toMillis() - right.startTime.toMillis());
+        return sorted;
+    }, [appointments, selectedUser, dateInterval]);
 
-    const usersAppointments = appointments
-        .filter(a => a.attendees.some(u => u.userName === selectedUser.userName))
-        .filter(a => dateInterval.contains(a.startTime))
-        .sort((left, right) => left.startTime.toMillis() - right.startTime.toMillis());
-
-    const report = createReport(usersAppointments, categories, owner, selectedUser);
+    const report = useMemo(() => createReport(usersAppointments, categories, owner, selectedUser), 
+        [usersAppointments, categories, owner, selectedUser]);
 
     return (
         <div>

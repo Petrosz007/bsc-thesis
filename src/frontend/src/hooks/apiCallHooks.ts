@@ -44,7 +44,7 @@ export const useLogin = (): [ Status<User,Error>, (userName: string, password: s
         setStatus(new Loading());
 
         await accountRepo.login(userName, password)
-            .andThen(_ => userRepo.getByUserName(userName))
+            .andThen(_ => userRepo.getSelfInfo())
             .match(
             user => {
                 setStatus(new Loaded(user));     

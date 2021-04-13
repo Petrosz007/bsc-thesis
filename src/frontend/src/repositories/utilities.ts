@@ -65,3 +65,11 @@ export const safeApiFetchWithBodyAsUnit = (url: string, method: 'POST' | 'PUT', 
         body: data === undefined ? '' : JSON.stringify(data),
     })
     .map(_ => ({} as Unit));
+
+export const safeApiFetchFormDataAsUnit = (url: string, method: 'POST' | 'PUT', data?: FormData): ResultPromise<Unit,Error> =>
+    safeFetch(url, {
+        ...fetchOptions,
+        method,
+        body: data,
+    })
+    .map(_ => ({} as Unit));

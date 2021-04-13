@@ -19,13 +19,14 @@ namespace IWA_Backend.Tests.UnitTests.Logic
     public class UserLogicTest
     {
         private readonly Mock<IUserRepository> MockUserRepo = new();
+        private readonly Mock<IAvatarRepository> MockAvatarRepo = new();
         private readonly IMapper Mapper;
         private readonly UserLogic Logic;
         
         protected UserLogicTest()
         {
             Mapper = new MapperConfiguration(c => c.AddProfile<AutoMapping>()).CreateMapper();
-            Logic = new(MockUserRepo.Object, Mapper);
+            Logic = new(MockUserRepo.Object, Mapper, MockAvatarRepo.Object);
         }
         
         public class GetById : UserLogicTest

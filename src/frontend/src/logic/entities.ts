@@ -39,3 +39,10 @@ export interface Report {
         count: number;
     }[]; 
 }
+
+export interface UserSelfInfo {
+    userName: string;
+    name: string;
+    email: string;
+    contractorPage: ContractorPage | null;
+};

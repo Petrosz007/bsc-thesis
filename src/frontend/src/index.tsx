@@ -24,6 +24,7 @@ import Register from './routes/Register';
 import Report from './routes/Reports';
 import Reports from './routes/Reports';
 import NotificationProvider, { NotificationContext } from './components/contexts/NotificationProvider';
+import Profile from "./routes/Profile";
 
 const App = () => {
     return (
@@ -61,6 +62,7 @@ const Main = () => {
                         <Route path ="/booked">             <Booked />              </Route>
                         <Route path ="/own-appointments">   <OwnAppointments />     </Route>
                         <Route path ="/reports">            <Reports />             </Route>
+                        <Route path ="/profile">            <Profile />             </Route>
                         <Route path ="/login">              <Login />               </Route>
                         <Route path ="/register">           <Register />            </Route>
                         <Route path="/">                    <Home />                </Route>

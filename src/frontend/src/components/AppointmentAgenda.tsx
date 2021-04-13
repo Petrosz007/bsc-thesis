@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, {ReactElement, useEffect, useMemo, useState} from "react";
 import { Appointment, Category } from "../logic/entities";
 import {Dictionary, groupBy, uniques} from "../utilities/listExtensions";
 import {AppointmentCard, AppointmentCardEditable} from "./AppointmentCard";
@@ -17,25 +17,29 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
     editable: boolean,
     showFull: boolean
 }) => {
-    const startOfTheMonth = DateTime.now().set({ day: 1, hour: 0, minute: 0, second: 0, millisecond: 0 });
-    const endOfTheMonth = DateTime.now().set({ day: DateTime.now().daysInMonth, hour: 23, minute: 59, second: 59, millisecond: 59 });
-    
-    const [dateInterval, setDateInterval] = useState(Interval.fromDateTimes(startOfTheMonth, endOfTheMonth));
-    
-    const selectableCategories = uniques(appointments.map(a => a.category), c => `${c.id}`);
-    const [selectedCategories, setSelectedCategories] = useState(selectableCategories);
-    
-    const sortedAppointments = [...appointments]
-        .filter(a => selectedCategories.some(category => a.category.id === category.id))
-        .filter(a => dateInterval.contains(a.startTime))
-        .filter(a => showFull || a.maxAttendees > a.attendees.length)
-        .sort((left, right) => left.startTime.toMillis() - right.startTime.toMillis());
-    
-    const dictionary = groupBy(sortedAppointments, a => a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY));
-
+    const [dateInterval, setDateInterval] = useState(() => {
+        const startOfTheMonth = DateTime.now().set({ day: 1, hour: 0, minute: 0, second: 0, millisecond: 0 });
+        const endOfTheMonth = DateTime.now().set({ day: DateTime.now().daysInMonth, hour: 23, minute: 59, second: 59, millisecond: 59 });
+        return Interval.fromDateTimes(startOfTheMonth, endOfTheMonth);
+    });
+    const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
     const [appointmentToEdit, setAppointmentToEdit] = useState<Appointment|undefined>(undefined);
     const [appointmentToView, setAppointmentToView] = useState<Appointment|undefined>(undefined);
+    
+    const selectableCategories = useMemo(() => uniques(appointments.map(a => a.category), c => `${c.id}`), [appointments]);
+    useEffect(() => setSelectedCategories(selectableCategories), [selectableCategories]);
+    
+    const dictionary = useMemo(() => {
+        const sorted = [...appointments]
+            .filter(a => selectedCategories.some(category => a.category.id === category.id))
+            .filter(a => dateInterval.contains(a.startTime))
+            .filter(a => showFull || a.maxAttendees > a.attendees.length)
+            .sort((left, right) => left.startTime.toMillis() - right.startTime.toMillis());
+        return groupBy(sorted, a => a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY));
+    }, [appointments, selectedCategories, dateInterval, showFull]);
 
+    useEffect(() => console.log('dictionary', dictionary), [dictionary]);
+    
     return (
         <div>
             {appointmentToEdit !== undefined && categories !== undefined &&
