@@ -1,3 +1,3 @@
 ﻿export class Config {
-    apiUrl = 'https://localhost:5001';
+    apiUrl = 'http://127.0.0.1:5000';
 }
