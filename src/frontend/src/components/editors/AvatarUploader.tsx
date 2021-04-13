@@ -28,7 +28,7 @@ export default () => {
             return;
         
         if(selectedFile.size > 2_000_000) {
-            notificationDispatch({ type: 'addError', message: `Maximum 2Mb lehet a profilkép, a feltöltött fájl ${(selectedFile.size / 1_000_000).toFixed(2)}Mb!` });
+            notificationDispatch({ type: 'addError', message: `Maximum 2MB lehet a profilkép, a feltöltött fájl ${(selectedFile.size / 1_000_000).toFixed(2)}MB!` });
             return;
         }
         
