@@ -14,7 +14,7 @@ export default ({ appointment, onClose }: { appointment: Appointment, onClose: (
                 <p>{appointment.category.price} Ft</p>
                 <p>
                     {appointment.startTime.toLocaleString(DateTime.DATETIME_FULL)}<br/>
-                    {appointment.startTime.toLocaleString(DateTime.DATETIME_FULL)}
+                    {appointment.endTime.toLocaleString(DateTime.DATETIME_FULL)}
                 </p>
                 <p>Max résztvevők: {appointment.maxAttendees}</p>
                 <p>Szabad hely: {appointment.maxAttendees - appointment.attendees.length}</p>

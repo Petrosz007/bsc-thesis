@@ -16,21 +16,20 @@ export default () => {
 
     useEffect(() => {
         if(loginStatus instanceof Failed) {
-            console.error('Error in LoginCard: ', loginStatus.error);
-            notificationDispatch({ type: 'addError', message: `Error logging in: ${loginStatus.error.message}` });
+            notificationDispatch({ type: 'addError', message: `Hiba bejelentkezésnél: ${loginStatus.error.message}` });
         }
     }, [loginStatus]);
 
     if(loginState instanceof LoggedIn && loginStatus instanceof Loaded)
         return <Redirect to="/" />;
 
-    if(loginStatus instanceof Loading) return <div>Logging in ...</div>
+    if(loginStatus instanceof Loading) return <div>Bejelentkezés...</div>
 
     return (
         <form onSubmit={() => login(userName, password)}>
-            UserName: <input type="text" value={userName} required={true} onChange={e => setUserName(e.target.value)}/><br/>
-            Password: <input type="password" value={password} required={true} autoComplete="current-password" onChange={e => setPassword(e.target.value)}/><br/>
-            <input type="submit" value="Login" />
+            Felhasználónév <input type="text" value={userName} required={true} onChange={e => setUserName(e.target.value)}/><br/>
+            Jelszó <input type="password" value={password} required={true} autoComplete="current-password" onChange={e => setPassword(e.target.value)}/><br/>
+            <input type="submit" value="Bejelentkezés" />
         </form>
     );
 };

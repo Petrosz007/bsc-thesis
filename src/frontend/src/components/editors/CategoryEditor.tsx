@@ -56,18 +56,18 @@ const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose, labels }
             onClose={onClose}
             dataDispatchAction={category => ({ type: 'updateCategory', category })}
         >
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">Név</label>
             <input type="text" name="name" value={state.name} required={true} onChange={handleChange} />
-            <label htmlFor="description">Description</label>
+            <label htmlFor="description">Leírás</label>
             <input type="text" name="description" value={state.description} required={true} onChange={handleChange} />
-            <label htmlFor="everyoneAllowed">Everyone allowed</label>
+            <label htmlFor="everyoneAllowed">Nyílt esemény</label>
             <input type="checkbox" name="everyoneAllowed" checked={state.everyoneAllowed} onChange={handleChange} />
-            <label htmlFor="maxAttendees">MaxAttendees</label>
+            <label htmlFor="maxAttendees">Max résztvevők</label>
             <input type="number" name="maxAttendees" value={state.maxAttendees} min="1" onChange={handleChange} />
-            <label htmlFor="price">Price</label>
+            <label htmlFor="price">Ár</label>
             <input type="number" name="price" value={state.price} min="0" onChange={handleChange} />
             {!state.everyoneAllowed && <>
-                <label htmlFor="allowedUsers">Allowed Users</label>
+                <label htmlFor="allowedUsers">Engedélyezett résztvevők</label>
                 <UserAdder users={users} setUsers={setUsers} />
             </>}
         </EditorBase>

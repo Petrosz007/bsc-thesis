@@ -43,9 +43,8 @@ export const DateRangePicker = ({ value, onChange }: { value: Interval, onChange
     
     return (
         <>
-        Start:
         <DatePicker valueDate={value.start} onChangeDate={onStartDateChange} maxDate={value.end} />
-        End:
+        {'->'}
         <DatePicker valueDate={value.end} onChangeDate={onEndDateChange} minDate={value.start} />
         </>
     );

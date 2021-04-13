@@ -64,8 +64,8 @@ const BookButton = ({ appointment }: { appointment: Appointment }) => {
     const isAttendee = () => loginState instanceof LoggedIn 
         && appointment.attendees.some(user => user.userName === loginState.user.userName);
 
-    if(bookingStatus instanceof Loading) return <span>Booking...</span>;
-    if(unBookingStatus instanceof Loading) return <span>Unbooking...</span>;
+    if(bookingStatus instanceof Loading) return <span>Foglalás...</span>;
+    if(unBookingStatus instanceof Loading) return <span>Lemondás...</span>;
     
     if(loginState instanceof LoggedOut)
         return null;
@@ -96,10 +96,10 @@ const DeleteButton = ({ appointment }: { appointment: Appointment }) => {
         }
     }, [deleteStatus]);
 
-    if(deleteStatus instanceof Loading) return <span>Deleting...</span>;
+    if(deleteStatus instanceof Loading) return <span>Törlés...</span>;
 
     return (
-        <button onClick={() => deleteAppointment()}>Delete</button>
+        <button onClick={() => deleteAppointment()}>Törlés</button>
     );
 }
 
@@ -121,7 +121,7 @@ export const AppointmentCardEditable = ({ appointment, onEdit, onView }: { appoi
                 {isOwner() &&
                 <>
                     <DeleteButton appointment={appointment} />
-                    <button onClick={() => onEdit(appointment)}>Edit</button>
+                    <button onClick={() => onEdit(appointment)}>Szerkesztés</button>
                 </>
                 }
             </div>

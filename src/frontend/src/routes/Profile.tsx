@@ -24,7 +24,7 @@ const UserSelfInfoDisplay = ({ user }: { user: UserSelfInfo }) => {
         <div>
             {logoutState instanceof Loading && <p>Logging out...</p>}
             {logoutState instanceof Idle &&
-                <button className="buttonBase inverted" onClick={logout}>Log Out</button>
+                <button className="buttonBase inverted" onClick={logout}>Kijelentkezés</button>
             }
 
             <p>Név: {user.name}</p>
@@ -50,7 +50,7 @@ const ProfileInfo = ({ user }: { user: UserSelfInfo }) => {
                     <UserEditor user={user} onClose={() => setEditorOpen(false)} />
                 </Modal>
             }
-            <button onClick={() => setEditorOpen(true)}>Edit</button>
+            <button onClick={() => setEditorOpen(true)}>Szerkesztés</button>
             {user.contractorPage !== null &&
                 <AvatarUploader />
             }

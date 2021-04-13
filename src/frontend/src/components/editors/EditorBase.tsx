@@ -11,7 +11,7 @@ export function EditorBase<TEditorState extends { createAnother: boolean },TEnti
     editorStateToDto: (_: TEditorState) => TDto,
     apiCall: (_x: TDto) => ResultPromise<TEntity,Error>,
     onClose: () => void,
-    handleChange: (event: React.ChangeEvent<HTMLInputElement & HTMLSelectElement>) => void
+    handleChange: (event: React.ChangeEvent<HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement>) => void
     labels: {
         createAnother: string,
         submit: string,

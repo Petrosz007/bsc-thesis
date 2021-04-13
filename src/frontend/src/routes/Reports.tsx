@@ -73,7 +73,7 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
 
     return (
         <div>
-            User:
+            Ügyfél:
             <UserSelector selectedUser={selectedUser} setSelectedUser={setSelectedUser} users={users} />
 
             <DateRangePicker value={dateInterval} onChange={setDateInterval} />
@@ -83,7 +83,7 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
                 <li key={a.id}>{a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)} - {a.category.name}</li>
             )}
             </ul>
-            <button onClick={() => downloadReportPdf(report)}>Download Report</button>
+            <button onClick={() => downloadReportPdf(report)}>Számla letöltése</button>
         </div>
     );
 }

@@ -58,14 +58,16 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
                     <AppointmentViewer appointment={appointmentToView} onClose={() => setAppointmentToView(undefined)}  />
                 </Modal>
             }
-            Categories:
+            Kategóriák:
             <Select options={selectableCategories.map(c => ({ value: c, label: c.name }))}
                     onChange={e => {
                         const arr = Array.isArray(e) ? e : [];
                         setSelectedCategories(arr.length !== 0 ? e.map(x => x.value) : selectableCategories);
                     }}
+                    placeholder="Válassz kategóriákat..."
                     isMulti
             />
+            Ezen dátumok között: <br/>
             <DateRangePicker value={dateInterval} onChange={setDateInterval} />
             <table className="agenda-table">
                 <tbody>

@@ -95,17 +95,17 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
             onClose={onClose}
             dataDispatchAction={dataDispatchAction}
          >
-            <label htmlFor="startTimeDate">Start</label>
+            <label htmlFor="startTimeDate">Kezdés</label>
             <div>
                 <input type="date" name="startTimeDate" value={state.startTimeDate} onChange={handleChange} />
                 <input type="time" name="startTimeTime" value={state.startTimeTime} onChange={handleChange} />
             </div>
-            <label htmlFor="startTimeDate">End</label>
+            <label htmlFor="startTimeDate">Vége</label>
             <div>
                 <input type="date" name="endTimeDate" value={state.endTimeDate} min={state.startTimeDate} onChange={handleChange} />
                 <input type="time" name="endTimeTime" value={state.endTimeTime} onChange={handleChange} />
             </div>
-            <label htmlFor="categoryId">Category</label>
+            <label htmlFor="categoryId">Kategória</label>
             <Select options={selectOptions}
                     value={selectOptions.find(x => x.value === state.categoryId)}
                     onChange={x => {
@@ -113,9 +113,9 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
                         setState({ ...state, categoryId: x.value });
                     }} 
             />
-            <label htmlFor="maxAttendees">MaxAttendees</label>
+            <label htmlFor="maxAttendees">Max résztvevők</label>
             <input type="number" name="maxAttendees" value={state.maxAttendees} min={Math.max(1, users.length)} onChange={handleChange} /><br/>
-            <label htmlFor="attendees">Attendees</label>
+            <label htmlFor="attendees">Résztvevők</label>
             <UserAdder users={users} setUsers={setUsers} allowedUsers={allowedUsers()} max={state.maxAttendees} />
         </EditorBase>
     );

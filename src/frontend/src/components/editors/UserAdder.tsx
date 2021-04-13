@@ -47,7 +47,7 @@ const UserAdder = ({ usersToSelectFrom, users, setUsers, allowedUsers, max }: {
             <UserSelector selectedUser={selectedUser} setSelectedUser={setSelectedUser} users={usersToSelectFrom} />
             {addState instanceof Loading
                 ? <span>Loading...</span>
-                : <button onClick={e => {add(); e.preventDefault()}} disabled={max !== undefined && users.length >= max}>Add</button>}<br/>
+                : <button onClick={e => {add(); e.preventDefault()}} disabled={max !== undefined && users.length >= max}>Hozzáadás</button>}<br/>
             {users.map(user =>
                 <React.Fragment key={user.userName}>
                     <UserName user={user} />
