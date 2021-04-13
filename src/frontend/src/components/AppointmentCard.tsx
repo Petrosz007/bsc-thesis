@@ -1,14 +1,12 @@
 import React, { useContext, useEffect } from 'react';
 import { Appointment } from '../logic/entities';
-import { LoggedIn, LoginContext } from './contexts/LoginProvider';
+import {LoggedIn, LoggedOut, LoginContext} from './contexts/LoginProvider';
 import { Failed, Loading, useApiCall } from '../hooks/apiCallHooks';
 import { DIContext } from './contexts/DIContext';
 import { DataContext } from './contexts/DataProvider';
 
 import './AppointmentCard.scss';
 import { NotificationContext } from './contexts/NotificationProvider';
-import Modal from "./Modal";
-import AppointmentViewer from "./AppointmentViewer";
 
 const HourDuration = ({ startTime, endTime }: { startTime: Date, endTime: Date }) => {
     const minutes = Math.floor((endTime.getTime() - startTime.getTime()) / (1000 * 60));
@@ -58,8 +56,7 @@ const BookButton = ({ appointment }: { appointment: Appointment }) => {
     useEffect(() => {
         [bookingStatus, unBookingStatus].map(x => {
             if(x instanceof Failed) {
-                console.error(x.error);
-                notificationDispatch({ type: 'addError', message: 'Jelentkezz be a foglaláshoz!' });
+                notificationDispatch({ type: 'addError', message: `Hiba foglalás/lemondás közben: ${x.error}` });
             }
         })
     }, [bookingStatus, unBookingStatus]);
@@ -69,7 +66,10 @@ const BookButton = ({ appointment }: { appointment: Appointment }) => {
 
     if(bookingStatus instanceof Loading) return <span>Booking...</span>;
     if(unBookingStatus instanceof Loading) return <span>Unbooking...</span>;
-
+    
+    if(loginState instanceof LoggedOut)
+        return null;
+        
     if(isAttendee())
         return <button onClick={() => unBook()}>Lemondás</button>;
     
