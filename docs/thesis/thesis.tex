@@ -1,0 +1,102 @@
+\documentclass[
+	%parspace, % Térköz bekezdések közé / Add vertical space between paragraphs
+	%noindent, % Bekezdésének első sora ne legyen behúzva / No indentation of first lines in each paragraph
+	nohyp, % Szavak sorvégi elválasztásának tiltása / No hyphenation of words
+	%twoside, % Kétoldalas nyomtatás / Double sided format
+	%final, % Teendők elrejtése / Set final to hide todos
+]{elteikthesis}[2021/05/15]
+
+% Dolgozat metaadatai
+\title{Időpont foglaló webes alkalmazás} % cím / title
+\date{2021} % védés éve / year of defense
+
+% Szerző metaadatai
+\author{Andi Péter}
+\degree{programtervező informatikus BSc}
+
+% Témavezető(k) metaadatai
+\supervisor{Dr. Menyhárt László Gábor} % belső témavezető neve / internal supervisor's name
+\affiliation{adjunktus} % belső témavezető beosztása / internal supervisor's affiliation
+%\extsupervisor{Külső Kornél} % külső témavezető neve / external supervisor's name
+%\extaffiliation{informatikai igazgató} % külső témavezető beosztása / external supervisor's affiliation
+
+% Egyetem metaadatai
+\university{Eötvös Loránd Tudományegyetem} % egyetem neve / university's name
+\faculty{Informatikai Kar} % kar neve / faculty's name
+\department{} % tanszék neve / department's name
+\city{Budapest} % város / city
+\logo{elte_cimer_szines} % logo
+
+% Irodalomjegyzék hozzáadása
+\addbibresource{thesis.bib}
+
+% A dolgozat
+\begin{document}
+
+% Nyelv kiválasztása
+\documentlang{magyar}
+%\documentlang{english}
+
+% Teendők listája (final dokumentumban nincs)
+\listoftodos[\todolabel]
+
+% Dokumentum beállítások
+\input{settings.tex}
+
+% Címlap (kötelező)
+\maketitle
+
+% \topicdeclaration
+\todo{template témabejelentő formázás használata}
+A szakdolgozat célja egy időpont foglaló webes alkalmazás létrehozása. Az alkalmazásban vállalkozók (pl.: edzők, magán tanárok) szabad időpontokat hirdethetnek, melyeket ügyfeleik lefoglalhatnak. Ez az alkalmazás lehetővé teszi, hogy az egyéni-, kis- és középvállalkozók egyszerűen tudják egyeztetni ügyfeleikkel a munkáikat. Továbbá, a szoftver számon tartja a múltbeli foglaltidőpontokat, melyek így lekérdezhetők, így például a vállalkozó számlázás során egyszerűen meg tudja állapítani, hogy az adott hónapra hány alkalmat vett igénybe egy kliens.
+
+A program két különálló részből áll, egy webes frontendből, amit Javascript-el és hasonló modern technológiákkal valósítok meg és egy backend API-ból melyet C\# ASP.NET-ben kivitelezek. A frontend a backenddel http requestekkel kommunikál, a backend pedig egy adatbázist használ az adatok tárolására. A dolgozatomban rámutatok ennek az architektúrának az előnyeire és hátrányaira egy monolitikus MVC alapú webes alkalmazással szemben.
+
+\pagebreak
+
+% Tartalomjegyzék (kötelező)
+\tableofcontents
+\cleardoublepage
+
+% Tartalom
+\input{chapters/intro.tex}
+\cleardoublepage
+
+\input{chapters/user.tex}
+\cleardoublepage
+
+\input{chapters/impl.tex}
+\cleardoublepage
+
+\input{chapters/sum.tex}
+\cleardoublepage
+
+% Függelékek (opcionális) - hosszabb részletező táblázatok, sok és/vagy nagy kép esetén hasznos
+\appendix
+\input{appendices/sim.tex}
+\cleardoublepage
+
+% Irodalomjegyzék (kötelező)
+\addcontentsline{toc}{chapter}{\biblabel}
+\printbibliography[title=\biblabel]
+\cleardoublepage
+
+% Ábrajegyzék (opcionális) - 3-5 ábra fölött érdemes
+\addcontentsline{toc}{chapter}{\lstfigurelabel}
+\listoffigures
+\cleardoublepage
+
+% Táblázatjegyzék (opcionális) - 3-5 táblázat fölött érdemes
+\addcontentsline{toc}{chapter}{\lsttablelabel}
+\listoftables
+\cleardoublepage
+
+% Forráskódjegyzék (opcionális) - 3-5 kódpélda fölött érdemes
+\addcontentsline{toc}{chapter}{\lstcodelabel}
+\lstlistoflistings
+\cleardoublepage
+
+% Jelölésjegyzék (opcionális)
+%\printnomenclature
+
+\end{document}
