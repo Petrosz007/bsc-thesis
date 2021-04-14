@@ -64,3 +64,8 @@ A fordításhoz tetszőleges fejlesztő környezet is használható (pl. [TexStu
 * *theorem*: Tétel
 * *remark*: Emlékeztető
 * *note*: Megjegyzés
+
+## Commandok
+\cite{dahl1972structured} - irodalom hivatkozás
+\footnote{Maecenas a urna viverra, scelerisque nibh ut, malesuada ex.} - Lábjegyzet
+\href{Link Neve}{https://andipeter.me} - linkek
