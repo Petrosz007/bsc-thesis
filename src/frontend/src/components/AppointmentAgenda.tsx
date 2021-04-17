@@ -26,20 +26,24 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
     const [appointmentToEdit, setAppointmentToEdit] = useState<Appointment|undefined>(undefined);
     const [appointmentToView, setAppointmentToView] = useState<Appointment|undefined>(undefined);
     
-    const selectableCategories = useMemo(() => uniques(appointments.map(a => a.category), c => `${c.id}`), [appointments]);
+    const selectableCategories = useMemo(() => 
+        categories
+            ?? uniques(appointments.map(a => a.category), c => `${c.id}`)
+    , [appointments, categories]);
+    
     // If there is a new category to be selected, only change the selected category, when there is none selected
     // This way the filter doesn't get overwritten
     useEffect(() => {
         setSelectedCategories(prevSelectedCategories =>
             prevSelectedCategories.length === 0
-                ? selectableCategories
+                ? []
                 : prevSelectedCategories
         );
     }, [selectableCategories]);
     
     const dictionary = useMemo(() => {
         const sorted = [...appointments]
-            .filter(a => selectedCategories.some(category => a.category.id === category.id))
+            .filter(a => selectedCategories.length === 0 ||  selectedCategories.some(category => a.category.id === category.id))
             .filter(a => dateInterval.contains(a.startTime))
             .filter(a => showFull || a.maxAttendees > a.attendees.length)
             .sort((left, right) => left.startTime.toMillis() - right.startTime.toMillis());
