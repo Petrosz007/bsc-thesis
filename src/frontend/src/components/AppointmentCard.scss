@@ -15,6 +15,11 @@ div.appointmentCard {
         color: var.$mainDark;
 
         font-size: 1.3rem;
+        
+        &.clickable {
+            text-decoration: underline;
+            cursor: pointer;
+        }
     }
 
     div.appointment-description {

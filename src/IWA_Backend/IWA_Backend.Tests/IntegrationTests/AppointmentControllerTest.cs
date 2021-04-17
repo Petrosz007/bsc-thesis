@@ -25,13 +25,6 @@ namespace IWA_Backend.Tests.IntegrationTests
 {
     public class AppointmentControllerTest : IntegrationTestBase
     {
-        //protected readonly TestWebApplicationFactory<TestStartup> Factory = new();
-        //protected IWAContext Context =>
-        //    Factory.Services.GetRequiredService<IWAContext>();
-        //protected IMapper<Appointment, AppointmentDTO> AppointmentMapper =>
-        //    Factory.Services.GetRequiredService<IMapper<Appointment, AppointmentDTO>>();
-
-        [Collection("Sequential")]
         public class GetById : AppointmentControllerTest
         {
             [Fact]
@@ -115,7 +108,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class GetContractors : AppointmentControllerTest
         {
             [Fact]
@@ -170,7 +162,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class Create : AppointmentControllerTest
         {
             [Fact]
@@ -294,7 +285,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class Update : AppointmentControllerTest
         {
             [Fact]
@@ -446,7 +436,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class Delete : AppointmentControllerTest
         {
             [Fact]
@@ -537,7 +526,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class Book : AppointmentControllerTest
         {
             [Fact]
@@ -630,7 +618,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class UnBook : AppointmentControllerTest
         {
             [Fact]
@@ -723,7 +710,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class GetBooked : AppointmentControllerTest
         {
             [Fact]

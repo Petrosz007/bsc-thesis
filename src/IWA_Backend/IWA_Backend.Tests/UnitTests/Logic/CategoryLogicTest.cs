@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IWA_Backend.API.BusinessLogic.Mappers;
+using IWA_Backend.API.Repositories.Interfaces;
 using Xunit;
 
 namespace IWA_Backend.Tests.UnitTests.Logic
@@ -276,7 +277,7 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 };
                 
                 MockUserRepo.Setup(r => r.Exists(owner.UserName)).Returns(true);
-                MockCategoryRepo.Setup(r => r.GetUsersCategories(owner.UserName)).Returns(categories.AsQueryable());
+                MockCategoryRepo.Setup(r => r.GetUsersCategories(owner.UserName)).Returns(categories);
 
                 // Act
                 var result = Logic.GetContractorsCategories(owner.UserName, user.UserName);

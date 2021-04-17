@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IWA_Backend.API.Repositories.Interfaces;
 using Xunit;
 
 namespace IWA_Backend.Tests.UnitTests.Logic
@@ -442,7 +443,7 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 // Arrange
                 var appointments = new List<Appointment>();
 
-                MockAppointmentRepo.Setup(r => r.GetBookedAppointments("Test User")).Returns(appointments.AsQueryable());
+                MockAppointmentRepo.Setup(r => r.GetBookedAppointments("Test User")).Returns(appointments);
 
                 // Act
                 var result = Logic.GetBookedAppointments("TestUser");
@@ -464,6 +465,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var appointment = new Appointment
                 {
                     Id = id,
+                    MaxAttendees = 1,
+                    Attendees = new(),
                     Category = new Category 
                     {
                         EveryoneAllowed = true,
@@ -529,6 +532,58 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 // Act
                 // Assert
                 await Assert.ThrowsAsync<AlreadyBookedException>(() => Logic.BookAppointmentAsync(id, userName));
+                MockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Never());
+            }
+            
+            [Fact]
+            public async Task FullButAlreadyBooked()
+            {
+                // Arrange
+                int id = 1;
+                var userName = "Test User";
+                var appointment = new Appointment
+                {
+                    Id = id,
+                    MaxAttendees = 1,
+                    Attendees = new List<User>{ new User{ UserName = userName } },
+                    Category = new Category
+                    {
+                        EveryoneAllowed = false,
+                        Owner = new User { UserName = "Owner" }
+                    },
+                };
+
+                MockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<AlreadyBookedException>(() => Logic.BookAppointmentAsync(id, userName));
+                MockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Never());
+            }
+            
+            [Fact]
+            public async Task Full()
+            {
+                // Arrange
+                int id = 1;
+                var userName = "Test User";
+                var appointment = new Appointment
+                {
+                    Id = id,
+                    MaxAttendees = 1,
+                    Attendees = new List<User>{ new User { UserName = "Other User" } },
+                    Category = new Category
+                    {
+                        EveryoneAllowed = true,
+                        Owner = new User { UserName = "Owner" }
+                    },
+                };
+
+                MockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<InvalidOperationException>(() => Logic.BookAppointmentAsync(id, userName));
                 MockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Never());
             }
         }

@@ -29,4 +29,14 @@ namespace IWA_Backend.API.BusinessLogic.Exceptions
     {
         public NotBookedException(string message) : base(message) { }
     }
+    
+    public class InvalidAvatarFileException : Exception
+    {
+        public InvalidAvatarFileException(string message) : base(message) { }
+    }
+    
+    public class NotContractorException : Exception
+    {
+        public NotContractorException(string message) : base(message) { }
+    }
 }

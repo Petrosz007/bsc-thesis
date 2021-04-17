@@ -9,7 +9,7 @@ import {AppointmentAgendaEditable} from "../components/AppointmentAgenda";
 import Modal from "../components/Modal";
 import { AppointmentEditorCreate } from "../components/editors/AppointmentEditor";
 import { NotificationContext } from "../components/contexts/NotificationProvider";
-import {CategoriesEditable, CategoryCardEditable} from "../components/CategoryCard";
+import {CategoriesEditable} from "../components/CategoryCard";
 
 import './OwnAppointments.scss'
 import {CategoryEditorCreate} from "../components/editors/CategoryEditor";
@@ -34,8 +34,7 @@ const OwnAppointments = ({ user }: { user: User }) => {
 
     useEffect(() => {
         if(state instanceof Failed) {
-            console.error("Error in OwnAppointments.tsx, appointment state result match", state.error);
-            notificationDispatch({ type: 'addError', message: `Error in OwnAppointments: ${state.error}` });
+            notificationDispatch({ type: 'addError', message: `Hiba: ${state.error.message}` });
         }
         else if(state instanceof Idle) {
             refreshData();
@@ -51,21 +50,17 @@ const OwnAppointments = ({ user }: { user: User }) => {
         
         {state instanceof Loaded && 
         <>
-            {isCategoryModalOpen &&
-                <Modal>
+                <Modal isOpen={isCategoryModalOpen}>
                     <CategoryEditorCreate owner={user} onClose={() => setIsCategoryModalOpen(false)} />
                 </Modal>
-            }
-            {isAppointmentModalOpen &&
-                <Modal>
+                <Modal isOpen={isAppointmentModalOpen}>
                     <AppointmentEditorCreate categories={categories} onClose={() => setIsAppointmentModalOpen(false)} />
                 </Modal>
-            }
 
-            <button onClick={() => setIsCategoryModalOpen(true)}>Create Category</button>
+            <button onClick={() => setIsCategoryModalOpen(true)}>Új kategória</button>
             {categories.length === 0
-                ? <p>Can't create appointments without categories, create a category first!</p>
-                : <button onClick={() => setIsAppointmentModalOpen(true)}>Create Appointment</button>
+                ? <p>Hozz létre egy kategóriát, hogy hirdethess időpontokat!</p>
+                : <button onClick={() => setIsAppointmentModalOpen(true)}>Új időpont</button>
             }
             
 

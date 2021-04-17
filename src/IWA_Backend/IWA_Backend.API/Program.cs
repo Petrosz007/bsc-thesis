@@ -11,6 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using IWA_Backend.API.Contexts.DbInitialiser;
 
 namespace IWA_Backend.API
 {
@@ -24,13 +25,14 @@ namespace IWA_Backend.API
             host.Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-        public static async Task SeedDataAsync(IHost host)
+        
+        private static async Task SeedDataAsync(IHost host)
         {
             using var scope = host.Services.CreateScope();
             var serviceProvider = scope.ServiceProvider;
@@ -39,11 +41,11 @@ namespace IWA_Backend.API
             dbInitialiser.Initialise();
             if (dbInitialiser.AnyCategories())
             {
-                await dbInitialiser.ReseedLiveTestDataAsync(false);
+                await dbInitialiser.ReseedDataAsync();
             }
             else
             {
-                await dbInitialiser.SeedLiveTestDataAsync(false);
+                await dbInitialiser.SeedDataAsync();
             }
         }
     }

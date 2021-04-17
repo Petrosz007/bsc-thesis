@@ -19,6 +19,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using IWA_Backend.API.Contexts.DbInitialiser;
+using IWA_Backend.API.Repositories.Implementations;
+using IWA_Backend.API.Repositories.Interfaces;
 
 namespace IWA_Backend.API
 {
@@ -31,6 +34,7 @@ namespace IWA_Backend.API
         }
 
         public IConfiguration Configuration { get; }
+        protected virtual ISeedData SeedData => new LiveSeedData();
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -48,11 +52,13 @@ namespace IWA_Backend.API
                 })
                 .AddEntityFrameworkStores<IWAContext>();
 
+            services.AddSingleton<ISeedData>(SeedData);
             services.AddTransient<DbInitialiser>();
 
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IAvatarRepository, AvatarRepository>(_ => new AvatarRepository(Configuration["AvatarDir"] ?? "./Avatars"));
 
             services.AddTransient<AppointmentLogic>();
             services.AddTransient<CategoryLogic>();
@@ -76,7 +82,7 @@ namespace IWA_Backend.API
 
             services.AddCors(o => o.AddPolicy("Localhost", builder =>
             {
-                builder.WithOrigins("http://localhost:8100")
+                builder.WithOrigins(Configuration["CorsAllowUrls"]?.Split(',') ?? Array.Empty<string>())
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
@@ -90,7 +96,7 @@ namespace IWA_Backend.API
                 .EnableSensitiveDataLogging()
                 .UseMySql(Configuration.GetConnectionString("MySqlServer"), new MySqlServerVersion(new Version(10, 5, 3))));
         }
-
+        
         protected virtual void ConfigureControllers(IServiceCollection services)
         {
             services.AddControllers();
@@ -105,11 +111,14 @@ namespace IWA_Backend.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IWA_Backend.API v1"));
             }
+            else
+            {
+                app.UseHttpsRedirection();
+            }
 
             //app.UseCors("Allow All Policy");
             app.UseCors("Localhost");
 
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 

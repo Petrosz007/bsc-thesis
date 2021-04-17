@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using IWA_Backend.API.BusinessLogic.DTOs;
 using IWA_Backend.API.BusinessLogic.Mappers;
+using IWA_Backend.API.Repositories.Interfaces;
 
 namespace IWA_Backend.API.BusinessLogic.Logic
 {
@@ -24,21 +25,19 @@ namespace IWA_Backend.API.BusinessLogic.Logic
         
         public static bool HasReadAccess(Appointment appointment, string? userName)
         {
-            bool everyoneAllowed = appointment.Category.EveryoneAllowed;
-            // TODO: If owner.UserName == null and userName is null this condition is true
-            // Should not happen, because every user is registered with one
-            bool isOwner = appointment.Category.Owner.UserName == userName;
-            bool isAttendee = appointment.Attendees.Any(user => user.UserName == userName);
-            bool isInCategory = appointment.Category.AllowedUsers.Any(user => user.UserName == userName);
+            if(appointment.Category.EveryoneAllowed) return true;
+            if(appointment.Category.Owner.UserName == userName) return true;
+            if(appointment.Attendees.Any(user => user.UserName == userName)) return true;
+            if(appointment.Category.AllowedUsers.Any(user => user.UserName == userName)) return true;
 
-            return everyoneAllowed || isOwner || isAttendee || isInCategory;
+            return false;
         }
         
         public static bool HasWriteAccess(Category category, string? userName)
         {
-            var isOwner = category.Owner.UserName == userName;
+            if (category.Owner.UserName == userName) return true;
 
-            return isOwner;
+            return false;
         }
         
         public Appointment GetAppointmentById(int id, string? userName)
@@ -57,13 +56,12 @@ namespace IWA_Backend.API.BusinessLogic.Logic
                 throw new NotFoundException($"Contractor with username {contractorUserName} not found.");
 
             var appointments = AppointmentRepository.GetContractorsAllAppointments(contractorUserName)
-                .ToList()
                 .Where(a => HasReadAccess(a, userName));
             return appointments;
         }
 
         public IEnumerable<Appointment> GetBookedAppointments(string currentUserName) =>
-            AppointmentRepository.GetBookedAppointments(currentUserName).ToList();
+            AppointmentRepository.GetBookedAppointments(currentUserName);
 
         public async Task BookAppointmentAsync(int appointmentId, string userName)
         {
@@ -74,6 +72,9 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 
             if (appointment.Attendees.Any(u => u.UserName == userName))
                 throw new AlreadyBookedException("Appointment already booked.");
+
+            if (appointment.Attendees.Count >= appointment.MaxAttendees)
+                throw new InvalidOperationException("Ez az időpont már betelt, nem lehet foglalni rá.");
 
             var user = UserRepository.GetByUserName(userName);
             appointment.Attendees.Add(user);
@@ -100,12 +101,11 @@ namespace IWA_Backend.API.BusinessLogic.Logic
         {
             var category = CategoryRepository.GetById(appointmentDto.CategoryId);
             var attendees = appointmentDto.AttendeeUserNames
-                .Select(UserRepository.GetByUserName)
-                .ToList();
+                .Select(UserRepository.GetByUserName);
             
             if (!HasWriteAccess(category, userName))
                 throw new UnauthorisedException("Unauthorised to create this appointment.");
-
+            
             var appointment = AppointmentMapper.IntoEntity(appointmentDto, category, attendees);
             
             await AppointmentRepository.CreateAsync(appointment);
@@ -118,8 +118,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             var appointment = AppointmentRepository.GetById(appointmentDto.Id);
             var newCategory = CategoryRepository.GetById(appointmentDto.CategoryId);
             var attendees = appointmentDto.AttendeeUserNames
-                .Select(UserRepository.GetByUserName)
-                .ToList();
+                .Select(UserRepository.GetByUserName);
             
             if (!HasWriteAccess(appointment.Category, userName) || !HasWriteAccess(newCategory, userName))
                 throw new UnauthorisedException("Unauthorised to update this appointment");

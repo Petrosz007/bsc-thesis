@@ -14,6 +14,7 @@ namespace IWA_Backend.API.BusinessLogic.Mappers
         {
             CreateMap<User, UserInfoDTO>();
             CreateMap<UserUpdateDTO, User>();
+            CreateMap<User, UserSelfInfoDTO>();
             CreateMap<ContractorPage, ContractorPageDTO>()
                 .ReverseMap();
         }

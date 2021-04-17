@@ -38,3 +38,9 @@ export interface RegisterDTO {
     passwordConfirmation: string,
     contractorPage: ContractorPage | null,
 }
+
+export interface UserEditDTO {
+    email: string;
+    name: string;
+    contractorPage: ContractorPage | null;
+}

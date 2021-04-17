@@ -25,7 +25,6 @@ namespace IWA_Backend.Tests.IntegrationTests
 {
     public class CategoryControllerTest : IntegrationTestBase
     {
-        [Collection("Sequential")]
         public class GetById : CategoryControllerTest
         {
             [Fact]
@@ -110,7 +109,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class Create : CategoryControllerTest
         {
             [Fact]
@@ -197,7 +195,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class Update : CategoryControllerTest
         {
             [Fact]
@@ -313,7 +310,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
 
-        [Collection("Sequential")]
         public class Delete : CategoryControllerTest
         {
             [Fact]
@@ -409,7 +405,6 @@ namespace IWA_Backend.Tests.IntegrationTests
             }
         }
         
-        [Collection("Sequential")]
         public class GetOwnCategories : CategoryControllerTest
         {
             [Fact]

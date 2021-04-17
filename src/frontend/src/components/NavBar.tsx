@@ -10,34 +10,23 @@ const LoggedOutConponent = () => {
     const history = useHistory();
     return (
         <>
-            <button className="buttonBase inverted" onClick={()=>history.push('/login')}>Log In</button>
-            <button className="buttonBase" onClick={()=>history.push('/register')}>Register</button>
+            <button className="buttonBase inverted" onClick={()=>history.push('/login')}>Bejelentkezés</button>
+            <button className="buttonBase" onClick={()=>history.push('/register')}>Regisztráció</button>
         </>
     );
 }
 
 const LoggedInComponent = ({ user }: { user: User }) => {
-    const [logoutState, logout] = useLogout();
-
-    useEffect(() => {
-        if(logoutState instanceof Failed) {
-            console.error('Logout failed', logoutState.error);
-        }
-    }, [logoutState]);
-
-    if(logoutState instanceof Loading) return <p>Logging out...</p>;
-
     return (
         <>
-            <NavLink to="/booked">Booked</NavLink>
+            <NavLink to="/booked">Foglalások</NavLink>
             {user.contractorPage !== null &&
             <>
-                <NavLink to="/own-appointments">Own Appointments</NavLink>
-                <NavLink to="/reports">Reports</NavLink>
+                <NavLink to="/own-appointments">Vállalkozói oldal</NavLink>
+                <NavLink to="/reports">Számlázás</NavLink>
             </>
             }
-            <p>Hello {user.name}!</p>
-            <button className="buttonBase inverted" onClick={logout}>Log Out</button>
+            <NavLink to="/profile">{user.name}</NavLink>
         </>
     );
 }
@@ -49,7 +38,8 @@ export default ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
         <nav className={`navbar ${className}`}>
             <p>Időpontfoglaló Webes Alkalmazás</p>
             <div className="navRight">
-                <NavLink to="/" exact={true}>Home</NavLink>
+                <NavLink to="/" exact={true}>Kezdőlap</NavLink>
+                <NavLink to="/contractor">Vállalkozók</NavLink>
                 {loginState instanceof LoggedOut && 
                     <LoggedOutConponent /> 
                 }
