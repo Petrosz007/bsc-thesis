@@ -66,6 +66,7 @@ namespace IWA_Backend.Tests.Utilities
             builder.ConfigureLogging((context, logging) =>
             {
                 logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+                logging.SetMinimumLevel(LogLevel.Warning);
             });
         }
 
