@@ -49,7 +49,7 @@ export default () => {
                 <input type="file"
                        accept=".png, .jpg, .jpeg"
                        onChange={e => setSelectedFile(e.target.files?.[0])}/>
-                <input type="submit" value={"Profilkép firrsítése"} />
+                <input type="submit" value={"Profilkép frrisítése"} />
             </form>
             {selectedFile !== undefined && <img src={URL.createObjectURL(selectedFile)} alt="Profilkép megtekintő"/>}
         </div>
