@@ -1,4 +1,4 @@
-import {DateTime} from "luxon";
+import {DateTime, Interval} from "luxon";
 
 export interface ContractorPage {
     title: string;
@@ -34,6 +34,7 @@ export interface Appointment {
 export interface Report {
     owner: User;
     customer: User;
+    timespan: Interval;
     entries: {
         category: Category;
         count: number;

@@ -465,6 +465,8 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 var appointment = new Appointment
                 {
                     Id = id,
+                    MaxAttendees = 1,
+                    Attendees = new(),
                     Category = new Category 
                     {
                         EveryoneAllowed = true,
@@ -530,6 +532,58 @@ namespace IWA_Backend.Tests.UnitTests.Logic
                 // Act
                 // Assert
                 await Assert.ThrowsAsync<AlreadyBookedException>(() => Logic.BookAppointmentAsync(id, userName));
+                MockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Never());
+            }
+            
+            [Fact]
+            public async Task FullButAlreadyBooked()
+            {
+                // Arrange
+                int id = 1;
+                var userName = "Test User";
+                var appointment = new Appointment
+                {
+                    Id = id,
+                    MaxAttendees = 1,
+                    Attendees = new List<User>{ new User{ UserName = userName } },
+                    Category = new Category
+                    {
+                        EveryoneAllowed = false,
+                        Owner = new User { UserName = "Owner" }
+                    },
+                };
+
+                MockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<AlreadyBookedException>(() => Logic.BookAppointmentAsync(id, userName));
+                MockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Never());
+            }
+            
+            [Fact]
+            public async Task Full()
+            {
+                // Arrange
+                int id = 1;
+                var userName = "Test User";
+                var appointment = new Appointment
+                {
+                    Id = id,
+                    MaxAttendees = 1,
+                    Attendees = new List<User>{ new User { UserName = "Other User" } },
+                    Category = new Category
+                    {
+                        EveryoneAllowed = true,
+                        Owner = new User { UserName = "Owner" }
+                    },
+                };
+
+                MockAppointmentRepo.Setup(r => r.GetById(id)).Returns(appointment);
+
+                // Act
+                // Assert
+                await Assert.ThrowsAsync<InvalidOperationException>(() => Logic.BookAppointmentAsync(id, userName));
                 MockAppointmentRepo.Verify(r => r.UpdateAsync(appointment), Times.Never());
             }
         }

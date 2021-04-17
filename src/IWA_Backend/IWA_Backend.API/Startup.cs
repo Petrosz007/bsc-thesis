@@ -58,7 +58,7 @@ namespace IWA_Backend.API
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IAvatarRepository, AvatarRepository>();
+            services.AddTransient<IAvatarRepository, AvatarRepository>(_ => new AvatarRepository(Configuration["AvatarDir"] ?? "./Avatars"));
 
             services.AddTransient<AppointmentLogic>();
             services.AddTransient<CategoryLogic>();
@@ -82,7 +82,7 @@ namespace IWA_Backend.API
 
             services.AddCors(o => o.AddPolicy("Localhost", builder =>
             {
-                builder.WithOrigins("http://localhost:8100")
+                builder.WithOrigins(Configuration["CorsAllowUrls"]?.Split(',') ?? Array.Empty<string>())
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
@@ -111,11 +111,14 @@ namespace IWA_Backend.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IWA_Backend.API v1"));
             }
+            else
+            {
+                app.UseHttpsRedirection();
+            }
 
             //app.UseCors("Allow All Policy");
             app.UseCors("Localhost");
 
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 

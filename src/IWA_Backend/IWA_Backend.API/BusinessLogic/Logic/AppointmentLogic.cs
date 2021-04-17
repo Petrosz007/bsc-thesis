@@ -73,6 +73,9 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             if (appointment.Attendees.Any(u => u.UserName == userName))
                 throw new AlreadyBookedException("Appointment already booked.");
 
+            if (appointment.Attendees.Count >= appointment.MaxAttendees)
+                throw new InvalidOperationException("Ez az időpont már betelt, nem lehet foglalni rá.");
+
             var user = UserRepository.GetByUserName(userName);
             appointment.Attendees.Add(user);
 
@@ -102,7 +105,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             
             if (!HasWriteAccess(category, userName))
                 throw new UnauthorisedException("Unauthorised to create this appointment.");
-
+            
             var appointment = AppointmentMapper.IntoEntity(appointmentDto, category, attendees);
             
             await AppointmentRepository.CreateAsync(appointment);

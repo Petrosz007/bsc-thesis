@@ -1,14 +1,12 @@
 import React, { useContext, useEffect } from 'react';
 import { Appointment } from '../logic/entities';
-import { LoggedIn, LoginContext } from './contexts/LoginProvider';
+import {LoggedIn, LoggedOut, LoginContext} from './contexts/LoginProvider';
 import { Failed, Loading, useApiCall } from '../hooks/apiCallHooks';
 import { DIContext } from './contexts/DIContext';
 import { DataContext } from './contexts/DataProvider';
 
 import './AppointmentCard.scss';
 import { NotificationContext } from './contexts/NotificationProvider';
-import Modal from "./Modal";
-import AppointmentViewer from "./AppointmentViewer";
 
 const HourDuration = ({ startTime, endTime }: { startTime: Date, endTime: Date }) => {
     const minutes = Math.floor((endTime.getTime() - startTime.getTime()) / (1000 * 60));
@@ -58,8 +56,7 @@ const BookButton = ({ appointment }: { appointment: Appointment }) => {
     useEffect(() => {
         [bookingStatus, unBookingStatus].map(x => {
             if(x instanceof Failed) {
-                console.error(x.error);
-                notificationDispatch({ type: 'addError', message: 'Jelentkezz be a foglaláshoz!' });
+                notificationDispatch({ type: 'addError', message: `Hiba foglalás/lemondás közben: ${x.error}` });
             }
         })
     }, [bookingStatus, unBookingStatus]);
@@ -67,9 +64,12 @@ const BookButton = ({ appointment }: { appointment: Appointment }) => {
     const isAttendee = () => loginState instanceof LoggedIn 
         && appointment.attendees.some(user => user.userName === loginState.user.userName);
 
-    if(bookingStatus instanceof Loading) return <span>Booking...</span>;
-    if(unBookingStatus instanceof Loading) return <span>Unbooking...</span>;
-
+    if(bookingStatus instanceof Loading) return <span>Foglalás...</span>;
+    if(unBookingStatus instanceof Loading) return <span>Lemondás...</span>;
+    
+    if(loginState instanceof LoggedOut)
+        return null;
+        
     if(isAttendee())
         return <button onClick={() => unBook()}>Lemondás</button>;
     
@@ -96,10 +96,10 @@ const DeleteButton = ({ appointment }: { appointment: Appointment }) => {
         }
     }, [deleteStatus]);
 
-    if(deleteStatus instanceof Loading) return <span>Deleting...</span>;
+    if(deleteStatus instanceof Loading) return <span>Törlés...</span>;
 
     return (
-        <button onClick={() => deleteAppointment()}>Delete</button>
+        <button onClick={() => deleteAppointment()}>Törlés</button>
     );
 }
 
@@ -121,7 +121,7 @@ export const AppointmentCardEditable = ({ appointment, onEdit, onView }: { appoi
                 {isOwner() &&
                 <>
                     <DeleteButton appointment={appointment} />
-                    <button onClick={() => onEdit(appointment)}>Edit</button>
+                    <button onClick={() => onEdit(appointment)}>Szerkesztés</button>
                 </>
                 }
             </div>

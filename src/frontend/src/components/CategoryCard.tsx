@@ -19,7 +19,7 @@ export const CategoryCardEditable = ({ category, onEdit, onView }: {
                 <p>{category.price} Ft</p>
             </div>
             <div className="category-methods">
-                <button onClick={() => onEdit(category)}>Edit</button>
+                <button onClick={() => onEdit(category)}>Szerkesztés</button>
             </div>
         </div>
     );

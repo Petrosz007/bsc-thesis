@@ -16,6 +16,7 @@ import './Report.scss';
 import UserName from "../components/UserName";
 import {DateTime, Interval} from "luxon";
 import {DatePicker, DateRangePicker} from "../components/inputs/DatePicker";
+import UserSelector from "../components/inputs/UserSelector";
 
 const ReportTable = ({ report }: { report: Report }) => {
     const totalPrice = report.entries.reduce((acc, x) =>
@@ -67,17 +68,14 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
         return sorted;
     }, [appointments, selectedUser, dateInterval]);
 
-    const report = useMemo(() => createReport(usersAppointments, categories, owner, selectedUser), 
+    const report = useMemo(() => createReport(usersAppointments, categories, dateInterval, owner, selectedUser), 
         [usersAppointments, categories, owner, selectedUser]);
 
     return (
         <div>
-            User:
-            <Select options={users.map(u => ({ value: u, label: <UserName user={u} /> }))}
-                    onChange={e => setSelectedUser(e?.value ?? users[0])}
-                    filterOption={(option: any, searchText) => `${option.value.name} @${option.value.userName}`.toUpperCase().includes(searchText.toUpperCase())}
-                    value={{ value: selectedUser, label: <UserName user={selectedUser} /> }}
-            />
+            Ügyfél:
+            <UserSelector selectedUser={selectedUser} setSelectedUser={setSelectedUser} users={users} />
+
             <DateRangePicker value={dateInterval} onChange={setDateInterval} />
             <ReportTable report={report} />
             <ul>
@@ -85,7 +83,7 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
                 <li key={a.id}>{a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)} - {a.category.name}</li>
             )}
             </ul>
-            <button onClick={() => downloadReportPdf(report)}>Download Report</button>
+            <button onClick={() => downloadReportPdf(report)}>Számla letöltése</button>
         </div>
     );
 }

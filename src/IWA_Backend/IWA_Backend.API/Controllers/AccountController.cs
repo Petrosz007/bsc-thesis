@@ -57,7 +57,7 @@ namespace IWA_Backend.API.Controllers
                 {
                     if(result.Errors.First().Code == "DuplicateUserName")
                     {
-                        return BadRequest("Username already in use!");
+                        return BadRequest("Ez a felhasználónév már foglalt!");
                     }
                 }
 

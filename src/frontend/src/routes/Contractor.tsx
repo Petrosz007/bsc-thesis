@@ -5,20 +5,9 @@ import { Failed, Idle, Loaded, Loading, useApiCall } from "../hooks/apiCallHooks
 import React, { useContext, useEffect } from "react";
 import { Switch, useParams, useRouteMatch } from "react-router";
 import { Route } from "react-router-dom";
-import { User } from "../logic/entities";
 import { NotificationContext } from "../components/contexts/NotificationProvider";
 import {AppointmentAgenda} from "../components/AppointmentAgenda";
 import {ContractorCard} from "../components/ContractorCard";
-
-const ContractorInfo = ({ user }: { user: User }) => {
-    return (
-        <div>
-            <h2>{user.name}</h2>
-            <p>{user.contractorPage?.title}</p>
-            <p>{user.contractorPage?.bio}</p>
-        </div>
-    );
-}
 
 const ContractorPage = () => {
     const { contractorUserName } = useParams<{ contractorUserName: string }>();
@@ -43,8 +32,7 @@ const ContractorPage = () => {
     
     useEffect(() => {
         if(state instanceof Failed) {
-            console.error("Error in index.tsx, appointment state result match", state.error);
-            notificationDispatch({ type: 'addError', message: `Error in Contractor: ${state.error}` });
+            notificationDispatch({ type: 'addError', message: `Hiba: ${state.error.message}` });
         }
         else if(state instanceof Idle) {
             refreshData();
@@ -75,8 +63,7 @@ const ContractorBrowser = () => {
 
     useEffect(() => {
         if(state instanceof Failed) {
-            console.error("Error in index.tsx, appointment state result match", state.error);
-            notificationDispatch({ type: 'addError', message: `Error in Contractor: ${state.error}` });
+            notificationDispatch({ type: 'addError', message: `Hiba: ${state.error.message}` });
         }
         else if(state instanceof Idle) {
             refreshData();

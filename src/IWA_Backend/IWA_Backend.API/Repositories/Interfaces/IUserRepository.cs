@@ -10,5 +10,6 @@ namespace IWA_Backend.API.Repositories.Interfaces
         IEnumerable<User> GetContractors();
         Task UpdateAsync(User user);
         bool Exists(string? userName);
+        IEnumerable<User> GetAllUsers();
     }
 }

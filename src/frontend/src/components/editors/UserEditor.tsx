@@ -58,18 +58,18 @@ const UserEditorBase = ({ initialUser, apiCall, onClose, labels }: {
             onClose={onClose}
             dataDispatchAction={user => ({ type: 'updateUser', user })}
         >
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">Név</label>
             <input type="text" name="name" value={state.name} required={true} onChange={handleChange} />
             
             <label htmlFor="description">Email</label>
             <input type="email" name="email" value={state.email} required={true} onChange={handleChange} />
             
             {initialUser.contractorPage !== null && <>
-                <label htmlFor="allowedUsers">Title</label>
+                <label htmlFor="allowedUsers">Foglalkozás</label>
                 <input type="text" name="contractorPage__title" value={state.contractorPage__title} required={true} onChange={handleChange} />
                 
-                <label htmlFor="allowedUsers">Bio</label>
-                <input type="text" name="contractorPage__bio" value={state.contractorPage__bio} required={true} onChange={handleChange} />
+                <label htmlFor="allowedUsers">Magamról</label>
+                <textarea name="contractorPage__bio" value={state.contractorPage__bio} required={true} onChange={handleChange} rows={3} />
             </>}
         </EditorBase>
     );

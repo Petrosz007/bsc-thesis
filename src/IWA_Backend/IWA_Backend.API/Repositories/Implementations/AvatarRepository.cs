@@ -10,8 +10,14 @@ namespace IWA_Backend.API.Repositories.Implementations
 {
     public class AvatarRepository : IAvatarRepository
     {
-        private static string PathFromId(string id) =>
-            Path.Combine("Avatars", id);
+        private readonly string AvatarDirPath;
+        public AvatarRepository(string avatarDirPath)
+        {
+            AvatarDirPath = avatarDirPath;
+        }
+        
+        private string PathFromId(string id) =>
+            Path.Combine(AvatarDirPath, id);
         
         public bool Exists(string id) =>
             File.Exists(PathFromId(id));

@@ -1,10 +1,16 @@
 import { Report } from "./entities";
 import * as pdfMake from "pdfmake/build/pdfmake";
 import type { TDocumentDefinitions } from "pdfmake/interfaces";
+import {DateTime} from "luxon";
 
 export const downloadReportPdf = (report: Report) => {
     const docDefinition = createPdfDocDefinition(report);
-    const fileName = `szamla-${report.customer.name.replaceAll(' ', '_')}-${report.owner.name.replaceAll(' ', '_')}`;
+    
+    const customerName = report.customer.name.replaceAll(' ', '_');
+    const contractorName = report.owner.name.replaceAll(' ', '_');
+    const interval = `${report.timespan.start.toISODate()}-${report.timespan.end.toISODate()}`;
+        
+    const fileName = `szamla-${customerName}-${contractorName}-${interval}`;
     pdfMake.createPdf(docDefinition).download(fileName);
 }
 
@@ -20,6 +26,10 @@ const createPdfDocDefinition = (report: Report) => {
             {
                 text: 'Számla',
                 style: 'header',
+            },
+            {
+                text: `${report.timespan.start.toFormat('yyyy.MM.dd')} - ${report.timespan.end.toFormat('yyyy.MM.dd')}`,
+                style: 'headerDate',
             },
             {
                 columns: [
@@ -53,11 +63,21 @@ const createPdfDocDefinition = (report: Report) => {
                 },
             },
             { text: `Összesen:    ${totalPrice} Ft`, style: 'tableLastRowText' },
+            {
+                text: `Kelt: ${DateTime.now().toFormat('yyyy.MM.dd')}`,
+                style: 'date',
+            },
         ],
 
         styles: {
             header: {
                 fontSize: 30,
+                // margin: [0,0,0,30],
+                alignment: 'center',
+            },
+            headerDate: {
+                fontSize: 9,
+                italics: true,
                 margin: [0,0,0,30],
                 alignment: 'center',
             },
@@ -78,7 +98,11 @@ const createPdfDocDefinition = (report: Report) => {
                 fontSize: 13,
                 bold: true,
                 alignment: 'right',
-            }
+                margin: [0,0,0,30],
+            },
+            date: {
+                alignment: 'right',
+            },
         }
     };
 

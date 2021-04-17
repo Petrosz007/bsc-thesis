@@ -1,9 +1,11 @@
 import { groupBy, Dictionary } from "../utilities/listExtensions";
 import { Appointment, Category, Report, User } from "./entities";
+import {Interval} from "luxon";
 
 export const createReport = (
     appointments: Appointment[],
     categories: Category[],
+    timespan: Interval,
     owner: User,
     customer: User
 ): Report => {
@@ -15,6 +17,7 @@ export const createReport = (
     const report: Report = {
         owner,
         customer,
+        timespan,
         entries: usersCategories.map(category => ({ category, count: categoryGroups[category.id].length })),
     };
 

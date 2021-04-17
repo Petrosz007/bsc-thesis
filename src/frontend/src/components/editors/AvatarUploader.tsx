@@ -18,7 +18,7 @@ export default () => {
     
     useEffect(() => {
         if(updateState instanceof Failed) {
-            notificationDispatch({ type: 'addError', message: `Error updating Avatar: ${updateState.error.message}` });
+            notificationDispatch({ type: 'addError', message: `Hiba: ${updateState.error.message}` });
         }
     }, [updateState]);
     
@@ -49,7 +49,7 @@ export default () => {
                 <input type="file"
                        accept=".png, .jpg, .jpeg"
                        onChange={e => setSelectedFile(e.target.files?.[0])}/>
-                <input type="submit" value={"Upload avatar"} />
+                <input type="submit" value={"Profilkép frrisítése"} />
             </form>
             {selectedFile !== undefined && <img src={URL.createObjectURL(selectedFile)} alt="Profilkép megtekintő"/>}
         </div>

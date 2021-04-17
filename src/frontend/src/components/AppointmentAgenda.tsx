@@ -26,20 +26,30 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
     const [appointmentToEdit, setAppointmentToEdit] = useState<Appointment|undefined>(undefined);
     const [appointmentToView, setAppointmentToView] = useState<Appointment|undefined>(undefined);
     
-    const selectableCategories = useMemo(() => uniques(appointments.map(a => a.category), c => `${c.id}`), [appointments]);
-    useEffect(() => setSelectedCategories(selectableCategories), [selectableCategories]);
+    const selectableCategories = useMemo(() => 
+        categories
+            ?? uniques(appointments.map(a => a.category), c => `${c.id}`)
+    , [appointments, categories]);
+    
+    // If there is a new category to be selected, only change the selected category, when there is none selected
+    // This way the filter doesn't get overwritten
+    useEffect(() => {
+        setSelectedCategories(prevSelectedCategories =>
+            prevSelectedCategories.length === 0
+                ? []
+                : prevSelectedCategories
+        );
+    }, [selectableCategories]);
     
     const dictionary = useMemo(() => {
         const sorted = [...appointments]
-            .filter(a => selectedCategories.some(category => a.category.id === category.id))
+            .filter(a => selectedCategories.length === 0 ||  selectedCategories.some(category => a.category.id === category.id))
             .filter(a => dateInterval.contains(a.startTime))
             .filter(a => showFull || a.maxAttendees > a.attendees.length)
             .sort((left, right) => left.startTime.toMillis() - right.startTime.toMillis());
         return groupBy(sorted, a => a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY));
     }, [appointments, selectedCategories, dateInterval, showFull]);
 
-    useEffect(() => console.log('dictionary', dictionary), [dictionary]);
-    
     return (
         <div>
             {appointmentToEdit !== undefined && categories !== undefined &&
@@ -52,14 +62,16 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
                     <AppointmentViewer appointment={appointmentToView} onClose={() => setAppointmentToView(undefined)}  />
                 </Modal>
             }
-            Categories:
+            Kategóriák:
             <Select options={selectableCategories.map(c => ({ value: c, label: c.name }))}
                     onChange={e => {
                         const arr = Array.isArray(e) ? e : [];
                         setSelectedCategories(arr.length !== 0 ? e.map(x => x.value) : selectableCategories);
                     }}
+                    placeholder="Válassz kategóriákat..."
                     isMulti
             />
+            Ezen dátumok között: <br/>
             <DateRangePicker value={dateInterval} onChange={setDateInterval} />
             <table className="agenda-table">
                 <tbody>

@@ -10,6 +10,7 @@ using System;
 using System.Data.Common;
 using System.Linq;
 using IWA_Backend.API.Contexts.DbInitialiser;
+using Microsoft.Extensions.Logging;
 
 namespace IWA_Backend.Tests.Utilities
 {
@@ -61,6 +62,11 @@ namespace IWA_Backend.Tests.Utilities
 
                 dbInitialiser.Initialise();
                 await dbInitialiser.SeedDataAsync();
+            });
+            builder.ConfigureLogging((context, logging) =>
+            {
+                logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+                logging.SetMinimumLevel(LogLevel.Warning);
             });
         }
 
