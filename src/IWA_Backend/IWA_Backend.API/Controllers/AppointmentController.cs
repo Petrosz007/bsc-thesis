@@ -63,6 +63,7 @@ namespace IWA_Backend.API.Controllers
             catch (NotFoundException ex) { return NotFound(ex.Message); }
             catch (UnauthorisedException) { return Unauthorized(); }
             catch (AlreadyBookedException ex) { return BadRequest(ex.Message); }
+            catch (InvalidOperationException ex) { return BadRequest(ex.Message); }
         }
 
         [HttpPost("{id}/UnBook")]
