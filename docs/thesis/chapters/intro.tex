@@ -1,0 +1,22 @@
+\chapter{Bevezetés}
+\label{ch:intro}
+
+\section{Motiváció}
+Szakdolgozatom célja egy időpont foglaló webes alkalmazás létrehozása. A motivációt unokatestvérem adta, aki személyi edzőként dolgozik. A munkájához elengedhetetlen, hogy időpontot egyeztessen ügyfeleivel. Ezt üzenetváltásokkal tette, viszont, ha valaki lemondott egy időpontot, akkor utána arra a szabad időpontra más ügyfelet körülményes volt találni a platform miatt. Arról nem is beszélve, hogy hónap végén a számlakiállításhoz így nem volt egy konkrét listája, amit egyszerűen be tudott volna vinni a számlázó rendszerébe.
+
+Én programozásban mindig is webes alkalmazások fejlesztését élveztem a legjobban, így amikor felvetette az ötletet, hogy lehetne egy időpont foglaló alkalmazást csinálni, le is csaptam rá. Ezzel nem csak az egész eddigi összes webes tudásomat tesztelhetem és fejleszthetem, hanem segíthetek is unokatestvéremnek, aki nagyon sokat segített rajtam is.
+
+\section{Megvalósítandó alkalmazás leírása}
+\todo{Közérthető leírás alatt ezt érti, vagy ez már túl specifikus?}
+Az alkalmazásnak két fő felhasználói köre van, a vállalkozók és az ügyfelek.
+
+Az ügyfelek tudnak a vállalkozók között böngészni, egyes vállalkozók időpontjait megnézni, szűrni és lefoglalni. Megnézhetik a lefoglalt időpontjaikat, melyeket lemondhatnak.
+
+A vállalkozók létrehozhatnak kategóriákat (pl.: személyi edzés, angol korrepetálás), melynek megadhatnak árat, maximum résztvevő számot és hogy publikus-e az esemény, vagy csak megadott ügyfelek láthatják. Ez azért fontos, mert például unokatestvérem hétvégére csak családtagoknak vagy közeli ismerősöknek tartott edzéseket, az alkalmazásban ezért kell tudni szabályozni a láthatóságát a kategóriáknak. A vállalkozók időpont hirdetésnél választhatnak egy kategóriát és kezdő és vég időpontot, esetleg módosíthatják a résztvevő limitet. A kategóriákat, időpontokat és vállalkozói profilt lehet szerkeszteni. A vállalkozó le tudja kérdezni, kategóriákra és időtartamra szűrhetően, hogy egy ügyfél melyik kategóriából hány időpontot foglalt, ezek mennyibe kerültek összesen és generálhat egy pdf formátumú számlát.
+
+\section{Kedvhozó az architektúrához}
+Már 12 éves koromban elkezdtem jegyzettömbben HTML fájlokat írni és könyvesboltból vett PHP zsebkönyveket bújni, a modern webfejlesztés világa érdekelt mindig is a legjobban. A szakdolgozatomra a lehető legjobb minőségű és technológiailag fejlett webes alkalmazást tűztem ki célul. Nem csak egy egyszerű programot akartam létrehozni, hanem egy olyat, amely tükrözi a tiszta kódolást, programozást mint mesterséget.
+
+A backendem Uncle Bob Clean Architecture\todo{Irodalomjegyzékben jó a citation?} \cite{cleanArchitecturePost} elvén alapuló objektum orientált kód. Ezzel moduláris, elkülönített hatáskörű osztályokból áll a REST API-om, mellyel a Dependency Inversion Principle miatt egyszerűen és hatékonyan unit- és integrációs tesztelhető az alkalmazás.
+
+A frontendemen React.js-t\footnote{React.js - \href{https://reactjs.org/}{https://reactjs.org/}} használok Typescript-el, e miatt erős fordítási idejű garanciát kapok, hogy a kódom helyes. Továbbá a Typescript erős típusrendszere miatt a megjelenítés mögött funkcionális paradigmájú kód van. Ez azt jelenti, hogy nincs destruktív értékadás, összeg típusokkal és egy saját aszikron Result monád típus miatt nem kivételeket kezelek, hanem típus szintű konstrukciókkal garantálom, hogy minden hiba megfelelően le legyen kezelve és programozói hibából ne lehessen inkonzisztens állapotban levő adathoz hozzáférni.
