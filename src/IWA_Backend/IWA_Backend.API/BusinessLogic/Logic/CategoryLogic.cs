@@ -63,6 +63,9 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             var allowedUsers = categoryDto.AllowedUserNames
                 .Select(UserRepository.GetByUserName);
             var owner = UserRepository.GetByUserName(userName);
+
+            if (CategoryRepository.GetUsersCategories(userName).Any(c => c.Name == categoryDto.Name))
+                throw new InvalidEntityException($"'{categoryDto.Name}' nevű kategória már létezik.");
             
             var category = CategoryMapper.IntoEntity(categoryDto, allowedUsers, owner);
             
@@ -79,6 +82,9 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 
             if (!HasWriteAccess(category, userName))
                 throw new UnauthorisedException("Unauthorised to update this category");
+            
+            if (CategoryRepository.GetUsersCategories(userName).Any(c => c.Name == categoryDto.Name && c.Id != categoryDto.Id))
+                throw new InvalidEntityException($"'{categoryDto.Name}' nevű kategória már létezik.");
 
             CategoryMapper.OntoEntity(category, categoryDto, allowedUsers, category.Owner);
             

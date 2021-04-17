@@ -69,6 +69,7 @@ namespace IWA_Backend.API.Controllers
                 return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, createdCategory);
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
+            catch(InvalidEntityException ex) { return BadRequest(ex.Message); }
         }
 
         [HttpPut("{id}")]
@@ -88,6 +89,7 @@ namespace IWA_Backend.API.Controllers
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
             catch (UnauthorisedException) { return Unauthorized(); }
+            catch(InvalidEntityException ex) { return BadRequest(ex.Message); }
         }
 
         [HttpDelete("{id}")]
