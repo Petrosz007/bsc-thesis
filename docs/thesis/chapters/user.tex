@@ -1,6 +1,12 @@
 \chapter{Felhasználói dokumentáció} % User guide
 \label{ch:user}
 
+\section{Rendszerkövetelmények}
+Szerver oldalon: Windows 10 vagy Linux operációs rendszer, 2GB RAM, legalább 5GB tárhely az adatoknak, port nyitási lehetőség.
+
+\todo{Telefonra ha meg lesz akkor az jöhet ide}
+Kliens oldalon: Legalább Chrome 90, Firefox 88, Edge 90, ezek mind asztali számítógépen, legalább 1280x720-as képernyő felbontással.
+
 \section{Telepítés}
 
 Az alkalmazást legegyszerűbben Docker\footnote{\url{https://www.docker.com/}} segítségével lehet telepíteni. A Docker egy konténerizációs technológia, amely megkönnyíti az alkamazások kihelyezését. Az alkalmazások 'konténerekbe' csomagolódnak minden függőségükkel, ezen konténereket utána egy egységként lehet futtatni, nem kell a felhasználó rendszerére egyesével a program futásához felállítani a környezetet.
@@ -14,6 +20,7 @@ A yml fájlban a következő konfigurációs lehetőségek a \ref{tab:config} t�
 
 A Docker konténereket úgy találták ki, hogy eldobhatóak legyenek, azaz ki lehessen őket törölni és újra futtatni és ugyan úgy működjenek, Az adatok perzisztálását így \textit{volume}-okkal oldhatjuk meg, jelen esetben az adatbázis és a profilképeket a host gép lokális mappáiban tároljuk.
 
+\todo{Content elrendezése nagy page break nélkül}
 \begin{table}[H]
 	\centering
 	\begin{tabular}{ | m{0.25\textwidth} | m{0.25\textwidth} | m{0.45\textwidth} | }
@@ -56,12 +63,13 @@ További docker-compose parancsok a docker-compose dokumentációjábanban\footn
 
 Az alkalmazás futtatásához szükség lesz egy MariaDB szerverre és azon belül egy \textit{iwa} nevű adatbázisra. Az alkalmazás Linux és Windows rendszereken is futhat, ehhez a megfelelő backend fájl futtatása szükséges.
 
-A backend futtatása parancssorból az \textit{IWA\_Backend.API} futtatható fájllal lehet. A konfigurációja az \text{appsettings.json} fájlban található, kitöltése a \ref{tab:config} táblázat alapján történik. A backend így a host 80-as portján fog futni. Ezt a \textit{--urls=http://localhost:5001/} konzoli argumentummal lehet megváltoztatni, ebben az esetben az 5001-es porton futna az alkalmazás.
+A backend futtatása parancssorból az \textit{IWA\_Backend.API} futtatható fájllal lehet. A konfigurációja az \text{appsettings.json} fájlban található, kitöltése a \ref{tab:config} táblázat alapján történik. A backend így a host 80-as portján fog futni. Ezt a \textit{- -urls=http://localhost:5001/} konzoli argumentummal lehet megváltoztatni, ebben az esetben az 5001-es porton futna az alkalmazás.
 
 A frontend statikus HTML, JS és CSS fájlokból áll, ezt például Apache\footnote{\url{https://httpd.apache.org/}} vagy Nginx\footnote{\url{https://www.nginx.com/}} szerverekkel, vagy más hasonló webhost szolgáltatásokkal lehet kitelepíteni. A frontend konfigurációja a mappájában a \textit{config.js} fájlban történik, kitöltési útmutató a \ref{tab:config} táblázatban található.
 
 \section{Használat}
 \subsection{Ügyfeleknek}
+
 \subsection{Vállalkozóknak}
 
 
