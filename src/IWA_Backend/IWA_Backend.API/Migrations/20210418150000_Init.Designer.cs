@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IWA_Backend.API.Migrations
 {
     [DbContext(typeof(IWAContext))]
-    [Migration("20210306170112_Init")]
+    [Migration("20210418150000_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,6 +18,21 @@ namespace IWA_Backend.API.Migrations
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.3");
+
+            modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.AllowedUserOnCategories", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoryId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AllowedUserOnCategories");
+                });
 
             modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Appointment", b =>
                 {
@@ -28,13 +43,13 @@ namespace IWA_Backend.API.Migrations
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTimeOffset>("EndTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("MaxAttendees")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<DateTimeOffset>("StartTime")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
@@ -42,6 +57,21 @@ namespace IWA_Backend.API.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.AttendeeOnAppointments", b =>
+                {
+                    b.Property<int>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppointmentId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AttendeeOnAppointments");
                 });
 
             modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Category", b =>
@@ -64,7 +94,7 @@ namespace IWA_Backend.API.Migrations
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int?>("OwnerId")
+                    b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
                     b.Property<int>("Price")
@@ -82,6 +112,9 @@ namespace IWA_Backend.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Bio")
                         .IsRequired()
@@ -103,12 +136,6 @@ namespace IWA_Backend.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AppointmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -165,10 +192,6 @@ namespace IWA_Backend.API.Migrations
                         .HasColumnType("varchar(256) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppointmentId");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("ContractorPageId");
 
@@ -308,6 +331,25 @@ namespace IWA_Backend.API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.AllowedUserOnCategories", b =>
+                {
+                    b.HasOne("IWA_Backend.API.BusinessLogic.Entities.Category", "Category")
+                        .WithMany("AllowedUserOnCategoriesJoin")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IWA_Backend.API.BusinessLogic.Entities.User", "User")
+                        .WithMany("AllowedUserOnCategoriesJoin")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Appointment", b =>
                 {
                     b.HasOne("IWA_Backend.API.BusinessLogic.Entities.Category", "Category")
@@ -317,25 +359,38 @@ namespace IWA_Backend.API.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.AttendeeOnAppointments", b =>
+                {
+                    b.HasOne("IWA_Backend.API.BusinessLogic.Entities.Appointment", "Appointment")
+                        .WithMany("AttendeeOnAppointmentsJoin")
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IWA_Backend.API.BusinessLogic.Entities.User", "User")
+                        .WithMany("AttendeeOnAppointmentsJoin")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Category", b =>
                 {
                     b.HasOne("IWA_Backend.API.BusinessLogic.Entities.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
+                        .WithMany("OwnerOfCategories")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.User", b =>
                 {
-                    b.HasOne("IWA_Backend.API.BusinessLogic.Entities.Appointment", null)
-                        .WithMany("Attendees")
-                        .HasForeignKey("AppointmentId");
-
-                    b.HasOne("IWA_Backend.API.BusinessLogic.Entities.Category", null)
-                        .WithMany("AllowedUsers")
-                        .HasForeignKey("CategoryId");
-
                     b.HasOne("IWA_Backend.API.BusinessLogic.Entities.ContractorPage", "ContractorPage")
                         .WithMany()
                         .HasForeignKey("ContractorPageId");
@@ -396,12 +451,21 @@ namespace IWA_Backend.API.Migrations
 
             modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Appointment", b =>
                 {
-                    b.Navigation("Attendees");
+                    b.Navigation("AttendeeOnAppointmentsJoin");
                 });
 
             modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.Category", b =>
                 {
-                    b.Navigation("AllowedUsers");
+                    b.Navigation("AllowedUserOnCategoriesJoin");
+                });
+
+            modelBuilder.Entity("IWA_Backend.API.BusinessLogic.Entities.User", b =>
+                {
+                    b.Navigation("AllowedUserOnCategoriesJoin");
+
+                    b.Navigation("AttendeeOnAppointmentsJoin");
+
+                    b.Navigation("OwnerOfCategories");
                 });
 #pragma warning restore 612, 618
         }

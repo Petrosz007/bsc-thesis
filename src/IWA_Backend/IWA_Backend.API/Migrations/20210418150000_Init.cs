@@ -30,7 +30,8 @@ namespace IWA_Backend.API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false),
-                    Bio = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false)
+                    Bio = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false),
+                    Avatar = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -68,8 +69,6 @@ namespace IWA_Backend.API.Migrations
                     Email = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: false),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false),
                     ContractorPageId = table.Column<int>(type: "int", nullable: true),
-                    AppointmentId = table.Column<int>(type: "int", nullable: true),
-                    CategoryId = table.Column<int>(type: "int", nullable: true),
                     NormalizedUserName = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "varchar(256) CHARACTER SET utf8mb4", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
@@ -188,7 +187,7 @@ namespace IWA_Backend.API.Migrations
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false),
                     Description = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false),
                     EveryoneAllowed = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    OwnerId = table.Column<int>(type: "int", nullable: true),
+                    OwnerId = table.Column<int>(type: "int", nullable: false),
                     MaxAttendees = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false)
                 },
@@ -200,7 +199,31 @@ namespace IWA_Backend.API.Migrations
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AllowedUserOnCategories",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AllowedUserOnCategories", x => new { x.CategoryId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_AllowedUserOnCategories_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AllowedUserOnCategories_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,8 +232,8 @@ namespace IWA_Backend.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    StartTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    StartTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    EndTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: true),
                     MaxAttendees = table.Column<int>(type: "int", nullable: false)
                 },
@@ -224,6 +247,35 @@ namespace IWA_Backend.API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "AttendeeOnAppointments",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    AppointmentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AttendeeOnAppointments", x => new { x.AppointmentId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_AttendeeOnAppointments_Appointments_AppointmentId",
+                        column: x => x.AppointmentId,
+                        principalTable: "Appointments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AttendeeOnAppointments_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AllowedUserOnCategories_UserId",
+                table: "AllowedUserOnCategories",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_CategoryId",
@@ -262,16 +314,6 @@ namespace IWA_Backend.API.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_AppointmentId",
-                table: "AspNetUsers",
-                column: "AppointmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_CategoryId",
-                table: "AspNetUsers",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_ContractorPageId",
                 table: "AspNetUsers",
                 column: "ContractorPageId");
@@ -283,36 +325,20 @@ namespace IWA_Backend.API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_AttendeeOnAppointments_UserId",
+                table: "AttendeeOnAppointments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Categories_OwnerId",
                 table: "Categories",
                 column: "OwnerId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_Appointments_AppointmentId",
-                table: "AspNetUsers",
-                column: "AppointmentId",
-                principalTable: "Appointments",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_Categories_CategoryId",
-                table: "AspNetUsers",
-                column: "CategoryId",
-                principalTable: "Categories",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Appointments_Categories_CategoryId",
-                table: "Appointments");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUsers_Categories_CategoryId",
-                table: "AspNetUsers");
+            migrationBuilder.DropTable(
+                name: "AllowedUserOnCategories");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -330,16 +356,19 @@ namespace IWA_Backend.API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "AttendeeOnAppointments");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Appointments");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Appointments");
 
             migrationBuilder.DropTable(
                 name: "ContractorPages");
