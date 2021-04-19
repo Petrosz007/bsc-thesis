@@ -1,6 +1,73 @@
 \chapter{Felhasználói dokumentáció} % User guide
 \label{ch:user}
 
+\section{Telepítés}
+
+Az alkalmazást legegyszerűbben Docker\footnote{\url{https://www.docker.com/}} segítségével lehet telepíteni. A Docker egy konténerizációs technológia, amely megkönnyíti az alkamazások kihelyezését. Az alkalmazások 'konténerekbe' csomagolódnak minden függőségükkel, ezen konténereket utána egy egységként lehet futtatni, nem kell a felhasználó rendszerére egyesével a program futásához felállítani a környezetet.
+
+\subsection{Telepítés Dockerrel}
+
+A Dockeres telepítéshez szükséges a Docker\footnote{\url{https://www.docker.com/get-started}} és Docker Compose\footnote{\url{https://docs.docker.com/compose/install/}} telepítése.
+A fő mappában megtalálható \textit{docker-compse.yml} fájlban találhatók meg a konténerek konfigurációi. Három konténerből áll, egy MariaDB \footnote{\url{https://mariadb.org/}} adatbázisból, a backend REST API-ból és a frontendből.
+A yml fájlban a következő konfigurációs lehetőségek a \ref{tab:config}-es táblázatban találhatók.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{ | m{0.25\textwidth} | m{0.25\textwidth} | m{0.45\textwidth} | }
+		\hline
+		\textbf{Konfigurációs változó} & \textbf{Alap érték} & \textbf{Megjegyzés} \\
+		\hline \hline
+		\multicolumn{3}{|l|}{db} \\
+		\hline
+		\tiny{MYSQL\_ROOT\_PASSWORD} & kebab & MariaDB adatbázis root felhasználójának jelszava \\
+		\hline
+		\small{volumes} & \tiny{./db\_data:/var/lib/mysql} & MariaDB adatbázis perzisztens tárolása a lokális db\_data mappában  \\ \hline
+		\small{ports} & 3306:3306 & A konténer 3306-as portja a hoston az 3306-es portra forwardolása \\ \hline
+		\hline \hline
+		\multicolumn{3}{|l|}{backend} \\
+		\hline
+		\small{IWA\_CorsAllowUrls} & http://127.0.0.1:8100 & Vesszővel elválasztva az engedélyezett publikus frontend url-ek. Pl.: \url{https://andipeter.me} \\ \hline
+		\small{IWA\_MYSQL\_HOST} & db & MariaDB adatbázis host neve \\ \hline
+		\small{IWA\_MYSQL\_PORT} & 3306 & MariaDB adatbázis portja \\ \hline
+		\small{IWA\_MYSQL\_DB} & iwa & MariaDB adatbázison belül használandó adatbázis \\ \hline
+		\small{IWA\_MYSQL\_USER} & root & MariaDB adatbázis felhasználója \\ \hline
+		\small{IWA\_MYSQL\_PASS} & kebab & MariaDB adatbázis felhasználójának jelszava \\ \hline
+		\small{volumes} & \tiny{./avatars:/app/AvatarData} & A profilképek perzisztens tárolása a lokális avatars mappában  \\ \hline
+		\small{ports} & 5000:80 & A konténer 80-as portja a hoston az 5000-es portra forwardolása \\
+		\hline \hline
+		\multicolumn{3}{|l|}{frontend} \\
+		\hline
+		\small{API\_URL} & http://127.0.0.1:5000 & A backend publikus elérési url-je. Pl.: \url{https://andipeter.me}/api/ \\
+		\hline
+		\small{ports} & 8100:80 & A konténer 80-as portja a hoston az 8100-es portra forwardolása \\ \hline
+	\end{tabular}
+	\caption{Konfigurációs változók beállításai}
+	\label{tab:config}
+\end{table}
+
+\subsection{Telepítés Docker nélkül}
+
+\section{Üzemeltetés}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Lorem ipsum dolor sit amet $\mathbb{N}$\nomenclature{$\mathbb{N}$}{Set of natural numbers}, consectetur adipiscing elit. Duis nibh leo, dapibus in elementum nec, aliquet id sem. Suspendisse potenti. Nullam sit amet consectetur nibh. Donec scelerisque varius turpis at tincidunt. Cras a diam in mauris viverra vehicula. Vivamus mi odio, fermentum vel arcu efficitur, lacinia viverra nibh. Aliquam aliquam ante mi, vel pretium arcu dapibus eu. Nulla finibus ante vel arcu tincidunt, ut consectetur ligula finibus. Mauris mollis lectus sed ipsum bibendum, ac ultrices erat dictum. Suspendisse faucibus euismod lacinia $\mathbb{Z}$\nomenclature{$\mathbb{Z}$}{Set of integer numbers}.
 
 
