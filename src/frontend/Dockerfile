@@ -8,7 +8,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 # Required for node-sass
 RUN apk add --no-cache python2 make g++
 
-COPY package*.json ./
+COPY package*.json yarn.lock ./
 RUN yarn install
 
 COPY . /app
