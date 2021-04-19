@@ -19,14 +19,13 @@ services:
     ports: 
       - 5000:80
     environment:
-      IWA_AvatarDir: ./Avatars
       IWA_CorsAllowUrls: http://localhost:8100,http://127.0.0.1:8100
       IWA_ConnectionStrings__MySqlServer: Server=db;Port=3306;Database=iwa;Uid=root;Pwd=kebab;
     networks:
       - backend
     restart: unless-stopped
     volumes:
-      - ./avatars:/app/Avatars
+      - ./avatars:/app/AvatarData
     depends_on:
       - db
       

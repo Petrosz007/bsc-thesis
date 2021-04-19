@@ -30,6 +30,7 @@
   <ItemGroup>
     <None Update="Avatars\default.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
   </ItemGroup>
 
