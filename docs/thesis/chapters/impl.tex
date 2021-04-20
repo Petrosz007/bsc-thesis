@@ -5,9 +5,12 @@
 
 \subsection{Probléma leírása}
 
+Implementáció szemponjából fontosabb elemeket kiemelni felsorolásba?
+A felhasználói résznél már nagyjából a funkciók specifikálva lettek
+
 \subsection{Felhasználói esetek}
 \todo{Ez a kép nem felel meg a margónak, az baj? Legalább átlátható}
-A felhasználói esetek a következőképpen néznek ki. A vállalkozó egyben felhasználó is, a felhasználók összes funkcióját tudják használni, ezt nem jelöltem a diagrammban, hogy átlátható maradjon.
+A felhasználói esetek a következőképpen néznek ki. A vállalkozó egyben ügyfél is (hogy esetleg más vállalkozók időpontjaira tudjon jelentkezni), az ügyfelek összes funkcióját tudják használni, ezt nem jelöltem a diagrammban, hogy átlátható maradjon.
 
 \begin{figure}[H]
 	\noindent\makebox[\textwidth]{
@@ -119,6 +122,11 @@ Az adatbázis terve körülbelül egyezik az előző részben definiált entitá
 
 \todo{database uml}
 
+Az EF-ben a DbContext osztály biztosítja az adat elérést és definíciót. A DbContext virtual DbSet propertyjei lesznek azok az értékek, amiket az EF használni fog. Az OnModelCreating metódusban lehet testre szabni, hogy hogyan is generálja le az objektumok között a kapcsolatok az EF. A backend DbContext-je az IWAContext a következőképpen néz ki:
+
+\todo{iwacontext uml}
+
+
 \subsection{Funkcionális Frontend}
 React, react hooks, async result monád, reactive state changes
 
@@ -151,6 +159,15 @@ Github actions, cd dockerrel(?)
 Dockerfile, dockerfile optimalizáció (alpine, builder, instruction layering - caching), docker compose
 
 \section{Tesztelés}
+
+Mind az integrációs, mind a unit teszteknél a következő struktúrát használtam. Létrehoztam egy teszt osztályt a tesztelendő osztálynak (logika, repository, mapper). Ezen belül létrehoztam egy osztályt a függvény / metódus nevével, azon belül pedig a függvények nevei az adott esetet írják le. Például, sikeres, nem engedélyezett felhasználó, már lefoglalt időpont.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics{test-naming}
+	\caption{Teszt struktúra}
+\end{figure}
+
 \subsection{Unit tesztek}
 \label{sec:unittests}
 Unit tesztelésnél a backend logika, mapper és repository implementációk függvényeit teszteltem white box módon.
