@@ -69,8 +69,46 @@ A programozható felület lehetővé teszi, hogy a szerver ne teljes oldalakat k
 A hátránya ennek az architektúrának, hogy a backend és frontend teljesen különálló, akár más programozási nyelvekben vannak írva, más eszközökkel kell fejleszteni őket, így nagyobb a projekt komplexitása. Vállalati környezetben ez előny lehet, mert külön csapatokra szét lehet osztani a frontend és backend fejlesztést. További nehézség lehet, hogy az backendet és a frontendet össze kell kötni, ez az integráció nem olyan triviális, mint egy monolitikus MVC alkalmazásban, ahol egyből a modell adatát bele lehet renderelni HTML tagek közé. Továbbá, mivel az API így egy külön álló alkalmazás, amit bárhonnan lehet lekérdezni, fontos biztonsági lépésekkel le kell védeni, hogy jogosulatlan adathoz ne lehessen hozzáférni, szennyezett adattal ne lehessen elrontani az alkalmazást.
 
 \subsection{Clean Architecture Backenden}
+\todo{Remove this paragraph}
 Clean architecture, UML diagrammok, dependency injection,
 repo - controller - logika interakció
+
+Uncle Bob Clean Architecture\cite{cleanArchitecturePost}-jének a lényege, hogy az alkalmazás különböző rétegei minél kevésbé függjenek egymástól. Ő négy réteget definiál: entitások, felhasználói esetek, kontrollerek és külső szolgáltatások. Az én alkalmazásomban az entitások az alkalmazás belő reprezentációs adattagjai. A felhasználói esetek a logika osztályokban vannak, minden egyes függvény a logika osztályban egy felhasználói esetet fed le. A kontrollerek az ASP.NET-es kontrollerek. A külső szolgáltatások pedig az adatbázis kezeléssel foglalkozó repository-k és majd a jövőben az email küldő szolgáltatás.
+
+A különböző rétegek csak egymás interfészeitől, nem implementációitól függenek. Így például a logikában nincsenek SQL lekérdezések, a kontroller nem tud fájlokat megnyitni. Ezt a függőségi befecskendezés elvével (Dependency inversion principle) valósítom meg. Ez azt jelenti, hogy egy osztály ha valami más rétegre hivatkozna, pl.: logika egy repository-ra, akkor a logika osztály konstruktora csak a repository egy interfészét várja, mert a logika szempontjából csak az a lényeg, hogy le tudjon kérdezni adatot, az nem, hogy az konkrétan hogy történik.
+
+Ez lehetővé teszi, hogy a különböző szolgáltatásokat egyszerűen lehessen refaktorálni. Mivel minden interfészekkel dolgozik, ezért ha az adatbázis elérést Entity Framework-ről lecserélném általam írt SQL lekérdezésekre, akkor csak a repository implementációt kell megváltoztatnom és betartani az interfészt és ugyan úgy működik az alkalmazás.
+
+
+Az entitásaim a következőféleképpen néznek ki:
+
+\todo{entity uml}
+
+Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum}-kat is használtam, a REST API ezekkel az adatszerkezetekkel kommunikál.
+
+\todo{dto uml}
+
+A logikát megvalósító osztályaimat entitásonként különítettem el, azaz az egy fajta entitással dolgozó felhasználói esetek tipikusan egy osztályba kerültek. A logika osztályban lehet először látni a függőségi befecskendezés elvét. A logika osztályok csak a releváns repository-k interfészeit kapják meg.
+
+\todo{logic uml}
+
+A kontrollerek ugyan azokat a felhasználói eseteket fedik le, mint a logika osztályok. A különbség, hogy a bejövő HTTP kéréseket kezelik, alakítják át a logikának megfelelő adatra, utána meghívják a logika egy függvényét, majd a visszakapott belső reprezentációs adatot mapp-elik DTO-vá.
+
+\todo{Controller uml}
+
+Az adat elérő repository interfészek a következők:
+
+\todo{repo interface uml}
+
+A repository megvalósítások nem térnek el sokban a megvalósított interfészektől:
+
+\todo{repo implementation uml}
+
+Mint látható, az entitásokon kívül az osztályok nem tartalmaznak állapot tárolásra szolgáló adattagokat. Ez a REST API állapotfüggetlensége miatt van. Így például a logika meg repository osztályok csak azért vannak osztályba szervezve, hogy ugyan azokat a befecskendezett függőségeket használják, ne kelljen minden methódusuknál paraméterként megadni őket. Ettől funkcionális érzetű a kód, viszont ez a unit tesztelésnél hasznos, amit a \ref{sec:unittests} részben tárgyalok.
+
+A program komponensei a következő módon függnek egymástól:
+
+\todo{big picture uml}
 
 \subsection{Adatbázis - Entity Framework}
 entity uml hivatkozások az előző részből
@@ -89,6 +127,9 @@ snowpack, node.js, yarn, react
 
 ???
 
+\subsection{Fejlesztési döntések}
+exceptions, dto-entity mappers
+
 \subsection{Fejlesztés közben felmerült problémák}
 EF many-to-many, ef virtual classes nullable, sqlite inmemory test parallelization
 
@@ -101,6 +142,7 @@ Dockerfile, dockerfile optimalizáció (alpine, builder, instruction layering - 
 
 \section{Tesztelés}
 \subsection{Unit tesztek}
+\label{sec:unittests}
 Clean architecture, dependency injection, mockolás
 
 \subsection{Integrációs tesztek}
