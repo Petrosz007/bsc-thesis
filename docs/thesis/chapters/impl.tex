@@ -92,7 +92,7 @@ A logikát megvalósító osztályaimat entitásonként különítettem el, azaz
 
 \todo{logic uml}
 
-A kontrollerek ugyan azokat a felhasználói eseteket fedik le, mint a logika osztályok. A különbség, hogy a bejövő HTTP kéréseket kezelik, alakítják át a logikának megfelelő adatra, utána meghívják a logika egy függvényét, majd a visszakapott belső reprezentációs adatot mapp-elik DTO-vá.
+A kontrollerek ugyan azokat a felhasználói eseteket fedik le, mint a logika osztályok. A különbség, hogy a bejövő HTTP kéréseket kezelik, alakítják át a logikának megfelelő adatra, utána meghívják a logika egy függvényét, majd a visszakapott belső reprezentációs adatot mappelik DTO-vá.
 
 \todo{Controller uml}
 
@@ -104,14 +104,20 @@ A repository megvalósítások nem térnek el sokban a megvalósított interfés
 
 \todo{repo implementation uml}
 
-Mint látható, az entitásokon kívül az osztályok nem tartalmaznak állapot tárolásra szolgáló adattagokat. Ez a REST API állapotfüggetlensége miatt van. Így például a logika meg repository osztályok csak azért vannak osztályba szervezve, hogy ugyan azokat a befecskendezett függőségeket használják, ne kelljen minden methódusuknál paraméterként megadni őket. Ettől funkcionális érzetű a kód, viszont ez a unit tesztelésnél hasznos, amit a \ref{sec:unittests} részben tárgyalok.
+Mint látható, az entitásokon kívül az osztályok nem tartalmaznak állapot tárolásra szolgáló adattagokat. Ez a REST API állapotfüggetlensége miatt van. Így például a logika meg repository osztályok csak azért vannak osztályba szervezve, hogy ugyan azokat a befecskendezett függőségeket használják, ne kelljen minden metódusuknál paraméterként megadni őket. Ettől funkcionális érzetű a kód, viszont ez a unit tesztelésnél hasznos, amit a \ref{sec:unittests} részben tárgyalok.
 
-A program komponensei a következő módon függnek egymástól:
+A program komponensei a következő módon függenek egymástól:
 
 \todo{big picture uml}
 
 \subsection{Adatbázis - Entity Framework}
-entity uml hivatkozások az előző részből
+Az Entity Framework\footnote{\url{https://docs.microsoft.com/en-us/ef/}} (továbbiakban EF) egy Microsoft által fejlesztett könyvtár a .NET keretrendszerrel, egy ORM\footnote{Object-Relational Mapping - Objektum-Reláció fordítás} keretrendszer, mely C\# osztályokat fordít adatbázis elemekre és vissza. Code first módon elég a C\# osztályokat definiálni és az EF létrehozza az SQL táblákat és kapcsolatokat, a lekérdezéseket CX-ban LINQ\footnote{\url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/}} segítségével lehet végezni.
+
+Azonban EF-el sem triviális az adatbázis kezelés, több a többhöz kapcsolatokat (pl.: egy ügyfél több időpontra is jelentkezhet és egy időpontra több ügyfél is jelentkezhet) elég sok manuális konfigurálással kell létrehozni, erről bővebben a megvalósítás \ref{sec:devProblems} részében írok.
+
+Az adatbázis terve körülbelül egyezik az előző részben definiált entitásokkal, a következőképpen néz ki:
+
+\todo{database uml}
 
 \subsection{Funkcionális Frontend}
 React, react hooks, async result monád, reactive state changes
@@ -121,16 +127,20 @@ React, react hooks, async result monád, reactive state changes
 \subsection{Fejlesztési környezet}
 Rider, vs code, visual studio, docker
 
-dotnet, nuget
+dotnet, nuget packages
+dotnet ef add migrations
 
-snowpack, node.js, yarn, react
+snowpack, node.js, yarn, react, npm packages
 
 ???
 
 \subsection{Fejlesztési döntések}
 exceptions, dto-entity mappers
 
+c\# records, LINQ, 
+
 \subsection{Fejlesztés közben felmerült problémák}
+\label{sec:devProblems}
 EF many-to-many, ef virtual classes nullable, sqlite inmemory test parallelization
 
 
@@ -143,10 +153,42 @@ Dockerfile, dockerfile optimalizáció (alpine, builder, instruction layering - 
 \section{Tesztelés}
 \subsection{Unit tesztek}
 \label{sec:unittests}
-Clean architecture, dependency injection, mockolás
+Unit tesztelésnél a backend logika, mapper és repository implementációk függvényeit teszteltem white box módon.
+
+Tesztelésnél sokat segített a függőségi befecskendezés és az úgynevezett mock-olás. Mockolsánál létrehozunk egy hamis interfész implementációt, ez után különböző szabályokkal megadhatjuk, hogy melyik függvények milyen paraméterekre milyen értékeket adjanak vissza.
+
+Például az AppointmentLogic CreateAppointment metódusában meghívom a CategoryRespoitory GetById metódusát és az AppointmentRepository CreateAsync metódusát. Ha mockolom a CategoryRepository-t, akkor megmondhatom, hogy ha a GetById-t 10-re hívják meg, akkor adjon vissza egy konkrét kategóriát amit előtte definiálok. Az AppintmentRepository-nál pedig a mockolás miatt ellenőrizni tudom, hogy sikeres futás után meghívta-e a logika pontosan egyszer a CreateAsync metódust.
+
+Ezzel a unit tesztjeim futásai közben nem kell futnia az adatbázisnak, mert a repository-k nem az adatbázisban dolgoznak, hanem a mockolt objektummal váltottam ki a működésüket. Viszont, a logika szempontjából ugyanúgy egy repository-n keresztül dolgozunk, a logika teljesen jól tesztelhető, nem függ külső szolgáltatásoktól.
+
+A repository-k teszteléséhez hasonlóan mockolok, viszont az EF DbContext-jét kell mockolni, azon keresztül érhető el az adatbázis. Erre a MockDbContextBuilder osztály szolgál, ami létrehoz egy mock DbContext-et a szolgáltatott adatokkal. Így azt lehet szimulálni, hogy azok az adatok vannak az adatbázisban, lehet tesztelni a repository helyességét, hogy megfelelően kérdezi le vagy módosítja őket.
+
+A kontrollereket nem unit tesztelem, mert csak átalakítják a bemenetet, meghívják a logika egy függvényét és DTO-vá alakítják a kimenetet. A kontrollereket integrációs tesztelés során tesztelem, mert ha az integrációs tesztek átmennek, akkor az azt jelenti, hogy a kontrollerek is jók.
+
+Az unit tesztek a következő struktúrájúak:
+\begin{enumerate}
+	\item \textbf{Arrange:} A teszthez szükséges adatok előkészítése. Itt általában a mock objektumok előkészítése történik, vagy a várt eredmény definiálása.
+	\item \textbf{Act:} A tesztelendő műveletek végrehajtása, a visszatért érték eltárolása egy változóban. Kezelt kivételek esetén azt ellenőrzöm, hogy kiváltódott-e a megfelelő kivétel.
+	\item \textbf{Assert:} Ellenőrzés, hogy a művelet megfelelően hajtódott-e végre. Ellenőrzöm a visszatérési érték helyességét és azt, hogy a mock objektum megfelelő metódusai megfelelően meg lettek-e hívva vagy nem.
+\end{enumerate}
 
 \subsection{Integrációs tesztek}
-httpclient, sqlite inmemory
+A backendem integrációs tesztelve is lett. Ez azt jelenti, hogy az api-t futtatom és nem egyesével az egységeit tesztelem mint unit tesztelésnél, hanem hogy az egész rendszer a bejövő kéréstől a kiadott válaszig jól működik-e.
+
+Ahhoz, hogy az integrációs tesztek gyorsak és külső szolgáltatás függetlenek legyenek SQLite\footnote{\url{https://www.sqlite.org}} inmemory adatbázist használok. Ez egy teljes értékű SQL szerverrel ér fel, ami az eszköz memóriájában fut. Így az integrációs futhatnak Coninous Integration közben, nem kell egy MardiaDB szervert futtatni a felhőben.
+
+Az integrációs tesztekhez egy előre elkészített adat csomagot töltök be mindig az adatbázisba, ezt az IntegrationTestData osztály tartalmazza.
+
+A TestWebApplicationFactory egy gyár tervmintát alkalmazó osztály, ami ez előbb említett SQLite imemory adabázzissal konfigurál fel és készít el egy alkalmazás példányt.
+
+Az IntegrationTestBase osztály az ősosztálya az összes integrációs teszt osztálynak, tartalmaz egy TestWebApplicationFactory-t és pár segédfüggvényt, hogy egyszerűbb legyen megírni a teszteseteket.
+
+Az integrációs tesztek a következő struktúrájúak:
+\begin{enumerate}
+	\item \textbf{Arrange:} A teszthez szükséges adatok előkészítése. Ez lehet egy új DTO létrehozás, amit majd egy POST request-el elküldök az API-nak, vagy az adatbázisból érték kiolvasás, hogy a végén össze lehessen hasonlítani, hogy egyezik-e a visszatért értékkel.
+	\item \textbf{Act:} A tesztelendő műveletek végrehajtása. Egy HTTP klienssel HTTP kéréseket küldök az API-nak, ha kell egy DTO-val, vagy előtte még egy bejelentkező kéréssel.
+	\item \textbf{Assert:} Ellenőrzés, hogy a műveletek megfelelően hajtódtak-e végre. Itt vizsgálom a HTTP státusz kód helyességét, a visszatért JSON adatot beolvasom DTO-ként és ellenőrzöm, hogy megfelelő-e.
+\end{enumerate}
 
 \subsection{Manuális tesztek}
 frontend tesztelés
