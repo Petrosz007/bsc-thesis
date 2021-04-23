@@ -85,11 +85,21 @@ Ez lehetővé teszi, hogy a különböző szolgáltatásokat egyszerűen lehesse
 
 Az entitásaim a következőféleképpen néznek ki:
 
-\todo{entity uml}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{entities_uml}
+	\caption{Entitások UML diagrammja}
+	\label{fig:usecases}
+\end{figure}
 
 Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum}-kat is használtam, a REST API ezekkel az adatszerkezetekkel kommunikál.
 
-\todo{dto uml}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{dtos_uml}
+	\caption{DTO-k UML diagrammja}
+	\label{fig:usecases}
+\end{figure}
 
 A logikát megvalósító osztályaimat entitásonként különítettem el, azaz az egy fajta entitással dolgozó felhasználói esetek tipikusan egy osztályba kerültek. A logika osztályban lehet először látni a függőségi befecskendezés elvét. A logika osztályok csak a releváns repository-k interfészeit kapják meg.
 
