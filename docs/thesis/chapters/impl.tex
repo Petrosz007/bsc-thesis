@@ -89,7 +89,7 @@ Az entitásaim a következőféleképpen néznek ki:
 	\centering
 	\includegraphics[width=0.8\textwidth]{entities_uml}
 	\caption{Entitások UML diagrammja}
-	\label{fig:usecases}
+	\label{fig:entities}
 \end{figure}
 
 Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum}-kat is használtam, a REST API ezekkel az adatszerkezetekkel kommunikál.
@@ -98,7 +98,7 @@ Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum
 	\centering
 	\includegraphics[width=1.0\textwidth]{dtos_uml}
 	\caption{DTO-k UML diagrammja}
-	\label{fig:usecases}
+	\label{fig:dtos}
 \end{figure}
 
 A logikát megvalósító osztályaimat entitásonként különítettem el, azaz az egy fajta entitással dolgozó felhasználói esetek tipikusan egy osztályba kerültek. A logika osztályban lehet először látni a függőségi befecskendezés elvét. A logika osztályok csak a releváns repository-k interfészeit kapják meg.
@@ -111,7 +111,12 @@ A kontrollerek ugyan azokat a felhasználói eseteket fedik le, mint a logika os
 
 Az adat elérő repository interfészek a következők:
 
-\todo{repo interface uml}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{repository_interface_uml}
+	\caption{Repository interfészek UML diagrammja}
+	\label{fig:repoInterfaces}
+\end{figure}
 
 A repository megvalósítások nem térnek el sokban a megvalósított interfészektől:
 
