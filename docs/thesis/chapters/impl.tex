@@ -103,8 +103,12 @@ Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum
 
 A logikát megvalósító osztályaimat entitásonként különítettem el, azaz az egy fajta entitással dolgozó felhasználói esetek tipikusan egy osztályba kerültek. A logika osztályban lehet először látni a függőségi befecskendezés elvét. A logika osztályok csak a releváns repository-k interfészeit kapják meg.
 
-\todo{logic uml}
-
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{logic_uml}
+	\caption{Logika osztályok UML diagrammja}
+	\label{fig:dtos}
+\end{figure}
 A kontrollerek ugyan azokat a felhasználói eseteket fedik le, mint a logika osztályok. A különbség, hogy a bejövő HTTP kéréseket kezelik, alakítják át a logikának megfelelő adatra, utána meghívják a logika egy függvényét, majd a visszakapott belső reprezentációs adatot mappelik DTO-vá.
 
 \todo{Controller uml}

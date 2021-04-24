@@ -58,7 +58,7 @@ namespace IWA_Backend.API.Controllers
         {
             try
             {
-                await Logic.UpdateAvatar(file, CurrentUserName!);
+                await Logic.UpdateAvatarAsync(file, CurrentUserName!);
                 return Ok();
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }

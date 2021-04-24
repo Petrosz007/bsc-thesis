@@ -45,7 +45,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             await UserRepository.UpdateAsync(user);
         }
 
-        public async Task UpdateAvatar(IFormFile file, string userName)
+        public async Task UpdateAvatarAsync(IFormFile file, string userName)
         {
             var user = UserRepository.GetByUserName(userName);
             var previousAvatar = user.ContractorPage!.Avatar;
