@@ -82,6 +82,7 @@ A különböző rétegek csak egymás interfészeitől, nem implementációitól
 
 Ez lehetővé teszi, hogy a különböző szolgáltatásokat egyszerűen lehessen refaktorálni. Mivel minden interfészekkel dolgozik, ezért ha az adatbázis elérést Entity Framework-ről lecserélném általam írt SQL lekérdezésekre, akkor csak a repository implementációt kell megváltoztatnom és betartani az interfészt és ugyan úgy működik az alkalmazás.
 
+\clearpage
 
 Az entitásaim a következőféleképpen néznek ki:
 
@@ -92,6 +93,8 @@ Az entitásaim a következőféleképpen néznek ki:
 	\label{fig:entities}
 \end{figure}
 
+\clearpage
+
 Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum}-kat is használtam, a REST API ezekkel az adatszerkezetekkel kommunikál.
 
 \begin{figure}[H]
@@ -101,17 +104,29 @@ Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum
 	\label{fig:dtos}
 \end{figure}
 
+\clearpage
+
 A logikát megvalósító osztályaimat entitásonként különítettem el, azaz az egy fajta entitással dolgozó felhasználói esetek tipikusan egy osztályba kerültek. A logika osztályban lehet először látni a függőségi befecskendezés elvét. A logika osztályok csak a releváns repository-k interfészeit kapják meg.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{logic_uml}
 	\caption{Logika osztályok UML diagrammja}
-	\label{fig:dtos}
+	\label{fig:logic}
 \end{figure}
+
+\clearpage
+
 A kontrollerek ugyan azokat a felhasználói eseteket fedik le, mint a logika osztályok. A különbség, hogy a bejövő HTTP kéréseket kezelik, alakítják át a logikának megfelelő adatra, utána meghívják a logika egy függvényét, majd a visszakapott belső reprezentációs adatot mappelik DTO-vá.
 
-\todo{Controller uml}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{controller_uml}
+	\caption{Controller-ek UML diagrammja}
+	\label{fig:controllers}
+\end{figure}
+
+\clearpage
 
 Az adat elérő repository interfészek a következők:
 
@@ -131,6 +146,24 @@ Mint látható, az entitásokon kívül az osztályok nem tartalmaznak állapot 
 A program komponensei a következő módon függenek egymástól:
 
 \todo{big picture uml}
+
+\clearpage
+
+A REST API végpontok a következőféleképpen néznek ki:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{api_doc_1}
+	\caption{REST API végpontok}
+	\label{fig:apiDoc1}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{api_doc_2}
+	\caption{REST API végpontok folytatása}
+	\label{fig:apiDoc2}
+\end{figure}
 
 \subsection{Adatbázis - Entity Framework}
 Az Entity Framework\footnote{\url{https://docs.microsoft.com/en-us/ef/}} (továbbiakban EF) egy Microsoft által fejlesztett könyvtár a .NET keretrendszerrel, egy ORM\footnote{Object-Relational Mapping - Objektum-Reláció fordítás} keretrendszer, mely C\# osztályokat fordít adatbázis elemekre és vissza. Code first módon elég a C\# osztályokat definiálni és az EF létrehozza az SQL táblákat és kapcsolatokat, a lekérdezéseket CX-ban LINQ\footnote{\url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/}} segítségével lehet végezni.
