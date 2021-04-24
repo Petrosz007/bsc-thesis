@@ -128,7 +128,8 @@ A kontrollerek ugyan azokat a felhasználói eseteket fedik le, mint a logika os
 
 \clearpage
 
-Az adat elérő repository interfészek a következők:
+Az adat elérő repository interfészek az alábbi \ref{fig:repoInterfaces} ábrán láthatók.
+A repository megvalósítások nem térnek el érdemben a megvalósított interfészektől.
 
 \begin{figure}[H]
 	\centering
@@ -137,15 +138,18 @@ Az adat elérő repository interfészek a következők:
 	\label{fig:repoInterfaces}
 \end{figure}
 
-A repository megvalósítások nem térnek el sokban a megvalósított interfészektől:
+\clearpage
 
-\todo{repo implementation uml}
-
-Mint látható, az entitásokon kívül az osztályok nem tartalmaznak állapot tárolásra szolgáló adattagokat. Ez a REST API állapotfüggetlensége miatt van. Így például a logika meg repository osztályok csak azért vannak osztályba szervezve, hogy ugyan azokat a befecskendezett függőségeket használják, ne kelljen minden metódusuknál paraméterként megadni őket. Ettől funkcionális érzetű a kód, viszont ez a unit tesztelésnél hasznos, amit a \ref{sec:unittests} részben tárgyalok.
+Mint látható, az entitásokon kívül az osztályok nem tartalmaznak állapot tárolásra szolgáló adattagokat. Ez a REST API állapotfüggetlensége miatt van. Így például a logika meg repository osztályok csak azért vannak osztályba szervezve, hogy ugyan azokat a befecskendezett függőségeket használják, hogy ne kelljen minden metódusuknál paraméterként megadni őket. Ettől funkcionális érzetű a kód, viszont ez a unit tesztelésnél hasznos, amit a \ref{sec:unittests} részben tárgyalok.
 
 A program komponensei a következő módon függenek egymástól:
 
-\todo{big picture uml}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{package_uml}
+	\caption{Program komponenseit összeítő UML diagramm}
+	\label{fig:package}
+\end{figure}
 
 \clearpage
 
