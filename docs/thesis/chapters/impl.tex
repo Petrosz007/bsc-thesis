@@ -72,10 +72,7 @@ A programozható felület lehetővé teszi, hogy a szerver ne teljes oldalakat k
 A hátránya ennek az architektúrának, hogy a backend és frontend teljesen különálló, akár más programozási nyelvekben vannak írva, más eszközökkel kell fejleszteni őket, így nagyobb a projekt komplexitása. Vállalati környezetben ez előny lehet, mert külön csapatokra szét lehet osztani a frontend és backend fejlesztést. További nehézség lehet, hogy az backendet és a frontendet össze kell kötni, ez az integráció nem olyan triviális, mint egy monolitikus MVC alkalmazásban, ahol egyből a modell adatát bele lehet renderelni HTML tagek közé. Továbbá, mivel az API így egy külön álló alkalmazás, amit bárhonnan lehet lekérdezni, fontos biztonsági lépésekkel le kell védeni, hogy jogosulatlan adathoz ne lehessen hozzáférni, szennyezett adattal ne lehessen elrontani az alkalmazást.
 
 \subsection{Clean Architecture Backenden}
-\todo{Remove this paragraph}
-Clean architecture, UML diagrammok, dependency injection,
-repo - controller - logika interakció
-
+\subsubsection{Clean Architecture}
 Uncle Bob Clean Architecture\cite{cleanArchitecturePost}-jének a lényege, hogy az alkalmazás különböző rétegei minél kevésbé függjenek egymástól. Ő négy réteget definiál: entitások, felhasználói esetek, kontrollerek és külső szolgáltatások. Az én alkalmazásomban az entitások az alkalmazás belő reprezentációs adattagjai. A felhasználói esetek a logika osztályokban vannak, minden egyes függvény a logika osztályban egy felhasználói esetet fed le. A kontrollerek az ASP.NET-es kontrollerek. A külső szolgáltatások pedig az adatbázis kezeléssel foglalkozó repository-k és majd a jövőben az email küldő szolgáltatás.
 
 A különböző rétegek csak egymás interfészeitől, nem implementációitól függenek. Így például a logikában nincsenek SQL lekérdezések, a kontroller nem tud fájlokat megnyitni. Ezt a függőségi befecskendezés elvével (Dependency inversion principle) valósítom meg. Ez azt jelenti, hogy egy osztály ha valami más rétegre hivatkozna, pl.: logika egy repository-ra, akkor a logika osztály konstruktora csak a repository egy interfészét várja, mert a logika szempontjából csak az a lényeg, hogy le tudjon kérdezni adatot, az nem, hogy az konkrétan hogy történik.
@@ -84,6 +81,7 @@ Ez lehetővé teszi, hogy a különböző szolgáltatásokat egyszerűen lehesse
 
 \clearpage
 
+\subsubsection{Entitások}
 Az entitásaim a következőféleképpen néznek ki:
 
 \begin{figure}[H]
@@ -95,6 +93,7 @@ Az entitásaim a következőféleképpen néznek ki:
 
 \clearpage
 
+\subsubsection{DTOk}
 Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum}-kat is használtam, a REST API ezekkel az adatszerkezetekkel kommunikál.
 
 \begin{figure}[H]
@@ -106,6 +105,7 @@ Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum
 
 \clearpage
 
+\subsubsection{Logika}
 A logikát megvalósító osztályaimat entitásonként különítettem el, azaz az egy fajta entitással dolgozó felhasználói esetek tipikusan egy osztályba kerültek. A logika osztályban lehet először látni a függőségi befecskendezés elvét. A logika osztályok csak a releváns repository-k interfészeit kapják meg.
 
 \begin{figure}[H]
@@ -117,6 +117,8 @@ A logikát megvalósító osztályaimat entitásonként különítettem el, azaz
 
 \clearpage
 
+\subsubsection{Kontrollerek}
+
 A kontrollerek ugyan azokat a felhasználói eseteket fedik le, mint a logika osztályok. A különbség, hogy a bejövő HTTP kéréseket kezelik, alakítják át a logikának megfelelő adatra, utána meghívják a logika egy függvényét, majd a visszakapott belső reprezentációs adatot mappelik DTO-vá.
 
 \begin{figure}[H]
@@ -127,6 +129,8 @@ A kontrollerek ugyan azokat a felhasználói eseteket fedik le, mint a logika os
 \end{figure}
 
 \clearpage
+
+\subsubsection{Repository-k}
 
 Az adat elérő repository interfészek az alábbi \ref{fig:repoInterfaces} ábrán láthatók.
 A repository megvalósítások nem képezik részét a diagrammnak, mert nem térnek el érdemben a megvalósított interfészektől, csak megvalósítjk azt.
@@ -140,6 +144,8 @@ A repository megvalósítások nem képezik részét a diagrammnak, mert nem té
 
 \clearpage
 
+\subsubsection{Program komponensek interakciója}
+
 Mint látható, az entitásokon kívül az osztályok nem tartalmaznak állapot tárolásra szolgáló adattagokat. Ez a REST API állapotfüggetlensége miatt van. Így például a logika meg repository osztályok csak azért vannak osztályba szervezve, hogy ugyan azokat a befecskendezett függőségeket használják, hogy ne kelljen minden metódusuknál paraméterként megadni őket. Ettől funkcionális érzetű a kód, viszont ez a unit tesztelésnél hasznos, amit a \ref{sec:unittests} részben tárgyalok.
 
 A program komponensei a következő módon függenek egymástól:
@@ -151,7 +157,11 @@ A program komponensei a következő módon függenek egymástól:
 	\label{fig:package}
 \end{figure}
 
+\todo{Szekvencia diagram egy példa requestnél}
+
 \clearpage
+
+\subsubsection{REST API végpontok}
 
 A REST API végpontok a következőféleképpen néznek ki:
 
@@ -184,8 +194,37 @@ Az EF-ben a DbContext osztály biztosítja az adat elérést és definíciót. A
 
 
 \subsection{Funkcionális Frontend}
-React, react hooks, async result monád, reactive state changes
+\subsubsection{React és Typescript}
 
+Az alkalmazás frontendjét React.js\footnote{https://reactjs.org/} keretrendszerrel Typescriptben valósítom meg. A Typescript kibővíti a Javascript nyelvet és típusellenőrzést bizotsít fordítási időben. A Typescript fájlokat a fordító Javascript fájlokká fordítja, közben szintaktikai és szemantikai elemzéseket hajt végre.
+
+A React keretrendszeralappillére, hogy komponensekből épül fel a felhasználói felület. Ezeket a komponenseket lehet újra felhasználhatóra tervezni, így kód duplikációt elkerülni. Meg van a lehetőség őket egymásba ágyazni, egymás között a komponenseknek kommunikálni, így komplex rendszereket lehet építeni relatíve kis építőelemekből.
+
+A React a nevét a reaktivitásból kapta, a lényege, hogy dinamikusan változó felhasználói felületeket lehessen létrehozni, elkerülve a régi statikus, bármi változtatás után újratöltést igénylő oldalakat. Ezt egy virtuális DOM-al éri el, nem a böngészőre hagyja az oldal szerkezet kezelését, hanem javascriptben kódban csinálja. Ennek az előnye, ha bármilyen érték változik és frissítani kell a DOM elemeket, akkor a React el tudja dönteni, hogy konkrétan melyik elemeket kell újrarajzolni és csak azokat változtatja meg a böngésző DOM-jában, ezáltal nagyon gyors és hatékony.
+
+React-ben régen osztály komponensekkel lehetett dolgozni, de újabban a funkcionális komponensek egyre több támogatást és funkciót kaptak, most már ez az ajánlott módja a React-ben való fejlesztésnek. A funkcionális komponensek lényege, hogy tiszta, mellékhatásmentes függvényekkel írjuk le a komponenseinket, melyek bemenetként kaphatnak bármilyen értéket és kimenetként a kirajzolandó komponenst adják vissza. Mivel azek mellékhatásmentes függvények, ezért ha nem változik a bemenetük, akkor nem változik a kimenetük se, ezért a React nagyon effektíven tudja eldönteni, hogy állapot változásnál melyik komponenseket kell újra rajzolni és melyikeket nem.
+
+Ennek ellenére valahogy mégis le kell kezelni például állapotok változását, külső API hívásokat, console-ra írást, melyeket tiszta környezetben nem tehetnénk meg. Erre adnak választ a React Hook-ok. Ezek a 'kampók' 'belekapaszkodnak' egy funkcionális komponensbe és a programozók oldalán egy funkcionális interfészt biztosít ilyen típusú dinamizmus kezelésére. A \textit{useState} hook például egy állapotot és egy állapot módosító függvényt biztosít nekünk. Egy gomb \textit{onClick} eseményében ha meghívjuk az állapot módosító függvényt, akkor a React a háttérben elvégzi nekünk az értékadást, mi csak azt vesszük észre, hogy az állapotunk megváltozott. Mivel a React kezébe adjuk mutálható változó értékek kezelését, ezért effektív tud maradni a keretrendszer, az előbb leírt feltételes újra rajzolásokat hatékonyan tudja kezelni.
+
+\subsubsection{Async Result Monád típus}
+
+Hibakezelésre imperatív programozási nyelvekben hagyományosan kivételeket használnak. Typescriptben is meg van a lehetősék kivételek dobására és elkapására. Viszont, mivel funkcionális komponensekkel dolgozok és fejlesztés közben párszor nem lekezelt kivételek miatt inkonzisztens állapotba került a UI, ezért a Haskellben \textit{Either} és Rust-ban \textit{Result} néven ismert monádhoz fordultam. Röviden ezeknek az a lényegük, hogy típus szinten kezeljük le a hibákat, amikor egy függvény alkalmazás lánc végén akarjuk használni az értéket, akkor muszáj megvizsgálnunk, hogy hibába ütköztünk-e vagy lefutott az összes számítés és felhasználhatjuk az értéket.
+
+A Rust mintájára egy Result nevű unió típust\cite{tsUnionTypes} hoztam létre, ami egyszerre vagy egy Ok vagy egy Err osztályt tartalmazhat. Az Ok és Err is egy-egy értéket tartalmaznak, az Ok-ban szereplő érték egy jó értéket szimbolizál, amit utána tovább fl lehet használni, az Err pedig valamilyen hibát tartalmaz (pl.: string, Exception, saját osztály), mellyel nem folytatódik tovább a számítás.
+
+A Result egy Funktor típus, definiálva van rá egy \textit{map} függvény. Hogy ha a Result Ok, akkor alkalmazza rá a függvényt, ha Err akkor pedig az Err-t adja vissza. Ezen felül a Result egy Monád típus, az \textit{andThen} függvény alkalmazza az Ok-ban levő értékre a függvéyt ami egy Result típust ad vissza, vagy ha Err érték a Result, akkor visszaadja az Err-t. Az \textit{sideEffect} függvénnyel mellékhatásosságot lehet elérni, a Result marad ugyan az, viszont az Ok, akkor az értékére lehet mellékhatásos függvényeket hívni. Ez azért hasznos, mert a Javascriptet nem tisztán funkcionálisra tervezték és például a böngésző API-jával való kommunikációhoz hasznos lehet.
+
+Result-ból adatot kinyerni a \textit{match} függvénnyel lehet, ami paraméterül kap egy Ok esetén és egy Err esetén lefutó függvényt, a result értéke szerint a megfelelőt futtatja le.
+
+Kivételt dobó függvényeket be lehet csomagolni, hogy Result-ot adjanak vissza a \textit{fromThrowable} függvénnyel. Ha egy függvény nem dob kivételt, de mégis szeretnénk, gogy Result-ba csomagolt visszatérítési értéke legyen, akkor a \textit{fromSafe} függvénnyel tehetjük meg.
+
+Javascritben és ezáltal Typescriptben az aszinkron függvényeknek muszáj Promise típussal visszatérniük. Ez megnehezíti a dolgunkat, mert például Result típust így nem tudunk visszaadni. Ezt a problémát oldja meg a ResultPromise, ami lényegében egy Result-ba csomagolt Promise. Ugyan azokkal a függvényekkel rendelkezik mint a Result (\textit{map}, \textit{andThen}, \textit{sideEffect}), viszont Promise-okkal dolgozik a háttérben. Ha egy Promise Rejected állapotba kerülne, akkor a ResultPromise-on belüli Result Err lesz.
+
+A result függvények amik Async végződésűek ugyan azon az elven alapulnak, mint a megfleleőik (pl.: \textit{map}, \textit{mapAsync}) csak aszinkron függvényekkel dolgoznak.
+
+Összességében, a result és ResultPromise típusokkal és függvények kompozíciójával sok hibakezelő boilerplate kód kerülhető el és típusbiztos lehet a kód.
+
+\subsubsection{Komponensek}
 
 \section{Megvalósítás}
 \subsection{Fejlesztési környezet}
@@ -213,6 +252,10 @@ EF many-to-many, ef virtual classes nullable, sqlite inmemory test parallelizati
 Github actions, cd dockerrel(?)
 \subsection{Docker}
 Dockerfile, dockerfile optimalizáció (alpine, builder, instruction layering - caching), docker compose
+
+A Docker egy konténerizációs technológia, amely megkönnyíti az alkalmazások kihelyezését. Az alkalmazások 'konténerekbe' csomagolódnak minden függőségükkel, ezen konténereket utána egy egységként lehet futtatni, nem kell a felhasználó rendszerére egyesével a program futásához felállítani a környezetet.
+
+A Docker konténereket úgy találták ki, hogy eldobhatók legyenek, azaz ki lehessen őket törölni és újra futtatni és ugyan úgy működjenek. Az adatok perzisztálását így \textit{volume}-okkal oldhatjuk meg, jelen esetben az adatbázis és a profilképeket a host gép lokális mappáiban tároljuk.
 
 \section{Tesztelés}
 

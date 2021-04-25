@@ -9,7 +9,7 @@ Kliens oldalon: Legalább Chrome 90, Firefox 88, Edge 90, ezek mind asztali szá
 
 \section{Telepítés}
 
-Az alkalmazást legegyszerűbben Docker\footnote{\url{https://www.docker.com/}} segítségével lehet telepíteni. A Docker egy konténerizációs technológia, amely megkönnyíti az alkalmazások kihelyezését. Az alkalmazások 'konténerekbe' csomagolódnak minden függőségükkel, ezen konténereket utána egy egységként lehet futtatni, nem kell a felhasználó rendszerére egyesével a program futásához felállítani a környezetet.
+Az alkalmazást legegyszerűbben Docker\footnote{\url{https://www.docker.com/}} segítségével lehet telepíteni. Van lehetőség Docker nélkül is, viszont az több konfigurációval és üzemeltetéssel jár.
 
 \subsection{Telepítés Dockerrel}
 
@@ -18,7 +18,7 @@ A Dockeres telepítéshez szükséges a Docker\footnote{\url{https://www.docker.
 A fő mappában megtalálható \textit{docker-compse.yml} fájlban találhatók meg a konténerek konfigurációi. Három konténerből áll, egy MariaDB \footnote{\url{https://mariadb.org/}} adatbázisból, a backend REST API-ból és a frontendből.
 A yml fájlban a következő konfigurációs lehetőségek a \ref{tab:config} táblázatban találhatók.
 
-A Docker konténereket úgy találták ki, hogy eldobhatók legyenek, azaz ki lehessen őket törölni és újra futtatni és ugyan úgy működjenek, Az adatok perzisztálását így \textit{volume}-okkal oldhatjuk meg, jelen esetben az adatbázis és a profilképeket a host gép lokális mappáiban tároljuk.
+Az alap beállításokkal a \textit{http://localhost:8100}-on érhető el az alkalmazás. HTTPS-t, tűzfalat érdemes bekonfigurálni egy Reverse Proxy\cite{nginxReverseProxy}-val, például Nginx-el.
 
 \todo{Content elrendezése nagy page break nélkül}
 \begin{table}[H]
