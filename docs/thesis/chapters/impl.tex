@@ -251,11 +251,23 @@ EF many-to-many, ef virtual classes nullable, sqlite inmemory test parallelizati
 \subsection{CI/CD}
 Github actions, cd dockerrel(?)
 \subsection{Docker}
-Dockerfile, dockerfile optimalizáció (alpine, builder, instruction layering - caching), docker compose
-
 A Docker egy konténerizációs technológia, amely megkönnyíti az alkalmazások kihelyezését. Az alkalmazások 'konténerekbe' csomagolódnak minden függőségükkel, ezen konténereket utána egy egységként lehet futtatni, nem kell a felhasználó rendszerére egyesével a program futásához felállítani a környezetet.
 
 A Docker konténereket úgy találták ki, hogy eldobhatók legyenek, azaz ki lehessen őket törölni és újra futtatni és ugyan úgy működjenek. Az adatok perzisztálását így \textit{volume}-okkal oldhatjuk meg, jelen esetben az adatbázis és a profilképeket a host gép lokális mappáiban tároljuk.
+
+Egy konténer adatait egy Dockerfile nevű fájlban definiálhatjuk. Itt megadhatjuk, hogy milyen más image-ből szeretnénk kiindulni (pl.: ubuntu, debian, node.js, dotnet) és utána, hogy azt hogy szeretnénk testre szabni. Az én Dockerfile-jaim használnak \textit{builder}-eket, ami azt jelenti, hogy az elején definiálom, hogy a forráskód milyen környezetben legyen lefordítva, utána pedig egy másik környezetet definiálok, amiben azt a lefordított kódot futattom. Ennek az az előnye, hogy a végeleges futtatható konténerben nincsenek fordításhoz szükséges függőségek, így kisebb a konténer mérete.
+
+\subsubsection{Konténerek optimalizálása}
+
+A konténereimben Alpine Linux\footnote{https://alpinelinux.org/}-ot használok. Az Alpine egy minimális Linux disztribúció, melynek a konténerekre optimált változata <3MB. Ezzel szemben egy Ubuntu vagy Debian alapú konténer csak a disztribúciók miatt több száz MB is lehet.
+
+Egy Docker konténer buildelése közben a Docker megjegyzi, hogy az egyes utasításokat ugyan ilyen környezetben végrehajtotta-e már, ha igen, akkor az elcache-elt értéket használja. Ez azt jelenti, hogy ha a konténerünk elején telepítünk fordtáshoz szükséges programokat, akkor a következő buildnél nem fogja mégegyszer feltelepíteni őket nulláról, hanem használja az előző build cache-ét. Ezt a cache-t a COPY felrúghatja, amikor a fájlrendszerünkről másolunk a konténerbe fájlokat. Ezek a fájlok változhatnak builek között, így nem biztos, hogy lehet cache-elni. A Docker ezeket a fájlokat hash-eli és összehasonlítja, ha nem változtak akkor használja a cache-t. Ez a gyakorlatban azért jó, mert például a frontendél a sok npm csomag sokáig települ. Ha a konténerbe bemásolom csak a \textit{package.json} és \textit{yarn.lock} fájlokat és hívom meg a \textit{yarn install} parancsot, akkor ha a következő konténer buildnél nem változnak a dependency-k, akkor lehet cache-ből betölteni azokat. Ez által fejlesztés közben gyorsítható a buildelés folyamata.
+
+\subsubsection{Docker Compose}
+
+A Docker Compose programmal konténereket lehet okersztrálni, egy konfigurációs fájlban eltárolni, hogy ezek környezeti változókat, fájlokat, portokat használhatnak, egymást hogy érik el. Mivel egy fájlban található ez a konfiguráció, egyszerűsíti egy teljes rendszer feltelepítési és üzemeltetési komplexitását.
+
+Az alkalmazásban így például a MariaDB adatbázist deklaráltam egy konténernek, megadtam, hogy a backend azt érje el, így az adatbázis telepítése és üzemeltetése is nagyon egyszerű.
 
 \section{Tesztelés}
 
