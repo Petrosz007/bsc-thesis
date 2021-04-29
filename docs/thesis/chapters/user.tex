@@ -71,15 +71,21 @@ A frontend statikus HTML, JS és CSS fájlokból áll, ezt például Apache\foot
 
 Az alkalmazásban lehet regisztrálni ügyfél vagy vállalkozóként. Az oldalt lehet bejelentkezve vagy bejelentkezés nélkül böngészni.
 
+\subsubsection{Kategóriák}
+
 A vállalkozók létrehozhatnak kategóriákat. A kategória effektíve egy időpont típus, például személyi edzés. A kategóriák megegyszerűsítik az új időpontok létrehozását, mert a különböző időpontok közi azonos adatokat enkapszulálják, az időpontnál így csak az időpont specifikus adatokat kell megadni. Egy kategóriának lehet egy leírása, ára, ajánlott max résztvevő száma és láthatósága. Az ajánlott max résztvevőszám azt jelenti, hogy egy új időpont létrehozásánál alapból ez a szám lesz a max résztvevők mezőben, viszont ettől el lehet térni időpontról időpontra, például egy csoportos edzésre a Margit szigeten többen jöhetnek mint a Hősök tereire.
 
 Egy kategória láthatósága a következőt jelenti. Ha nyílt egy esemény, akkor bárki láthatja, bárki jelentkezhet rá. Ha egy esemény nem nyílt, akkor csak azok az emberek láthatják és jelentkezhetnek rá, akik engedélyezett résztvevőként fel lettek véve a kategóriára. Ennek az a szerepe, hogy például egy Családi edzésre hétvégén ne tudjon mindenki jelentkezni, csak az előre felvett családtagok. Vagy például egy kedvezményes árazású időpontnak más lehet a kategóriája.
 
 Kategóriákat nem lehet törölni, abból az okból, hogy akkor az összes hozzá tartozó időpont is törlődne, ezzel múltbeli időpontok adatai elvesznének.
 
+\subsubsection{Időpontok}
+
 Új időpont hirdetésénél az időponthoz kell választani egy kategóriát, kezdő és vég időpontot. Opcionálisan meg lehet változtatni a max résztvevő számot. Van lehetőség alapból felvenni ügyfeleket az időpontra, például ha a vállalkozó már előre leegyeztetett egy időpontot de még nem írta ki az alkalmazáson, akkor az ügyfélnek nem kell bejelentkeznie és lefoglalni az időpontot.
 
 Időpont szerkesztésnél a vállalkozónak van lehetősége változtatni egy időpont összes értékén. A kategórián például azért változtathat, mert Angol óra helyett Német órát tartott az ügyfélnek, vagy Páros edzés helyett Személyi Edzést, mert közbe jött valami. Lehet az időpontra jelentkezett felhasználókat is módosítani, lejelentkeztetni és felvenni ügyfeleket, akár az időpont után is. Például valaki lemondott egy edzést és beugrott helyette valaki más, a nap végén pedig így helyesen tudja adminisztrálni ezt a vállalkozó.
+
+\subsubsection{Számlázás}
 
 A számlázás funkciónál a vállalkozók adott felhasználók lefoglalt időpontjaiból tudnak számlát generálni egy időszakra, például Április 1 és 30 között. Ez a számla jelenlegi formájában nem minősül NAV által elfogadott számlának, viszont a vállalkozónak nagyon jó segítség, hogy a saját számlázó szoftverébe (pl.: számlázz.hu) miről írjon számlát. Az alkalmazásba azért se került online fizetési lehetőség vagy számlázz.hu integráció, mert a valóságban az időpontokon kívül mást is tartalmazni szokott a számla (pl.: edzőterem bérlet, edzésterv) és ezekre akkor ezen felül egy külön számlát kéne kiállítania a vállalkozónak.
 

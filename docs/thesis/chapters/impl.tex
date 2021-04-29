@@ -13,8 +13,7 @@ A felhasználói résznél már nagyjából a funkciók specifikálva lettek
 A felhasználói esetek a következőképpen néznek ki. A vállalkozó egyben ügyfél is (hogy esetleg más vállalkozók időpontjaira tudjon jelentkezni), az ügyfelek összes funkcióját tudják használni, ezt nem jelöltem a diagrammban, hogy átlátható maradjon.
 
 \begin{figure}[H]
-	\noindent\makebox[\textwidth]{
-	\includegraphics[width=1.3\textwidth]{usecase}}
+	\includegraphics[width=1.0\textwidth]{usecase2}
 	\caption{Felhasználói esetek}
 	\label{fig:usecases}
 \end{figure}
@@ -250,6 +249,8 @@ EF many-to-many, ef virtual classes nullable, sqlite inmemory test parallelizati
 \section{DevOps}
 \subsection{CI/CD}
 Github actions, cd dockerrel(?)
+
+
 \subsection{Docker}
 A Docker egy konténerizációs technológia, amely megkönnyíti az alkalmazások kihelyezését. Az alkalmazások 'konténerekbe' csomagolódnak minden függőségükkel, ezen konténereket utána egy egységként lehet futtatni, nem kell a felhasználó rendszerére egyesével a program futásához felállítani a környezetet.
 
@@ -278,6 +279,8 @@ Mind az integrációs, mind a unit teszteknél a következő struktúrát haszn�
 	\includegraphics{test-naming}
 	\caption{Teszt struktúra}
 \end{figure}
+
+\todo{screenshot, hogy lefutott az összes teszt}
 
 \subsection{Unit tesztek}
 \label{sec:unittests}
