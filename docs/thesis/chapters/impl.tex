@@ -9,7 +9,6 @@ Implementáció szemponjából fontosabb elemeket kiemelni felsorolásba?
 A felhasználói résznél már nagyjából a funkciók specifikálva lettek
 
 \subsection{Felhasználói esetek}
-\todo{Ez a kép nem felel meg a margónak, az baj? Legalább átlátható}
 A felhasználói esetek a következőképpen néznek ki. A vállalkozó egyben ügyfél is (hogy esetleg más vállalkozók időpontjaira tudjon jelentkezni), az ügyfelek összes funkcióját tudják használni, ezt nem jelöltem a diagrammban, hogy átlátható maradjon.
 
 \begin{figure}[H]
@@ -81,7 +80,7 @@ Ez lehetővé teszi, hogy a különböző szolgáltatásokat egyszerűen lehesse
 \clearpage
 
 \subsubsection{Entitások}
-Az entitásaim a következőféleképpen néznek ki:
+Az entitások a belső reprezentációi az alkalmazás adatainak. A logika osztályok ezekkel a belső reprezentációval dolgoznak, az adatbázis ilyen belső reprezentációs formában olvassa ki és írja az adatokat, ezek lesznek későkk adatátviteli objektummá alakítva.
 
 \begin{figure}[H]
 	\centering
@@ -93,7 +92,7 @@ Az entitásaim a következőféleképpen néznek ki:
 \clearpage
 
 \subsubsection{DTOk}
-Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum}-kat is használtam, a REST API ezekkel az adatszerkezetekkel kommunikál.
+Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum}-kat is használtam, a REST API ezekkel az adatszerkezetekkel kommunikál. A fő küldönbsék a DTO-k és az entitások között, hogy az entitásokban objektumok tartalmazhatnak objektumokat, viszont mivel adat átvitel során ez lehet hogy fölösleges, ezért csak az objektumok ID-je van eltárolva bennük.
 
 \begin{figure}[H]
 	\centering
@@ -227,7 +226,7 @@ A result függvények amik Async végződésűek ugyan azon az elven alapulnak, 
 
 \section{Megvalósítás}
 \subsection{Fejlesztési környezet}
-Rider, vs code, visual studio, docker
+Rider, vs code, visual studio, docker, git
 
 dotnet, nuget packages
 dotnet ef add migrations
@@ -248,8 +247,11 @@ EF many-to-many, ef virtual classes nullable, sqlite inmemory test parallelizati
 
 \section{DevOps}
 \subsection{CI/CD}
-Github actions, cd dockerrel(?)
+Fejlesztéshez Github\footnote{\url{https://github.com/}}-ot használtam, ez a git verziókövető rendszernek egy online kód tárolója és kollaborációs platformja. Bár a szakdolgozatomban a kollaborációs lehetőségeket nem használhattam ki, a projektmenedzsment eszközök hasznosak voltak.
 
+A Github lehetőséget biztosít Continous Integration (röviden CI) és Continous Deployment (röviden CD) használatára a Github Actions-ön belül. A CI lényege, hogy amikor egy új változtatás kerül fel Github-ra, akkor automatikusan le tudja fordítani és tesztelni a kódot, esetleg különböző elemzéseket vagy dokumentációt tud generálni. Ezzel megfelelő tesztelési lefedettség mellett lehet garantálni, hogy ha hibák kerülnének a programba, akkor azokat hamar észrevegyük.
+
+A CD lényege, hogy a változtatott kódot és frissített alkalmazást minél többször és gyorsabban lehessen megjelentetni, kihelyezni. Az én alkalmazásomban végül időhiány miatt ezt nem implementáltam, de a modern fejlesztői környezet és dockerizált architektúra miatt a jövőben meg lehetne valósítani. A gyakorlatban ez úgy nézne ki, hogy vagy a master branch-be minden commitnál, vagy minden éjszaka a CI lefrodítja és leteszteli a kódot. Ha nem talál benne hibát, akkor a CD megépíti a Docker konténereit az alkalmazásnak amit utána egy egyszerű script-tel kihelyez a szerverre. Ezt például úgy teheti meg, hogy a szerveren levő Docker letölti ezt a frissebb konténert és lecseréli a jelenleg futót.
 
 \subsection{Docker}
 A Docker egy konténerizációs technológia, amely megkönnyíti az alkalmazások kihelyezését. Az alkalmazások 'konténerekbe' csomagolódnak minden függőségükkel, ezen konténereket utána egy egységként lehet futtatni, nem kell a felhasználó rendszerére egyesével a program futásához felállítani a környezetet.
