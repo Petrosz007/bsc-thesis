@@ -3,10 +3,24 @@
 
 \section{Tervezés}
 
-\subsection{Probléma leírása}
+\subsection{Feladat leírása}
 
-Implementáció szemponjából fontosabb elemeket kiemelni felsorolásba?
-A felhasználói résznél már nagyjából a funkciók specifikálva lettek
+\todo{(Nem) funkcionális követelmények befejezése}
+
+Az alkalmazás két részből áll, egy böngészős frontendből és egy szerveren futó backendből. 
+A böngésző miatt minden platformon elérhető lesz, nem kell semmilyen alkalmazást külön telepítenie a felhasználóknak.
+
+\begin{compactitem}
+	\item asd
+\end{compactitem}
+
+Az alkalmazás nem funkcionális követelményei a következők:
+
+\begin{compactitem}
+	\item Intuitív, egyszerűen használható felhasználói felület
+	\item Egyszerre több felhasználó is használhatja az alkalmazást, egyszerűen skálázható legyen a rendszer.
+	\item 
+\end{compactitem}
 
 \subsection{Felhasználói esetek}
 A felhasználói esetek a következőképpen néznek ki. A vállalkozó egyben ügyfél is (hogy esetleg más vállalkozók időpontjaira tudjon jelentkezni), az ügyfelek összes funkcióját tudják használni, ezt nem jelöltem a diagrammban, hogy átlátható maradjon.
@@ -236,14 +250,51 @@ snowpack, node.js, yarn, react, npm packages
 ???
 
 \subsection{Fejlesztési döntések}
-exceptions, dto-entity mappers
+Fejlesztés közben a következő döntéseket hoztam, hogy a tervezett kód egyszerűbben legyen implementálható.
 
-c\# records, LINQ, 
+Létrehoztam saját kivételeket backend-en, amiket így különböző szituációkban le lehet kezelni, ezek:
+
+\begin{compactitem}
+	\item \textbf{NotFoundException} - Egy adott elem nem található.
+	\item \textbf{UnauthorisedException} - A kért felhasználó nem férhet hozzá egy entitáshoz
+	\item \textbf{InvalidEntityException} - Egy entitásnak nem teljesül az objektum invarianciája.
+	\item \textbf{AlreadyBookedException} - Egy időpontot már előbb lefoglalt a felhasználó.
+	\item \textbf{NotBookedException} - Egy időpontot ezelőtt nem foglalt le a felhasználó.
+	\item \textbf{InvalidAvatarFileException} - A profilkép nem megfelelő.
+	\item \textbf{NotContractorException} - Egy felhasználó nem vállalkozó.
+\end{compactitem}
+
+A DTO-k és entitások közötti konverziót Mapper osztályokkal kiviteleztem. A triviális mappeléseket az AutoMapper könyvtárral implementáltam. A komplexebb osztályokra mint az Appointment és Category saját Mapper-t írtam, ezek az AppointmentMapper és CategoryMapper.
+
+A C\# 9 újonnan bevezetett nyelvi elemét, a rekord típusokat, is sok helyen használtam a kódomban. A record típusokkal előre megírt funkcionalitást kaphatunk egy objektumra, például property-k alapján érték szerinti egyenlőséget és immutability-t. Mivel a DTO és entitás osztályaim csak adatot tárolnak, ezért itt ki tudtam használni ezeket a funkciókat.
+
+Főleg a repository-knál kihasználtam a LINQ\footnote{LINQ - Language Integrated Query} könyvtárat, ezzel felsoroló objektumokból funkcionális stílusú kóddal tudtam adatokat szűrni, rendezni és manipulálni.
 
 \subsection{Fejlesztés közben felmerült problémák}
 \label{sec:devProblems}
-EF many-to-many, ef virtual classes nullable, sqlite inmemory test parallelization
+Fejlesztés közben több nem triviális probléma is merült fel, ezeket részletezem most, hogy későbbi fejlesztésnél lehessen ezekre hivatkozni, elkerülni őket.
 
+\subsubsection{EF virtual nullable}
+
+Az EF-nél fontos, hogy ha egy entitásunk egy másik entitásra hivatkozik, akkor azt az adattagot virtuálisként deklaráljuk, ez a keretrendszer megkötése. Így tudja elérni az EF, hogy a háttérben lusta betöltéssel tudja az adatbázisból elérni optimális módon az adatokat, leörököl az osztályból és a virtuálisság miatt felülírja a saját lusta kiértékelésű implementációjával a betöltést.
+
+Nullable típusok mellett, hogy ha nem adunk meg az adattagjainknak kezdő értéket, akkor a fordító szól érte. Ezt a \textbf{null!} segítségével lehet megoldani. A \textbf{!} operátor a típusellenőzrőnek ad egy biztosítást, hogy mi itt biztosan tudjuk, hogy az értékünk nem lesz null, a programozó leelenőrízte. Jelen esetben az EF-nél biztosan nem lesz null az adott érték, mert az EF betölti az adatbázisból, viszont a konstruktorban muszáj neki értéket adni, ezt oldja meg a \textbf{null!}.
+
+\subsubsection{EF many-to-many}
+
+Az EF alapból támogatja a több a többhöz adatbázis kapcsolatokat, például az alkalmazásban több felhasználó foglalhat egy időpontot és egy időpontra több felhasználó is lehet résztvevő. Valamiért ezt a kapcsolatrendszert az EF nem tudta lekezelni, egy időpontra csak egy felhasználót engedett.
+
+Ezt a problémát kapcsolótáblákkal oldottam meg. Ez azt jelenti, hogy különböző kapcsoló objektumokat kellett létrehozni (AttendeeOnAppointments, AllowedUserOnCategories) és ezeket a különböző összekapcsolandó entitásokra egy listába (pl.: AttendeeOnAppointmentsJoin, OwnerOfCategories).
+
+Ahhoz, hogy az EF ezeket használni tudja, a DbContext OnModelCreating metódusát felül kell írni és a ModelBuilder megfelelő függvényeivel konfigurálni, ez a kódban látható.
+
+\subsubsection{Integrációs tesztek párhuzamosítása}
+
+AZ EF mellé integrációs teszteknél egy memóriában futó sql szervert szoktak használni. Ennek az előnye, hogy nem kell egy külső SQL szervert haszni ami lemezre ír, hanem eldobható és nagyon gyors. Ezekkel voltak problémák fejlesztés közben, ezért SQLite in-memory adatbázisra álltam át, ezt a \ref{sec:integrationTests} részben részletezem.
+
+Fejlesztés közben felmerült az a probléma, hogy a tesztek valamiért ugyan ahhoz az adatbázis példányhoz fértek hozzá. Ezt azért nem célszerű, mert így amikor az egyik teszt törölt az adatbázisból, akkor a másik nem tudta kiolvasni a megfelelő értékét. A unit és integrációs teszteknek mindig környezetfüggetlennek kell lenniük, nem szabad, hogy két teszt futtatásnak befolyásolnia egymást.
+
+Erre az volt a megoldás, hogy az SQLite keepalive conneciton-t minden teszt destruktorában be kell zárni. Ezzel a tesztek párhuzamosíthatók lettek és nem akadtak össze, a futási idejük is nagyon lecsökkent.
 
 \section{DevOps}
 \subsection{CI/CD}
@@ -252,6 +303,8 @@ Fejlesztéshez Github\footnote{\url{https://github.com/}}-ot használtam, ez a g
 A Github lehetőséget biztosít Continous Integration (röviden CI) és Continous Deployment (röviden CD) használatára a Github Actions-ön belül. A CI lényege, hogy amikor egy új változtatás kerül fel Github-ra, akkor automatikusan le tudja fordítani és tesztelni a kódot, esetleg különböző elemzéseket vagy dokumentációt tud generálni. Ezzel megfelelő tesztelési lefedettség mellett lehet garantálni, hogy ha hibák kerülnének a programba, akkor azokat hamar észrevegyük.
 
 A CD lényege, hogy a változtatott kódot és frissített alkalmazást minél többször és gyorsabban lehessen megjelentetni, kihelyezni. Az én alkalmazásomban végül időhiány miatt ezt nem implementáltam, de a modern fejlesztői környezet és dockerizált architektúra miatt a jövőben meg lehetne valósítani. A gyakorlatban ez úgy nézne ki, hogy vagy a master branch-be minden commitnál, vagy minden éjszaka a CI lefrodítja és leteszteli a kódot. Ha nem talál benne hibát, akkor a CD megépíti a Docker konténereit az alkalmazásnak amit utána egy egyszerű script-tel kihelyez a szerverre. Ezt például úgy teheti meg, hogy a szerveren levő Docker letölti ezt a frissebb konténert és lecseréli a jelenleg futót.
+
+A jelenlegi CI konfiguráció a \textit{.github/workflows} mappában található.
 
 \subsection{Docker}
 A Docker egy konténerizációs technológia, amely megkönnyíti az alkalmazások kihelyezését. Az alkalmazások 'konténerekbe' csomagolódnak minden függőségükkel, ezen konténereket utána egy egységként lehet futtatni, nem kell a felhasználó rendszerére egyesével a program futásához felállítani a környezetet.
@@ -306,6 +359,7 @@ Az unit tesztek a következő struktúrájúak:
 \end{enumerate}
 
 \subsection{Integrációs tesztek}
+\label{sec:integrationTests}
 A backendem integrációs tesztelve is lett. Ez azt jelenti, hogy az api-t futtatom és nem egyesével az egységeit tesztelem mint unit tesztelésnél, hanem hogy az egész rendszer a bejövő kéréstől a kiadott válaszig jól működik-e.
 
 Ahhoz, hogy az integrációs tesztek gyorsak és külső szolgáltatás függetlenek legyenek SQLite\footnote{\url{https://www.sqlite.org}} inmemory adatbázist használok. Ez egy teljes értékű SQL szerverrel ér fel, ami az eszköz memóriájában fut. Így az integrációs futhatnak Coninous Integration közben, nem kell egy MardiaDB szervert futtatni a felhőben.
