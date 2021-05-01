@@ -5,13 +5,14 @@
 
 \subsection{Feladat leírása}
 
-\todo{(Nem) funkcionális követelmények befejezése}
-
-Az alkalmazás két részből áll, egy böngészős frontendből és egy szerveren futó backendből. 
-A böngésző miatt minden platformon elérhető lesz, nem kell semmilyen alkalmazást külön telepítenie a felhasználóknak.
+Az alkalmazás két részből áll, egy böngészős frontendből és egy szerveren futó backendből. Az alkalmazás funkcióit a \ref{sec:functionDefinitions} részben írtam le bővebben. Tervezés szemponjából a következő funkcionális követelmények vannak:
 
 \begin{compactitem}
-	\item asd
+	\item Egy kategória látható egy felhasználónak, ha: nyílt a kategória, a felhasználó hozta létre a kategóriát, a felhasználó engedélyezve van a kategórián, a felhasználó résztvevő egy időponton ami aminek ez a kategóriája
+	\item Egy időpont látható egy felhasználónak, ha látható a kategóriája vagy ha résztvevő az időponton
+	\item Kategóriát nem lehet törölni
+	\item Profilkép feltöltésnél validálni kell a fájl típusát és méretét
+	\item Ha a felhasználó böngészőjében van bejelentkezési süti, akkor automatikusan jelentkeztesse be a weboldal
 \end{compactitem}
 
 Az alkalmazás nem funkcionális követelményei a következők:
@@ -19,17 +20,23 @@ Az alkalmazás nem funkcionális követelményei a következők:
 \begin{compactitem}
 	\item Intuitív, egyszerűen használható felhasználói felület
 	\item Egyszerre több felhasználó is használhatja az alkalmazást, egyszerűen skálázható legyen a rendszer.
-	\item 
+	\item A felhasználói interakciók (pl.: új időpont hirdetés, időpont foglalás) ne frissítse az ablakot, történjen meg egyből, reaktívan.
 \end{compactitem}
+
+\clearpage
 
 \subsection{Felhasználói esetek}
 A felhasználói esetek a következőképpen néznek ki. A vállalkozó egyben ügyfél is (hogy esetleg más vállalkozók időpontjaira tudjon jelentkezni), az ügyfelek összes funkcióját tudják használni, ezt nem jelöltem a diagrammban, hogy átlátható maradjon.
 
 \begin{figure}[H]
-	\includegraphics[width=1.0\textwidth]{usecase3}
+	\centering
+	\includegraphics[width=0.9\textwidth]{usecase3}
 	\caption{Felhasználói esetek}
 	\label{fig:usecases}
 \end{figure}
+
+
+\todo{given when then}
 
 \begin{table}[H]
 	\centering
@@ -238,16 +245,37 @@ A result függvények amik Async végződésűek ugyan azon az elven alapulnak, 
 
 \subsubsection{Komponensek}
 
+\todo{Komponensek}
+
 \section{Megvalósítás}
 \subsection{Fejlesztési környezet}
-Rider, vs code, visual studio, docker, git
 
-dotnet, nuget packages
-dotnet ef add migrations
+Fejlesztői környezetnek eleinte Microsoft Visual Studio 2019\footnote{\url{https://visualstudio.microsoft.com/}}-et használtam a backend C\# kód írásához, a frontendhez pedig Visual Studio Code\footnote{\url{https://code.visualstudio.com}}-ot. Ezek teljes funkcionalitású fejlesztői környezetek, mindent képesek voltak nyújtani ami a fejlesztéshez szükséges volt. Viszont időközben JetBrains Rider\footnote{\url{https://www.jetbrains.com/rider/}}-re váltottam, egyrészt azért, mert a Visual Studio-val ellentétben cross-platform, másrészt mert a Jetbrains IDE-k egymás között tudnak funkcionalitást használni, így volt TypeScript nyelv támogatás, ezzel egy IDE-t kellett csak használnom.
 
-snowpack, node.js, yarn, react, npm packages
+Verziókövetésre Git\footnote{\url{https://git-scm.com/}}-et, a konténerizációhoz Docker-t használtam.
 
-???
+A backend .NET 5\footnote{\url{https://dotnet.microsoft.com/download/dotnet/5.0}}-öt használtam C\# 9-el. A .NET csomagkezelő rendszere a NuGet, a következő NuGet csomagokat használtam az ASP.NET keretrendszerhez szükségeseken kívül:
+
+\begin{compactitem}
+	\item XUnit: Egységtesztelést segítő csomag
+	\item AutoMapper: Objektum map-elést automatizáló csomag
+	\item Moq: Egységteszteknél a mock-olás eléréséhez szükséges csomag
+	\item Coverlet: Teszt lefedettség generálásához szükséges csomag
+\end{compactitem}
+
+A frontend Node.js\footnote{\url{https://nodejs.org/en/}}-t, TypeScript-et, React.js-t használ. Csomag kezelőnek Yarn\footnote{\url{https://yarnpkg.com/}}-t, build eszköznek és bundler-nek Snowpack\footnote{\url{https://www.snowpack.dev/}}-et használtam. Ezeken kívül a következő csomagokat használja a frontend:
+
+\begin{compactitem}
+	\item Jest: JavaScript teszt keretrendszer
+	\item Luxon: Dátum és idő kezelő könyvtár
+	\item Pdfmake: Böngészőben PDF generáló könyvtár
+	\item React Router: SPA\footnote{Single Page Application - Egy oldalas alkalmazás, a linkek nem egy új lapot töltenek be, hanem a javascript változtatja meg az oldal tartalmát az újra}-hoz szükséges routing könyvtár
+	\item React Select: Lenyíló lista komponens React-hez
+	\item uuid: GUID\footnote{Globally Unique Identifier - Teljesen egyedi azonosító} létrehozó könyvtár
+\end{compactitem}
+
+A frontend kódot a \textit{yarn build} paranccsal lehet legenerálni. A \textit{yarn dev} parancs elindítja a fejlesztői környezetet, azaz egy élőben fájl változásokra újratöltő webszervert indít a 127.0.0.1:8100 címen. A \textit{yarn test} parancs lefuttatja a frontend tesztjeit.
+
 
 \subsection{Fejlesztési döntések}
 Fejlesztés közben a következő döntéseket hoztam, hogy a tervezett kód egyszerűbben legyen implementálható.
@@ -255,13 +283,13 @@ Fejlesztés közben a következő döntéseket hoztam, hogy a tervezett kód egy
 Létrehoztam saját kivételeket backend-en, amiket így különböző szituációkban le lehet kezelni, ezek:
 
 \begin{compactitem}
-	\item \textbf{NotFoundException} - Egy adott elem nem található.
-	\item \textbf{UnauthorisedException} - A kért felhasználó nem férhet hozzá egy entitáshoz
-	\item \textbf{InvalidEntityException} - Egy entitásnak nem teljesül az objektum invarianciája.
-	\item \textbf{AlreadyBookedException} - Egy időpontot már előbb lefoglalt a felhasználó.
-	\item \textbf{NotBookedException} - Egy időpontot ezelőtt nem foglalt le a felhasználó.
-	\item \textbf{InvalidAvatarFileException} - A profilkép nem megfelelő.
-	\item \textbf{NotContractorException} - Egy felhasználó nem vállalkozó.
+	\item NotFoundException: Egy adott elem nem található.
+	\item UnauthorisedException: A kért felhasználó nem férhet hozzá egy entitáshoz
+	\item InvalidEntityException: Egy entitásnak nem teljesül az objektum invarianciája.
+	\item AlreadyBookedException: Egy időpontot már előbb lefoglalt a felhasználó.
+	\item NotBookedException: Egy időpontot ezelőtt nem foglalt le a felhasználó.
+	\item InvalidAvatarFileException: A profilkép nem megfelelő.
+	\item NotContractorException: Egy felhasználó nem vállalkozó.
 \end{compactitem}
 
 A DTO-k és entitások közötti konverziót Mapper osztályokkal kiviteleztem. A triviális mappeléseket az AutoMapper könyvtárral implementáltam. A komplexebb osztályokra mint az Appointment és Category saját Mapper-t írtam, ezek az AppointmentMapper és CategoryMapper.
