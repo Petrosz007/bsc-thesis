@@ -5,7 +5,7 @@
 
 \subsection{Feladat leírása}
 
-Az alkalmazás két részből áll, egy böngészős frontendből és egy szerveren futó backendből. Az alkalmazás funkcióit a \ref{sec:functionDefinitions} részben írtam le bővebben. Tervezés szemponjából a következő funkcionális követelmények vannak:
+Az alkalmazás két részből áll, egy böngészős frontendből és egy szerveren futó backendből. Az alkalmazás funkcióit a \ref{sec:functionDefinitions} részben írtam le bővebben. Tervezés szempontjából a következő funkcionális követelmények vannak:
 
 \begin{compactitem}
 	\item Egy kategória látható egy felhasználónak, ha: nyílt a kategória, a felhasználó hozta létre a kategóriát, a felhasználó engedélyezve van a kategórián, a felhasználó résztvevő egy időponton ami aminek ez a kategóriája
@@ -80,9 +80,9 @@ Webes alkalmazások körében régebben elterjedt volt a Modell-View-Controller 
 
 Ennek a megközelítésnek vannak előnyei, többek között, hogy az alkalmazásnak egy kódbázisa van, egyszerűbb egy új funkciót implementálni, kevesebb technológiát is elég ismerni. Hátránya viszont, hogy dinamikus felhasználói felületet nehéz benne építeni, más alkalmazásokba, például mobil alkalmazásba, nem lehet integrálni.
 
-Ezekre nyújt megoldást, ha a logikát egy REST API (Representational state transfer, Application Programming Interface) valósítja meg backenden, a megjelenítésért pedig egy másik program felel frontend-en. A REST egy interfész leíró struktúra, legtöbb esetben HTTP protokoll alapú kommunikációt ír le, melyben JSON formátumú adattal lehet kommunikálni.
+Ezekre nyújt megoldást, ha a logikát egy REST API\footnote{Representational state transfer, Application Programming Interface} valósítja meg backenden, a megjelenítésért pedig egy másik program felel frontend-en. A REST egy interfész leíró struktúra, legtöbb esetben HTTP protokoll alapú kommunikációt ír le, melyben JSON\footnote{JavaScript Object Notation} formátumú adattal lehet kommunikálni.
 
-Mivel az API-t így programatikusan tudjuk elérni, ezért más alkalmazásokkal egyszerűen képes kommunikálni. Így lehet például web-ről, telefonos- vagy asztali alkalmazásból elérni a biznisz logikát, ezért csak a megjelenítést kell variálni platformok között.
+Mivel az API-t így programatikusan tudjuk elérni, ezért más alkalmazásokkal egyszerűen képes kommunikálni. Így lehet például web-ről, telefonos- vagy asztali alkalmazásból elérni ugyan azt a biznisz logikát, ezért csak a megjelenítést kell variálni platformok között.
 
 A REST API állapot mentes, ami azt jelenti, hogy a szerver nem függ valamilyen kontextustól, csak a kérésben szereplő adattal elég dolgoznia. Ez lehetővé teszi, hogy a backend több szerveren horizontálisan egy load balancer (terheléselosztó) segítségével legyen skálázva. Egy ilyen rendszerben az egymást követő kérések akár különböző backend példányokhoz futhatnak be, az alkalmazás ugyan olyan pontosan működik.
 
@@ -94,14 +94,14 @@ A hátránya ennek az architektúrának, hogy a backend és frontend teljesen k�
 \subsubsection{Clean Architecture}
 Uncle Bob Clean Architecture\cite{cleanArchitecturePost}-jének a lényege, hogy az alkalmazás különböző rétegei minél kevésbé függjenek egymástól. Ő négy réteget definiál: entitások, felhasználói esetek, kontrollerek és külső szolgáltatások. Az én alkalmazásomban az entitások az alkalmazás belő reprezentációs adattagjai. A felhasználói esetek a logika osztályokban vannak, minden egyes függvény a logika osztályban egy felhasználói esetet fed le. A kontrollerek az ASP.NET-es kontrollerek. A külső szolgáltatások pedig az adatbázis kezeléssel foglalkozó repository-k és majd a jövőben az email küldő szolgáltatás.
 
-A különböző rétegek csak egymás interfészeitől, nem implementációitól függenek. Így például a logikában nincsenek SQL lekérdezések, a kontroller nem tud fájlokat megnyitni. Ezt a függőségi befecskendezés elvével (Dependency inversion principle) valósítom meg. Ez azt jelenti, hogy egy osztály ha valami más rétegre hivatkozna, pl.: logika egy repository-ra, akkor a logika osztály konstruktora csak a repository egy interfészét várja, mert a logika szempontjából csak az a lényeg, hogy le tudjon kérdezni adatot, az nem, hogy az konkrétan hogy történik.
+A különböző rétegek csak egymás interfészeitől, nem implementációitól függenek. Így például a logikában nincsenek SQL lekérdezések, a kontroller nem tud fájlokat megnyitni a háttértárról. Ezt a függőségi befecskendezés elvével (Dependency inversion principle) valósítom meg. Ez azt jelenti, hogy egy osztály ha valami más rétegre hivatkozna, pl.: logika egy repository-ra, akkor a logika osztály konstruktora csak a repository egy interfészét várja, mert a logika szempontjából csak az a lényeg, hogy le tudjon kérdezni adatot, az nem, hogy az konkrétan hogy történik.
 
 Ez lehetővé teszi, hogy a különböző szolgáltatásokat egyszerűen lehessen refaktorálni. Mivel minden interfészekkel dolgozik, ezért ha az adatbázis elérést Entity Framework-ről lecserélném általam írt SQL lekérdezésekre, akkor csak a repository implementációt kell megváltoztatnom és betartani az interfészt és ugyan úgy működik az alkalmazás.
 
 \clearpage
 
 \subsubsection{Entitások}
-Az entitások a belső reprezentációi az alkalmazás adatainak. A logika osztályok ezekkel a belső reprezentációval dolgoznak, az adatbázis ilyen belső reprezentációs formában olvassa ki és írja az adatokat, ezek lesznek későkk adatátviteli objektummá alakítva.
+Az entitások a belső reprezentációi az alkalmazás adatainak. A logika osztályok ezekkel a belső reprezentációval dolgoznak, az adatbázis ilyen belső reprezentációs formában olvassa ki és írja az adatokat, ezek lesznek később adatátviteli objektummá alakítva.
 
 \begin{figure}[H]
 	\centering
@@ -112,8 +112,8 @@ Az entitások a belső reprezentációi az alkalmazás adatainak. A logika oszt�
 
 \clearpage
 
-\subsubsection{DTOk}
-Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum}-kat is használtam, a REST API ezekkel az adatszerkezetekkel kommunikál. A fő küldönbsék a DTO-k és az entitások között, hogy az entitásokban objektumok tartalmazhatnak objektumokat, viszont mivel adat átvitel során ez lehet hogy fölösleges, ezért csak az objektumok ID-je van eltárolva bennük.
+\subsubsection{DTO-k}
+Az entitások mellett DTO\footnote{Data Transfer Object - Adatátviteli objektum}-kat is használtam, a REST API ezekkel az adatszerkezetekkel kommunikál kifelé. A fő különbségek a DTO-k és az entitások között, hogy az entitásokban objektumok tartalmazhatnak objektumokat, viszont mivel adat átvitel során ez lehet hogy fölösleges, ezért a DTO-kban csak az objektumok ID-je van eltárolva.
 
 \begin{figure}[H]
 	\centering
@@ -172,7 +172,7 @@ A program komponensei a következő módon függenek egymástól:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{package_uml}
-	\caption{Program komponenseit összeítő UML diagramm}
+	\caption{Program komponenseit összesítő UML diagramm}
 	\label{fig:package}
 \end{figure}
 
@@ -199,7 +199,7 @@ A REST API végpontok a következőféleképpen néznek ki:
 \end{figure}
 
 \subsection{Adatbázis - Entity Framework}
-Az Entity Framework\footnote{\url{https://docs.microsoft.com/en-us/ef/}} (továbbiakban EF) egy Microsoft által fejlesztett könyvtár a .NET keretrendszerrel, egy ORM\footnote{Object-Relational Mapping - Objektum-Reláció fordítás} keretrendszer, mely C\# osztályokat fordít adatbázis elemekre és vissza. Code first módon elég a C\# osztályokat definiálni és az EF létrehozza az SQL táblákat és kapcsolatokat, a lekérdezéseket CX-ban LINQ\footnote{\url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/}} segítségével lehet végezni.
+Az Entity Framework\footnote{\url{https://docs.microsoft.com/en-us/ef/}} (továbbiakban EF) egy Microsoft által fejlesztett könyvtár a .NET-hez, egy ORM\footnote{Object-Relational Mapping - Objektum-Reláció fordítás} keretrendszer, mely C\# osztályokat fordít adatbázis elemekre és vissza. Code first módon elég a C\# osztályokat definiálni és az EF létrehozza az SQL táblákat és kapcsolatokat, a lekérdezéseket C\#-ban LINQ\footnote{\url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/}} segítségével lehet végezni.
 
 Azonban EF-el sem triviális az adatbázis kezelés, több a többhöz kapcsolatokat (pl.: egy ügyfél több időpontra is jelentkezhet és egy időpontra több ügyfél is jelentkezhet) elég sok manuális konfigurálással kell létrehozni, erről bővebben a megvalósítás \ref{sec:devProblems} részében írok.
 
@@ -215,46 +215,48 @@ Az EF-ben a DbContext osztály biztosítja az adat elérést és definíciót. A
 \subsection{Funkcionális Frontend}
 \subsubsection{React és Typescript}
 
-Az alkalmazás frontendjét React.js\footnote{https://reactjs.org/} keretrendszerrel Typescriptben valósítom meg. A Typescript kibővíti a Javascript nyelvet és típusellenőrzést bizotsít fordítási időben. A Typescript fájlokat a fordító Javascript fájlokká fordítja, közben szintaktikai és szemantikai elemzéseket hajt végre.
+Az alkalmazás frontendjét React.js\footnote{https://reactjs.org/} keretrendszerrel Typescriptben valósítom meg. A Typescript kibővíti a Javascript nyelvet és típusellenőrzést biztosít fordítási időben. A Typescript fájlokat a fordító Javascript fájlokká fordítja, közben szintaktikai és szemantikai elemzéseket hajt végre.
 
-A React keretrendszeralappillére, hogy komponensekből épül fel a felhasználói felület. Ezeket a komponenseket lehet újra felhasználhatóra tervezni, így kód duplikációt elkerülni. Meg van a lehetőség őket egymásba ágyazni, egymás között a komponenseknek kommunikálni, így komplex rendszereket lehet építeni relatíve kis építőelemekből.
+A React keretrendszer alappillére, hogy komponensekből épül fel a felhasználói felület. Ezeket a komponenseket újra felhasználhatóra lehet tervezni, így kód duplikációt elkerülni. Meg van a lehetőség őket egymásba ágyazni, egymás között a komponenseknek kommunikálni, így komplex rendszereket lehet építeni relatíve kis építőelemekből.
 
-A React a nevét a reaktivitásból kapta, a lényege, hogy dinamikusan változó felhasználói felületeket lehessen létrehozni, elkerülve a régi statikus, bármi változtatás után újratöltést igénylő oldalakat. Ezt egy virtuális DOM-al éri el, nem a böngészőre hagyja az oldal szerkezet kezelését, hanem javascriptben kódban csinálja. Ennek az előnye, ha bármilyen érték változik és frissítani kell a DOM elemeket, akkor a React el tudja dönteni, hogy konkrétan melyik elemeket kell újrarajzolni és csak azokat változtatja meg a böngésző DOM-jában, ezáltal nagyon gyors és hatékony.
+A React a nevét a reaktivitásból kapta, a lényege, hogy dinamikusan változó felhasználói felületeket lehessen létrehozni, elkerülve a régi statikus, bármi változtatás után újra töltést igénylő oldalakat. Ezt egy virtuális DOM-al éri el, nem a böngészőre hagyja az oldal szerkezet kezelését, hanem Javascriptben kódban csinálja. Ennek az előnye, ha bármilyen érték változik és frissíteni kell a DOM elemeket, akkor a React el tudja dönteni, hogy konkrétan melyik elemeket kell újra rajzolni és csak azokat változtatja meg a böngésző DOM-jában, ezáltal nagyon gyors és hatékony.
 
-React-ben régen osztály komponensekkel lehetett dolgozni, de újabban a funkcionális komponensek egyre több támogatást és funkciót kaptak, most már ez az ajánlott módja a React-ben való fejlesztésnek. A funkcionális komponensek lényege, hogy tiszta, mellékhatásmentes függvényekkel írjuk le a komponenseinket, melyek bemenetként kaphatnak bármilyen értéket és kimenetként a kirajzolandó komponenst adják vissza. Mivel azek mellékhatásmentes függvények, ezért ha nem változik a bemenetük, akkor nem változik a kimenetük se, ezért a React nagyon effektíven tudja eldönteni, hogy állapot változásnál melyik komponenseket kell újra rajzolni és melyikeket nem.
+React-ben régen osztály komponensekkel lehetett dolgozni, de újabban a funkcionális komponensek egyre több támogatást és funkciót kaptak, most már ez az ajánlott módja a React-ben való fejlesztésnek. A funkcionális komponensek lényege, hogy tiszta, mellékhatásmentes függvényekkel írjuk le a komponenseinket, melyek bemenetként kaphatnak bármilyen értéket és kimenetként a kirajzolandó komponenst adják vissza. Mivel ezek mellékhatásmentes függvények, ezért ha nem változik a bemenetük, akkor nem változik a kimenetük se, ezért a React nagyon effektíven tudja eldönteni, hogy állapot változásnál melyik komponenseket kell újra rajzolni és melyikeket nem.
 
 Ennek ellenére valahogy mégis le kell kezelni például állapotok változását, külső API hívásokat, console-ra írást, melyeket tiszta környezetben nem tehetnénk meg. Erre adnak választ a React Hook-ok. Ezek a 'kampók' 'belekapaszkodnak' egy funkcionális komponensbe és a programozók oldalán egy funkcionális interfészt biztosít ilyen típusú dinamizmus kezelésére. A \textit{useState} hook például egy állapotot és egy állapot módosító függvényt biztosít nekünk. Egy gomb \textit{onClick} eseményében ha meghívjuk az állapot módosító függvényt, akkor a React a háttérben elvégzi nekünk az értékadást, mi csak azt vesszük észre, hogy az állapotunk megváltozott. Mivel a React kezébe adjuk mutálható változó értékek kezelését, ezért effektív tud maradni a keretrendszer, az előbb leírt feltételes újra rajzolásokat hatékonyan tudja kezelni.
 
 \subsubsection{Async Result Monád típus}
 
-Hibakezelésre imperatív programozási nyelvekben hagyományosan kivételeket használnak. Typescriptben is meg van a lehetősék kivételek dobására és elkapására. Viszont, mivel funkcionális komponensekkel dolgozok és fejlesztés közben párszor nem lekezelt kivételek miatt inkonzisztens állapotba került a UI, ezért a Haskellben \textit{Either} és Rust-ban \textit{Result} néven ismert monádhoz fordultam. Röviden ezeknek az a lényegük, hogy típus szinten kezeljük le a hibákat, amikor egy függvény alkalmazás lánc végén akarjuk használni az értéket, akkor muszáj megvizsgálnunk, hogy hibába ütköztünk-e vagy lefutott az összes számítés és felhasználhatjuk az értéket.
+Hibakezelésre imperatív programozási nyelvekben hagyományosan kivételeket használnak. Typescriptben is meg van a lehetősék kivételek dobására és elkapására. Viszont, mivel funkcionális komponensekkel dolgozok és fejlesztés közben párszor nem lekezelt kivételek miatt inkonzisztens állapotba került a UI, ezért a Haskellben \textit{Either} és Rust-ban \textit{Result} néven ismert monádhoz fordultam. Röviden ezeknek az a lényegük, hogy típus szinten kezeljük le a hibákat, amikor egy függvény alkalmazás lánc végén akarjuk használni az értéket, akkor muszáj megvizsgálnunk, hogy hibába ütköztünk-e vagy lefutott az összes számítás és felhasználhatjuk az értéket.
 
-A Rust mintájára egy Result nevű unió típust\cite{tsUnionTypes} hoztam létre, ami egyszerre vagy egy Ok vagy egy Err osztályt tartalmazhat. Az Ok és Err is egy-egy értéket tartalmaznak, az Ok-ban szereplő érték egy jó értéket szimbolizál, amit utána tovább fl lehet használni, az Err pedig valamilyen hibát tartalmaz (pl.: string, Exception, saját osztály), mellyel nem folytatódik tovább a számítás.
+A Rust mintájára egy Result nevű unió típust\cite{tsUnionTypes} hoztam létre, ami egyszerre vagy egy Ok vagy egy Err osztályt tartalmazhat. Az Ok és Err is egy-egy értéket tartalmaznak, az Ok-ban szereplő érték egy jó értéket szimbolizál, amit utána tovább fel lehet használni, az Err pedig valamilyen hibát tartalmaz (pl.: string, Exception, saját osztály), mellyel nem folytatódik tovább a számítás.
 
-A Result egy Funktor típus, definiálva van rá egy \textit{map} függvény. Hogy ha a Result Ok, akkor alkalmazza rá a függvényt, ha Err akkor pedig az Err-t adja vissza. Ezen felül a Result egy Monád típus, az \textit{andThen} függvény alkalmazza az Ok-ban levő értékre a függvéyt ami egy Result típust ad vissza, vagy ha Err érték a Result, akkor visszaadja az Err-t. Az \textit{sideEffect} függvénnyel mellékhatásosságot lehet elérni, a Result marad ugyan az, viszont az Ok, akkor az értékére lehet mellékhatásos függvényeket hívni. Ez azért hasznos, mert a Javascriptet nem tisztán funkcionálisra tervezték és például a böngésző API-jával való kommunikációhoz hasznos lehet.
+A Result egy Funktor típus, definiálva van rá egy \textit{map} függvény. Hogy ha a Result Ok, akkor alkalmazza rá a függvényt, ha Err akkor pedig az Err-t adja vissza. Ezen felül a Result egy Monád típus, az \textit{andThen} függvény alkalmazza az Ok-ban levő értékre a függvényt ami egy Result típust ad vissza, vagy ha Err érték a Result, akkor visszaadja az Err-t. Az \textit{sideEffect} függvénnyel mellékhatásosságot lehet elérni, a Result marad ugyan az, viszont az Okban levő értékére lehet mellékhatásos függvényeket hívni. Ez azért hasznos, mert a Javascriptet nem tisztán funkcionálisra tervezték és például a böngésző API-jával való kommunikációhoz hasznos lehet.
 
-Result-ból adatot kinyerni a \textit{match} függvénnyel lehet, ami paraméterül kap egy Ok esetén és egy Err esetén lefutó függvényt, a result értéke szerint a megfelelőt futtatja le.
+Result-ból adatot kinyerni a \textit{match} függvénnyel lehet, ami paraméterül kap egy Ok esetén és egy Err esetén lefutó függvényt, a Result értéke szerint a megfelelőt futtatja le.
 
-Kivételt dobó függvényeket be lehet csomagolni, hogy Result-ot adjanak vissza a \textit{fromThrowable} függvénnyel. Ha egy függvény nem dob kivételt, de mégis szeretnénk, gogy Result-ba csomagolt visszatérítési értéke legyen, akkor a \textit{fromSafe} függvénnyel tehetjük meg.
+Kivételt dobó függvényeket be lehet csomagolni, hogy Result-ot adjanak vissza a \textit{fromThrowable} függvénnyel. Ha egy függvény nem dob kivételt, de mégis szeretnénk, hogy Result-ba csomagolt visszatérítési értéke legyen, akkor a \textit{fromSafe} függvénnyel tehetjük meg.
 
 Javascritben és ezáltal Typescriptben az aszinkron függvényeknek muszáj Promise típussal visszatérniük. Ez megnehezíti a dolgunkat, mert például Result típust így nem tudunk visszaadni. Ezt a problémát oldja meg a ResultPromise, ami lényegében egy Result-ba csomagolt Promise. Ugyan azokkal a függvényekkel rendelkezik mint a Result (\textit{map}, \textit{andThen}, \textit{sideEffect}), viszont Promise-okkal dolgozik a háttérben. Ha egy Promise Rejected állapotba kerülne, akkor a ResultPromise-on belüli Result Err lesz.
 
-A result függvények amik Async végződésűek ugyan azon az elven alapulnak, mint a megfleleőik (pl.: \textit{map}, \textit{mapAsync}) csak aszinkron függvényekkel dolgoznak.
+A Result függvények amik Async végződésűek ugyan azon az elven alapulnak, mint a megfelelőik (pl.: \textit{map}, \textit{mapAsync}) csak aszinkron függvényekkel dolgoznak.
 
-Összességében, a result és ResultPromise típusokkal és függvények kompozíciójával sok hibakezelő boilerplate kód kerülhető el és típusbiztos lehet a kód.
+Összességében, a Result és ResultPromise típusokkal és függvények kompozíciójával sok hibakezelő boilerplate kód kerülhető el és típus biztos lehet a kód.
 
 \subsubsection{Komponensek}
 
 \todo{Komponensek}
 
+\clearpage
+
 \section{Megvalósítás}
 \subsection{Fejlesztési környezet}
 
-Fejlesztői környezetnek eleinte Microsoft Visual Studio 2019\footnote{\url{https://visualstudio.microsoft.com/}}-et használtam a backend C\# kód írásához, a frontendhez pedig Visual Studio Code\footnote{\url{https://code.visualstudio.com}}-ot. Ezek teljes funkcionalitású fejlesztői környezetek, mindent képesek voltak nyújtani ami a fejlesztéshez szükséges volt. Viszont időközben JetBrains Rider\footnote{\url{https://www.jetbrains.com/rider/}}-re váltottam, egyrészt azért, mert a Visual Studio-val ellentétben cross-platform, másrészt mert a Jetbrains IDE-k egymás között tudnak funkcionalitást használni, így volt TypeScript nyelv támogatás, ezzel egy IDE-t kellett csak használnom.
+Fejlesztői környezetnek eleinte Microsoft Visual Studio 2019\footnote{\url{https://visualstudio.microsoft.com/}}-et használtam a backend C\# kód írásához, a frontendhez pedig Visual Studio Code\footnote{\url{https://code.visualstudio.com}}-ot. Ezek teljes funkcionalitású fejlesztői környezetek, mindent képesek voltak nyújtani ami a fejlesztéshez szükséges volt. Viszont időközben JetBrains Rider\footnote{\url{https://www.jetbrains.com/rider/}}-re váltottam, egyrészt azért, mert a Visual Studio-val ellentétben cross-platform, másrészt mert a JetBrains IDE-k egymás között tudnak funkcionalitást használni, így volt TypeScript nyelv támogatás, ezzel egy IDE-t kellett csak használnom.
 
 Verziókövetésre Git\footnote{\url{https://git-scm.com/}}-et, a konténerizációhoz Docker-t használtam.
 
-A backend .NET 5\footnote{\url{https://dotnet.microsoft.com/download/dotnet/5.0}}-öt használtam C\# 9-el. A .NET csomagkezelő rendszere a NuGet, a következő NuGet csomagokat használtam az ASP.NET keretrendszerhez szükségeseken kívül:
+A backend-hez .NET 5\footnote{\url{https://dotnet.microsoft.com/download/dotnet/5.0}}-öt használtam C\# 9-el. A .NET csomagkezelő rendszere a NuGet, a következő NuGet csomagokat használtam az ASP.NET keretrendszerhez szükségeseken kívül:
 
 \begin{compactitem}
 	\item XUnit: Egységtesztelést segítő csomag
@@ -274,7 +276,7 @@ A frontend Node.js\footnote{\url{https://nodejs.org/en/}}-t, TypeScript-et, Reac
 	\item uuid: GUID\footnote{Globally Unique Identifier - Teljesen egyedi azonosító} létrehozó könyvtár
 \end{compactitem}
 
-A frontend kódot a \textit{yarn build} paranccsal lehet legenerálni. A \textit{yarn dev} parancs elindítja a fejlesztői környezetet, azaz egy élőben fájl változásokra újratöltő webszervert indít a 127.0.0.1:8100 címen. A \textit{yarn test} parancs lefuttatja a frontend tesztjeit.
+A frontend kódot a \textit{yarn build} paranccsal lehet legenerálni. A \textit{yarn dev} parancs elindítja a fejlesztői környezetet, azaz egy élőben fájl változásokra újratöltő webszervert indít a http://127.0.0.1:8100 címen. A \textit{yarn test} parancs lefuttatja a frontend tesztjeit.
 
 
 \subsection{Fejlesztési döntések}
@@ -306,7 +308,7 @@ Fejlesztés közben több nem triviális probléma is merült fel, ezeket részl
 
 Az EF-nél fontos, hogy ha egy entitásunk egy másik entitásra hivatkozik, akkor azt az adattagot virtuálisként deklaráljuk, ez a keretrendszer megkötése. Így tudja elérni az EF, hogy a háttérben lusta betöltéssel tudja az adatbázisból elérni optimális módon az adatokat, leörököl az osztályból és a virtuálisság miatt felülírja a saját lusta kiértékelésű implementációjával a betöltést.
 
-Nullable típusok mellett, hogy ha nem adunk meg az adattagjainknak kezdő értéket, akkor a fordító szól érte. Ezt a \textbf{null!} segítségével lehet megoldani. A \textbf{!} operátor a típusellenőzrőnek ad egy biztosítást, hogy mi itt biztosan tudjuk, hogy az értékünk nem lesz null, a programozó leelenőrízte. Jelen esetben az EF-nél biztosan nem lesz null az adott érték, mert az EF betölti az adatbázisból, viszont a konstruktorban muszáj neki értéket adni, ezt oldja meg a \textbf{null!}.
+Nullable típusok mellett, hogy ha nem adunk meg az adattagjainknak kezdő értéket, akkor a fordító szól érte. Ezt a \textbf{null!} segítségével lehet megoldani. A \textbf{!} operátor a típusellenőzrőnek ad egy biztosítást, hogy mi itt biztosan tudjuk, hogy az értékünk nem lesz null, a programozó ellenőrizte. Jelen esetben az EF-nél biztosan nem lesz null az adott érték, mert az EF betölti az adatbázisból, viszont a konstruktorban muszáj neki értéket adni, ezt oldja meg a \textbf{null!}.
 
 \subsubsection{EF many-to-many}
 
@@ -318,19 +320,19 @@ Ahhoz, hogy az EF ezeket használni tudja, a DbContext OnModelCreating metódus�
 
 \subsubsection{Integrációs tesztek párhuzamosítása}
 
-AZ EF mellé integrációs teszteknél egy memóriában futó sql szervert szoktak használni. Ennek az előnye, hogy nem kell egy külső SQL szervert haszni ami lemezre ír, hanem eldobható és nagyon gyors. Ezekkel voltak problémák fejlesztés közben, ezért SQLite in-memory adatbázisra álltam át, ezt a \ref{sec:integrationTests} részben részletezem.
+Az EF mellé integrációs teszteknél egy memóriában futó SQL szervert szoktak használni. Ennek az előnye, hogy nem kell egy külső SQL szervert használni ami lemezre ír, hanem eldobható és nagyon gyors. Ezekkel voltak problémák fejlesztés közben, ezért SQLite in-memory adatbázisra álltam át, ezt a \ref{sec:integrationTests} részben részletezem.
 
-Fejlesztés közben felmerült az a probléma, hogy a tesztek valamiért ugyan ahhoz az adatbázis példányhoz fértek hozzá. Ezt azért nem célszerű, mert így amikor az egyik teszt törölt az adatbázisból, akkor a másik nem tudta kiolvasni a megfelelő értékét. A unit és integrációs teszteknek mindig környezetfüggetlennek kell lenniük, nem szabad, hogy két teszt futtatásnak befolyásolnia egymást.
+Fejlesztés közben felmerült az a probléma, hogy a tesztek valamiért ugyan ahhoz az adatbázis példányhoz fértek hozzá. Ezt azért nem célszerű, mert így amikor az egyik teszt törölt az adatbázisból, akkor a másik nem tudta kiolvasni a megfelelő értékét. A unit és integrációs teszteknek mindig környezetfüggetlennek kell lenniük, nem szabad két teszt futtatásnak befolyásolnia egymást.
 
 Erre az volt a megoldás, hogy az SQLite keepalive conneciton-t minden teszt destruktorában be kell zárni. Ezzel a tesztek párhuzamosíthatók lettek és nem akadtak össze, a futási idejük is nagyon lecsökkent.
 
 \section{DevOps}
 \subsection{CI/CD}
-Fejlesztéshez Github\footnote{\url{https://github.com/}}-ot használtam, ez a git verziókövető rendszernek egy online kód tárolója és kollaborációs platformja. Bár a szakdolgozatomban a kollaborációs lehetőségeket nem használhattam ki, a projektmenedzsment eszközök hasznosak voltak.
+Fejlesztéshez Github\footnote{\url{https://github.com/}}-ot használtam, ez a Git verziókövető rendszernek egy online kód tárolója és kollaborációs platformja. Bár a szakdolgozatomban a kollaborációs lehetőségeket nem használhattam ki, a projektmenedzsment eszközök hasznosak voltak.
 
-A Github lehetőséget biztosít Continous Integration (röviden CI) és Continous Deployment (röviden CD) használatára a Github Actions-ön belül. A CI lényege, hogy amikor egy új változtatás kerül fel Github-ra, akkor automatikusan le tudja fordítani és tesztelni a kódot, esetleg különböző elemzéseket vagy dokumentációt tud generálni. Ezzel megfelelő tesztelési lefedettség mellett lehet garantálni, hogy ha hibák kerülnének a programba, akkor azokat hamar észrevegyük.
+A Github lehetőséget biztosít Continous Integration (röviden CI) és Continous Deployment (röviden CD) használatára a Github Actions-ön belül. A CI lényege, hogy amikor egy új változtatás kerül fel Github-ra, akkor automatikusan le tudja fordítani és tesztelni a kódot, esetleg különböző elemzéseket vagy dokumentációt tud generálni. Ezzel megfelelő tesztelési lefedettség mellett lehet garantálni, hogy ha hibák kerülnének a programba, akkor azokat hamar észre vegyük.
 
-A CD lényege, hogy a változtatott kódot és frissített alkalmazást minél többször és gyorsabban lehessen megjelentetni, kihelyezni. Az én alkalmazásomban végül időhiány miatt ezt nem implementáltam, de a modern fejlesztői környezet és dockerizált architektúra miatt a jövőben meg lehetne valósítani. A gyakorlatban ez úgy nézne ki, hogy vagy a master branch-be minden commitnál, vagy minden éjszaka a CI lefrodítja és leteszteli a kódot. Ha nem talál benne hibát, akkor a CD megépíti a Docker konténereit az alkalmazásnak amit utána egy egyszerű script-tel kihelyez a szerverre. Ezt például úgy teheti meg, hogy a szerveren levő Docker letölti ezt a frissebb konténert és lecseréli a jelenleg futót.
+A CD lényege, hogy a változtatott kódot és frissített alkalmazást minél többször és gyorsabban lehessen megjelentetni, kihelyezni. \todo{Ha lesz CD akkor azt ide kifejteni}Az én alkalmazásomban végül időhiány miatt ezt nem implementáltam, de a modern fejlesztői környezet és dockerizált architektúra miatt a jövőben meg lehetne valósítani. A gyakorlatban ez úgy nézne ki, hogy vagy a master branch-be minden commitnál, vagy minden éjszaka, a CI lefordítja és leteszteli a kódot. Ha nem talál benne hibát, akkor a CD megépíti a Docker konténereit az alkalmazásnak amit utána egy egyszerű script-tel kihelyez a szerverre. Ezt például úgy teheti meg, hogy a szerveren levő Docker letölti ezt a frissebb konténert és lecseréli a jelenleg futót.
 
 A jelenlegi CI konfiguráció a \textit{.github/workflows} mappában található.
 
@@ -339,17 +341,17 @@ A Docker egy konténerizációs technológia, amely megkönnyíti az alkalmazás
 
 A Docker konténereket úgy találták ki, hogy eldobhatók legyenek, azaz ki lehessen őket törölni és újra futtatni és ugyan úgy működjenek. Az adatok perzisztálását így \textit{volume}-okkal oldhatjuk meg, jelen esetben az adatbázis és a profilképeket a host gép lokális mappáiban tároljuk.
 
-Egy konténer adatait egy Dockerfile nevű fájlban definiálhatjuk. Itt megadhatjuk, hogy milyen más image-ből szeretnénk kiindulni (pl.: ubuntu, debian, node.js, dotnet) és utána, hogy azt hogy szeretnénk testre szabni. Az én Dockerfile-jaim használnak \textit{builder}-eket, ami azt jelenti, hogy az elején definiálom, hogy a forráskód milyen környezetben legyen lefordítva, utána pedig egy másik környezetet definiálok, amiben azt a lefordított kódot futattom. Ennek az az előnye, hogy a végeleges futtatható konténerben nincsenek fordításhoz szükséges függőségek, így kisebb a konténer mérete.
+Egy konténer adatait egy Dockerfile nevű fájlban definiálhatjuk. Itt megadhatjuk, hogy milyen más image-ből szeretnénk kiindulni (pl.: ubuntu, debian, node.js, dotnet) és utána, hogy azt hogy szeretnénk testre szabni. Az én Dockerfile-jaim használnak \textit{builder}-eket, ami azt jelenti, hogy az elején definiálom, hogy a forráskód milyen környezetben legyen lefordítva, utána pedig egy másik környezetet definiálok, amiben azt a lefordított kódot futtatom. Ennek az az előnye, hogy a végleges futtatható konténerben nincsenek fordításhoz szükséges függőségek, így kisebb a konténer mérete.
 
 \subsubsection{Konténerek optimalizálása}
 
 A konténereimben Alpine Linux\footnote{https://alpinelinux.org/}-ot használok. Az Alpine egy minimális Linux disztribúció, melynek a konténerekre optimált változata <3MB. Ezzel szemben egy Ubuntu vagy Debian alapú konténer csak a disztribúciók miatt több száz MB is lehet.
 
-Egy Docker konténer buildelése közben a Docker megjegyzi, hogy az egyes utasításokat ugyan ilyen környezetben végrehajtotta-e már, ha igen, akkor az elcache-elt értéket használja. Ez azt jelenti, hogy ha a konténerünk elején telepítünk fordtáshoz szükséges programokat, akkor a következő buildnél nem fogja mégegyszer feltelepíteni őket nulláról, hanem használja az előző build cache-ét. Ezt a cache-t a COPY felrúghatja, amikor a fájlrendszerünkről másolunk a konténerbe fájlokat. Ezek a fájlok változhatnak builek között, így nem biztos, hogy lehet cache-elni. A Docker ezeket a fájlokat hash-eli és összehasonlítja, ha nem változtak akkor használja a cache-t. Ez a gyakorlatban azért jó, mert például a frontendél a sok npm csomag sokáig települ. Ha a konténerbe bemásolom csak a \textit{package.json} és \textit{yarn.lock} fájlokat és hívom meg a \textit{yarn install} parancsot, akkor ha a következő konténer buildnél nem változnak a dependency-k, akkor lehet cache-ből betölteni azokat. Ez által fejlesztés közben gyorsítható a buildelés folyamata.
+Egy Docker konténer buildelése közben a Docker megjegyzi, hogy az egyes utasításokat ugyan ilyen környezetben végrehajtotta-e már, ha igen, akkor az elcache-elt értéket használja. Ez azt jelenti, hogy ha a konténerünk elején telepítünk fordításhoz szükséges programokat, akkor a következő buildnél nem fogja még egyszer feltelepíteni őket nulláról, hanem használja az előző build cache-ét. Ezt a cache-t a COPY felrúghatja, amikor a fájlrendszerünkről másolunk a konténerbe fájlokat. Ezek a fájlok változhatnak builek között, így nem biztos, hogy lehet cache-elni. A Docker ezeket a fájlokat hash-eli és összehasonlítja, ha nem változtak akkor használja a cache-t. Ez a gyakorlatban azért jó, mert például a frontendél a sok npm csomag sokáig települ. Ha a konténerbe bemásolom csak a \textit{package.json} és \textit{yarn.lock} fájlokat és hívom meg a \textit{yarn install} parancsot, akkor ha a következő konténer buildnél nem változnak a dependency-k, akkor lehet cache-ből betölteni azokat. Ez által fejlesztés közben gyorsítható a buildelés folyamata.
 
 \subsubsection{Docker Compose}
 
-A Docker Compose programmal konténereket lehet okersztrálni, egy konfigurációs fájlban eltárolni, hogy ezek környezeti változókat, fájlokat, portokat használhatnak, egymást hogy érik el. Mivel egy fájlban található ez a konfiguráció, egyszerűsíti egy teljes rendszer feltelepítési és üzemeltetési komplexitását.
+A Docker Compose programmal konténereket lehet orkersztrálni, egy konfigurációs fájlban eltárolni, hogy ezek milyen környezeti változókat, fájlokat, portokat használhatnak, egymást hogy érik el. Mivel egy fájlban található ez a konfiguráció, egyszerűsíti egy teljes rendszer feltelepítési és üzemeltetési komplexitását.
 
 Az alkalmazásban így például a MariaDB adatbázist deklaráltam egy konténernek, megadtam, hogy a backend azt érje el, így az adatbázis telepítése és üzemeltetése is nagyon egyszerű.
 
@@ -394,7 +396,7 @@ Ahhoz, hogy az integrációs tesztek gyorsak és külső szolgáltatás függetl
 
 Az integrációs tesztekhez egy előre elkészített adat csomagot töltök be mindig az adatbázisba, ezt az IntegrationTestData osztály tartalmazza.
 
-A TestWebApplicationFactory egy gyár tervmintát alkalmazó osztály, ami ez előbb említett SQLite imemory adabázzissal konfigurál fel és készít el egy alkalmazás példányt.
+A TestWebApplicationFactory egy gyár tervmintát alkalmazó osztály, ami az előbb említett SQLite imemory adabázzissal konfigurál fel és készít el egy alkalmazás példányt.
 
 Az IntegrationTestBase osztály az ősosztálya az összes integrációs teszt osztálynak, tartalmaz egy TestWebApplicationFactory-t és pár segédfüggvényt, hogy egyszerűbb legyen megírni a teszteseteket.
 
