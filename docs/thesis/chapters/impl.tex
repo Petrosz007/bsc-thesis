@@ -257,7 +257,7 @@ A repository-k a ResultPromise típust használják, a \textit{safeApiFetch} fü
 
 \subsubsection{Hook-ok}
 
-A \textit{Status} típus egy unió tíups, ami vagy Idle, Loading, Failed valamilyen értékkel vagy Loaded valamilyen értékkel. Ez lehetővé teszi, hogy egy API hívás állapotát láthassuk, a felhasználói felületen ennek megfelelően rajzoljuk ki a kompknenseket.
+A \textit{Status} típus egy unió típus, ami vagy Idle, Loading, Failed valamilyen értékkel vagy Loaded valamilyen értékkel. Ez lehetővé teszi, hogy egy API hívás állapotát láthassuk, a felhasználói felületen ennek megfelelően rajzoljuk ki a komponenseket.
 
 A \textit{useApiCall} hook egy API hívást tud végrehajtani, visszatérési értékként visszaadja a hívás jelenlegi állapotát Status-ban és egy callback függvényt, aminek a meghívásával lefut az API hívás. A komponensekben legtöbb esetben ezzel a useApiCall hook-al érem el az API-t.
 
@@ -267,7 +267,7 @@ A \textit{useCookieLogin} a callback hívásánál megnézi, hogy be van-e jelen
 
 \subsubsection{Kontextusok}
 
-A React kontextusok lényege, hogy több komponens ugyan ahhoz az adathoz hozzá tudjon férni, de ne kelljen paraméternek mindig átadni az adott értékeket. Például ha egy komponensen belül több komponens van amin belül még vannak komponensek, akkor mindegyiknek paraméternként kellene átadni az adatot, így viszont egy közös kontextusból elérhetik.
+A React kontextusok lényege, hogy több komponens ugyan ahhoz az adathoz hozzá tudjon férni, de ne kelljen paraméternek mindig átadni az adott értékeket. Például ha egy komponensen belül több komponens van amin belül még vannak komponensek, akkor mindegyiknek paraméterként kellene átadni az adatot, így viszont egy közös kontextusból elérhetik.
 
 A \textit{DIContext} egy nagyon egyszerű függőségi befecskendezés implementáció, a komponensek a kontextuson keresztül érhetik el a nekik megfelelő függőségeket, amik vagy repository-k vagy a konfigurációs osztály.
 
@@ -275,15 +275,34 @@ A \textit{LoginProvider} tartalmazza azt, hogy a felhasználó be vagy ki van je
 
 A \textit{NotificationProvider} felel a különböző értesítések kezeléséért. A \textit{notificationDispatch} függvényével lehet hibákat, felszólításokat és sikeres értesítéseket hozzáadni a megjelenítéshez, utána a NotificationProvider ezek alapján rajzolja ki az értesítéseket a \textit{Notification} komponens segítségével.
 
-A \textit{DataProvider} entitások listáját tudja szolgáltatni a komponenseknek. Így például egy oldalon a vállalkozó kategóri és időpontjai lehet számon tartva, a \textit{dataDispatch} függvényen keresztül változatni. Például a foglalás gomb miután elküldte a foglalási kérést a backendnek a frissült időpontot frissíti a DataContext-ben is. A \textit{dataDispatch}-nél a leglátványosabb, hogy a kontextus adatát  React Reducer-el valósítom meg, ami egy immutable állapot változtatás. A többi kontextusban is használom, viszont itt szerepel a legtöbb funkcionális nyelvi elem. 
+A \textit{DataProvider} entitások listáját tudja szolgáltatni a komponenseknek. Így például egy oldalon a vállalkozó kategóriái és időpontjai lehet számon tartva, a \textit{dataDispatch} függvényen keresztül változtatni. Például a foglalás gomb miután elküldte a foglalási kérést a backendnek a frissült időpontot frissíti a DataContext-ben is. A \textit{dataDispatch}-nél a leglátványosabb, hogy a kontextus adatát  React Reducer-el valósítom meg, ami egy immutable állapot változtatás. A többi kontextusban is használom, viszont itt szerepel a legtöbb funkcionális nyelvi elem. 
 
 \subsubsection{Komponensek}
 
-AppointmentCard, AppointmentAgenda, CategoryCard
+Az \textit{AppointmentCard} komponens egy időpont jelenít meg. Az \textit{AppointmentCardEditable} a vállalkozói oldalon érhető el, itt elérhető a törlés és szerkesztés gomb, továbbá megtekinthető kattintásra.
 
-DatePicker, UserSelector
+Az \textit{AppointmentAgenda} egy szűrhető listában jeleníti meg időpont szerint csoportosítva az időpontokat. Ennek is van vállalkozóknak elérhető szerkeszthető változata az \textit{AppointmentAgendaEditable} révén. A szűrés történhet kategóriák és időintervallum szerint. Az időintervallum megadja, megadja, hogy az időpont kezdés milyen napok között lehet, például március 10 és 25 között. A komponens logikájának nehézsége, hogy ha változnak az időpontok vagy kategóriák, mert például ha a vállalkozó felvett egy újat, akkor a szűrőknek ugyan olyan állapotban kell maradniuk, viszont az új elemeket számításba kell venni a szűrésnél.
 
-Modal, Editorbase, User/Appointment/Category editor, UserAdder, AppointmentViewer, CategoryViewer
+A \textit{CategoryCard} megjeleníti egy kategória információit. Ez csak a vállalkozóknak érhető el, ezért alapból szerkeszthető és megtekinthető.
+
+A \textit{DatePicker} és \textit{DateRange} komponens egy Luxon-os dátum és idő objektumokkal dolgoznak, egy absztrakciós szint a HTML dátum és idő bemenetek fölött. A \textit{UserSelector} egy lenyíló menü, ahol felhasználók közül lehet egyet kiválasztani, gépeléssel szűrni közülük, a React Select komponens segítségével.
+
+A Modal osztály a bele helyezett komponenseknek így egy felugró modális ablakot biztosít. A szerkesztő és megjelenítő komponensek az időpontokra, kategóriákra és profil adat módosításra ilyen modális ablakot használnak.
+
+A szerkesztő komponensek közös logikáját az \textit{EditorBase} komponens adja. Ennek meg lehet adni, hogy milyen API hívást hajtson végre mentésnél, bezárásnál milyen callback-et hívjon meg, milyen adatokkal dolgozzon, hiba esetén küldjön egy értesítést. Ezt használja az \textit{AppointmentEditor}, \textit{CategoryEditor} és \textit{UserEditor}. Ezeken belül a \textit{UserAdder} a felhasználók kiválasztásáért és listához adásáért felel.
+
+A \textit{routes} mappában találhatók az egyes oldalak, ezeknek a funkciói:
+
+\begin{compactitem}
+	\item Home: Az alkalmazás kezdőoldala
+	\item Contractor: A vállalkozók között lehet böngészni és adott vállalkozók időpontjait megtekinteni
+	\item Register: Itt lehet regisztrálni a weboldalra
+	\item Login: A felhasználó ezen az oldalon tud bejelentkezni
+	\item Booked: A felhasználó a lefoglalt időpontjait tekintheti meg
+	\item Profile: A felhasználó profilja, itt tudja módosítani az adatait, a vállalkozók profilképet frissíteni
+	\item OwnAppointments: A vállalkozó vállalkozói oldala, itt tudja a kategóriákat és időpontokat menedzselni
+	\item Reports: A vállalkozó itt tud számlákat kiállítani
+\end{compactitem}
 
 \clearpage
 
@@ -303,7 +322,7 @@ A backend-hez .NET 5\footnote{\url{https://dotnet.microsoft.com/download/dotnet/
 	\item Coverlet: Teszt lefedettség generálásához szükséges csomag
 \end{compactitem}
 
-A frontend Node.js\footnote{\url{https://nodejs.org/en/}}-t, TypeScript-et, React.js-t használ. Csomag kezelőnek Yarn\footnote{\url{https://yarnpkg.com/}}-t, build eszköznek és bundler-nek Snowpack\footnote{\url{https://www.snowpack.dev/}}-et használtam. Ezeken kívül a következő csomagokat használja a frontend:
+A frontend Node.js\footnote{\url{https://nodejs.org/en/}}-t, TypeScript-et, React.js-t használ. Stílust CSS helyett SASS\footnote{\url{https://sass-lang.com}}-el készítek, a SASS egy sok funkcióval kiegészített változata a CSS-nek, a SASS fájlok CSS-re fordulnak. Csomag kezelőnek Yarn\footnote{\url{https://yarnpkg.com/}}-t, build eszköznek és bundler-nek Snowpack\footnote{\url{https://www.snowpack.dev/}}-et használtam. Ezeken kívül a következő csomagokat használja a frontend:
 
 \begin{compactitem}
 	\item Jest: JavaScript teszt keretrendszer
