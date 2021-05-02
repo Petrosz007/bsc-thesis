@@ -176,8 +176,6 @@ A program komponensei a következő módon függenek egymástól:
 	\label{fig:package}
 \end{figure}
 
-\todo{Szekvencia diagram egy példa requestnél}
-
 \clearpage
 
 \subsubsection{REST API végpontok}
@@ -203,13 +201,16 @@ Az Entity Framework\footnote{\url{https://docs.microsoft.com/en-us/ef/}} (továb
 
 Azonban EF-el sem triviális az adatbázis kezelés, több a többhöz kapcsolatokat (pl.: egy ügyfél több időpontra is jelentkezhet és egy időpontra több ügyfél is jelentkezhet) elég sok manuális konfigurálással kell létrehozni, erről bővebben a megvalósítás \ref{sec:devProblems} részében írok.
 
-Az adatbázis terve körülbelül egyezik az előző részben definiált entitásokkal, a következőképpen néz ki:
-
-\todo{database uml}
+Az adatbázis terve egyezik az előző részben definiált entitásokkal, mivel ezekből az entitásokból generálja a táblákat az EF. Ez a \ref{fig:entities}-es ábrán látható.
 
 Az EF-ben a DbContext osztály biztosítja az adat elérést és definíciót. A DbContext virtual DbSet propertyjei lesznek azok az értékek, amiket az EF használni fog. Az OnModelCreating metódusban lehet testre szabni, hogy hogyan is generálja le az objektumok között a kapcsolatok az EF. A backend DbContext-je az IWAContext a következőképpen néz ki:
 
-\todo{iwacontext uml}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{dbcontext}
+	\caption{DbContext UML diagrammja}
+	\label{fig:dbcontext}
+\end{figure}
 
 
 \subsection{Funkcionális Frontend}
@@ -465,6 +466,8 @@ Az integrációs tesztek a következő struktúrájúak:
 \end{enumerate}
 
 \subsection{Manuális tesztek}
+
+\todo{Minden given when then kódhoz egy pipa}
 frontend tesztelés
 
 
