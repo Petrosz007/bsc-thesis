@@ -5,7 +5,7 @@
 
 \subsection{Feladat leírása}
 
-Az alkalmazás két részből áll, egy böngészős frontendből és egy szerveren futó backendből. Az alkalmazás funkcióit a \ref{sec:functionDefinitions} részben írtam le bővebben. Tervezés szempontjából a következő funkcionális követelmények vannak:
+Az alkalmazás két részből áll, egy böngészős frontendből és egy szerveren futó backendből. Az alkalmazás funkcióit a \ref{sec:functionDefinitions} részben írtam le bővebben. Tervezés szempontjából a funkcionális követelmények a következők:
 
 \begin{compactitem}
 	\item Egy kategória látható egy felhasználónak, ha: nyílt a kategória, a felhasználó hozta létre a kategóriát, a felhasználó engedélyezve van a kategórián, a felhasználó résztvevő egy időponton ami aminek ez a kategóriája
@@ -243,9 +243,47 @@ A Result függvények amik Async végződésűek ugyan azon az elven alapulnak, 
 
 Összességében, a Result és ResultPromise típusokkal és függvények kompozíciójával sok hibakezelő boilerplate kód kerülhető el és típus biztos lehet a kód.
 
+\subsubsection{Logika}
+
+Az entitások és a DTO-k egyeznek a \ref{fig:entities} és \ref{fig:dtos} ábrák UML diagrammjaival. Ez azért célszerű, mert így ugyan azon belső reprezentációval tudunk dolgozni front és backenden is.
+
+Frontend logikához tartozik a \textit{reportGenerator} és a \textit{pdfReportGenerátor modul}. Az előbbi adott időpontokból generálja le a számla adatait, az utóbbi pedig PDF-et generál belőle. A PDF készítés így a frontenden történik, ehhez a PDFMake könyvtárat használtam. Ebben egy sajátos adatszerkezetben kell definiálni a PDF tartalmát és stílusát, a PDFMake dokumentációjában\footnote{\url{https://pdfmake.github.io/docs/0.1/}} erről lehet bővebben olvasni.
+
+\subsubsection{Repository-k}
+
+A fronetenden is a backendhez hasonlóan az adatelérést repository osztályokba és interfészekbe szerveztem, azzal a különbséggel, hogy itt a REST API-n keresztül éri el az adatot. A repositoryk struktúrája egyezik az API végpontokkal, melyek a \ref{fig:apiDoc1} és \ref{fig:apiDoc2} ábrákon találhatók.
+
+A repository-k a ResultPromise típust használják, a \textit{safeApiFetch} függvény valamelyik változatával. Ez a függvény család a Javascript-es fetch függvényt csomagolja ResultPromise típusba, a függvényhívás után ha nem 2** a státusz kód akkor Err-t adnak vissza, az \textit{As} függvények jó érték esetén transzformálják az adatot megfelelő alakra. 
+
+\subsubsection{Hook-ok}
+
+A \textit{Status} típus egy unió tíups, ami vagy Idle, Loading, Failed valamilyen értékkel vagy Loaded valamilyen értékkel. Ez lehetővé teszi, hogy egy API hívás állapotát láthassuk, a felhasználói felületen ennek megfelelően rajzoljuk ki a kompknenseket.
+
+A \textit{useApiCall} hook egy API hívást tud végrehajtani, visszatérési értékként visszaadja a hívás jelenlegi állapotát Status-ban és egy callback függvényt, aminek a meghívásával lefut az API hívás. A komponensekben legtöbb esetben ezzel a useApiCall hook-al érem el az API-t.
+
+A \textit{useLogin} hook ugyan úgy működik mint a \textit{useApiCall} viszont egy sikeres API hívás után bejelentkezteti a felhasználót. A \textit{useLogout} hasonló, csak kijelentkezteti a felhasználót és visszairányítja a főoldalra.
+
+A \textit{useCookieLogin} a callback hívásánál megnézi, hogy be van-e jelentkezve jelenleg az alkalmazásba a felhasználó, ha nincs, akkor egy API call-al elküldi a backendnek, hogy cookie alapján bejelentkezhet-e, ha igen, akkor cookie alapján bejelentkezteti a felhasználót. A useCookieLogin lefut az alkalmazás betöltése előtt, azért, hogy már alapból úgy töltsön be az alkalmazás, hogy a felhasználó be van jelentkezve.
+
+\subsubsection{Kontextusok}
+
+A React kontextusok lényege, hogy több komponens ugyan ahhoz az adathoz hozzá tudjon férni, de ne kelljen paraméternek mindig átadni az adott értékeket. Például ha egy komponensen belül több komponens van amin belül még vannak komponensek, akkor mindegyiknek paraméternként kellene átadni az adatot, így viszont egy közös kontextusból elérhetik.
+
+A \textit{DIContext} egy nagyon egyszerű függőségi befecskendezés implementáció, a komponensek a kontextuson keresztül érhetik el a nekik megfelelő függőségeket, amik vagy repository-k vagy a konfigurációs osztály.
+
+A \textit{LoginProvider} tartalmazza azt, hogy a felhasználó be vagy ki van jelentkezve és lehetőséget ad a bejelentkezett státus megváltoztatására.
+
+A \textit{NotificationProvider} felel a különböző értesítések kezeléséért. A \textit{notificationDispatch} függvényével lehet hibákat, felszólításokat és sikeres értesítéseket hozzáadni a megjelenítéshez, utána a NotificationProvider ezek alapján rajzolja ki az értesítéseket a \textit{Notification} komponens segítségével.
+
+A \textit{DataProvider} entitások listáját tudja szolgáltatni a komponenseknek. Így például egy oldalon a vállalkozó kategóri és időpontjai lehet számon tartva, a \textit{dataDispatch} függvényen keresztül változatni. Például a foglalás gomb miután elküldte a foglalási kérést a backendnek a frissült időpontot frissíti a DataContext-ben is. A \textit{dataDispatch}-nél a leglátványosabb, hogy a kontextus adatát  React Reducer-el valósítom meg, ami egy immutable állapot változtatás. A többi kontextusban is használom, viszont itt szerepel a legtöbb funkcionális nyelvi elem. 
+
 \subsubsection{Komponensek}
 
-\todo{Komponensek}
+AppointmentCard, AppointmentAgenda, CategoryCard
+
+DatePicker, UserSelector
+
+Modal, Editorbase, User/Appointment/Category editor, UserAdder, AppointmentViewer, CategoryViewer
 
 \clearpage
 
