@@ -7,6 +7,7 @@ import { DataContext } from './contexts/DataProvider';
 
 import './AppointmentCard.scss';
 import { NotificationContext } from './contexts/NotificationProvider';
+import {DateTime} from "luxon";
 
 const HourDuration = ({ startTime, endTime }: { startTime: Date, endTime: Date }) => {
     const minutes = Math.floor((endTime.getTime() - startTime.getTime()) / (1000 * 60));
@@ -103,7 +104,13 @@ const DeleteButton = ({ appointment }: { appointment: Appointment }) => {
     );
 }
 
-export const AppointmentCardEditable = ({ appointment, onEdit, onView }: { appointment: Appointment, onEdit: (_: Appointment) => void, onView: (_: Appointment) => void }) => {
+const AppointmentCardBase = ({ editable, appointment }: {
+    editable?: {
+        onEdit: (_: Appointment) => void,
+        onView: (_: Appointment) => void,
+    },
+    appointment: Appointment,
+}) => {
     const { loginState } = useContext(LoginContext);
 
     const isOwner = () => loginState instanceof LoggedIn
@@ -111,35 +118,45 @@ export const AppointmentCardEditable = ({ appointment, onEdit, onView }: { appoi
 
     return (
         <div className="appointmentCard">
-            <a className="appointment-header clickable" onClick={() => onView(appointment)}>{appointment.category.name}</a>
+            <div className="appointmentTime">
+                {appointment.startTime.hasSame(appointment.endTime, 'day')
+                    ? <>
+                    <p>{appointment.startTime.toLocaleString(DateTime.TIME_24_SIMPLE)}</p>
+                    <p>{appointment.endTime.toLocaleString(DateTime.TIME_24_SIMPLE)}</p>
+                    </>
+                    : <>
+                    <p>{appointment.startTime.toLocaleString(DateTime.TIME_24_SIMPLE)}</p>
+                    <p>
+                        {appointment.startTime.hasSame(appointment.endTime, 'year') || 
+                            <>{appointment.endTime.toFormat('yyyy')}<br/></>}
+                        {appointment.endTime.toFormat('MM.dd')}<br/>
+                        {appointment.endTime.toLocaleString(DateTime.TIME_24_SIMPLE)}
+                    </p>
+                    </>}
+            </div>
+            <a className="appointment-header clickable" onClick={() => editable?.onView(appointment)}>{appointment.category.name}</a>
             <div className="appointment-description">
                 <p>{appointment.category.description}</p>
                 <p>{appointment.category.price} Ft - {appointment.maxAttendees - appointment.attendees.length} szabad hely</p>
             </div>
             <div className="appointment-methods">
                 <BookButton appointment={appointment} />
-                {isOwner() &&
+                {isOwner() && editable !== undefined &&
                 <>
                     <DeleteButton appointment={appointment} />
-                    <button onClick={() => onEdit(appointment)}>Szerkesztés</button>
+                    <button onClick={() => editable.onEdit(appointment)}>Szerkesztés</button>
                 </>
                 }
             </div>
         </div>
     );
-}
-
-export const AppointmentCard = ({ appointment }: { appointment: Appointment }) => {
-    return (
-        <div className="appointmentCard">
-            <span className="appointment-header">{appointment.category.name}</span>
-            <div className="appointment-description">
-                <p>{appointment.category.description}</p>
-                <p>{appointment.category.price} Ft - {appointment.maxAttendees - appointment.attendees.length} szabad hely</p>
-            </div>
-            <div className="appointment-methods">
-                <BookButton appointment={appointment} />
-            </div>
-        </div>
-    );
 };
+
+export const AppointmentCardEditable = ({ appointment, onEdit, onView }: { 
+    appointment: Appointment,
+    onEdit: (_: Appointment) => void,
+    onView: (_: Appointment) => void
+}) => <AppointmentCardBase editable={{ onEdit, onView }} appointment={appointment} />;
+
+export const AppointmentCard = ({ appointment }: { appointment: Appointment }) =>
+    <AppointmentCardBase appointment={appointment} />;

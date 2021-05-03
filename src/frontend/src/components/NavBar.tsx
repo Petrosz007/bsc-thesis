@@ -33,18 +33,33 @@ const LoggedInComponent = ({ user }: { user: User }) => {
 
 export default ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
     const { loginState } = useContext(LoginContext);
+    const history = useHistory();
 
     return (
         <nav className={`navbar ${className}`}>
             <p>Időpontfoglaló Webes Alkalmazás</p>
-            <div className="navRight">
+            <div className="navCenter">
                 <NavLink to="/" exact={true}>Kezdőlap</NavLink>
                 <NavLink to="/contractor">Vállalkozók</NavLink>
-                {loginState instanceof LoggedOut && 
-                    <LoggedOutConponent /> 
+                {loginState instanceof LoggedIn &&
+                <>
+                    <NavLink to="/booked">Foglalások</NavLink>
+                    {loginState.user.contractorPage !== null &&
+                    <>
+                        <NavLink to="/own-appointments">Vállalkozói oldal</NavLink>
+                        <NavLink to="/reports">Számlázás</NavLink>
+                    </>
+                    }
+                </>
                 }
-                {loginState instanceof LoggedIn && 
-                    <LoggedInComponent user={loginState.user} /> 
+            </div>
+            <div className="navRight">
+                {loginState instanceof LoggedIn
+                    ? <NavLink to="/profile">{loginState.user.name}</NavLink>
+                    : <>
+                        <button className="buttonBase inverted" onClick={()=>history.push('/login')}>Bejelentkezés</button>
+                        <button className="buttonBase" onClick={()=>history.push('/register')}>Regisztráció</button>
+                    </>
                 }
             </div>
         </nav>

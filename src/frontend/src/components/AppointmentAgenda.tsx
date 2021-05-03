@@ -47,11 +47,11 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
             .filter(a => dateInterval.contains(a.startTime))
             .filter(a => showFull || a.maxAttendees > a.attendees.length)
             .sort((left, right) => left.startTime.toMillis() - right.startTime.toMillis());
-        return groupBy(sorted, a => a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY));
+        return groupBy(sorted, a => a.startTime.toFormat('yyyy.MM.dd, cccc'));
     }, [appointments, selectedCategories, dateInterval, showFull]);
 
     return (
-        <div>
+        <div className="appointmentAgenda">
             {appointmentToEdit !== undefined && categories !== undefined &&
                 <Modal>
                     <AppointmentEditorUpdate appointment={appointmentToEdit} categories={categories} onClose={() => setAppointmentToEdit(undefined)}  />
@@ -73,29 +73,24 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
             />
             Ezen dátumok között: <br/>
             <DateRangePicker value={dateInterval} onChange={setDateInterval} />
-            <table className="agenda-table">
-                <tbody>
+            <div className="agenda-table">
                 {Dictionary.keys(dictionary).map(key =>
-                    dictionary[key].map((appointment, index) =>
-                        <tr key={appointment.id}>
-                            {index === 0 && <td rowSpan={dictionary[key].length} className="agenda-date">{key}</td>}
-                            <td className="agenda-time">
-                                {appointment.startTime.hasSame(appointment.endTime, 'day')
-                                    ? <>{appointment.startTime.toLocaleString(DateTime.TIME_24_SIMPLE)} - {appointment.endTime.toLocaleString(DateTime.TIME_24_SIMPLE)}</>
-                                    : <>{appointment.startTime.toLocaleString(DateTime.DATETIME_MED)}<br/>V<br/>{appointment.endTime.toLocaleString(DateTime.DATETIME_MED)}</>
-                                }
-                            </td>
-                            <td className="agenda-detail">
+                    <div className="agenda-table-day" key={key}>
+                        <p className="agenda-date">{key}</p>
+                        <div className="agendaDayCards">
+                            
+                            {dictionary[key].map((appointment) =>
+                                <>
                                 {editable
                                     ? <AppointmentCardEditable appointment={appointment} onEdit={a => setAppointmentToEdit(a)} onView={a => setAppointmentToView(a)}/>
-                                    : <AppointmentCard appointment={appointment} />
-                                }
-                            </td>
-                        </tr>
-                    )
+                                    : <AppointmentCard appointment={appointment} />}
+                                <hr/>
+                                </>
+                            )}
+                        </div>
+                    </div>
                 )}
-                </tbody>
-            </table>
+            </div>
         </div>
     );
 }

@@ -1,21 +1,45 @@
+.appointmentAgenda {
+    background-color: white;
+    border-radius: 5px;
+    margin-top: 15px;
+    box-shadow: 0px 3px 25px -13px rgba(0, 0, 0, 0.66);
+    
+    padding: 20px;
+    
+    .agendaDayCards {
+        display: flex;
+        flex-direction: column;
+        row-gap: 10px;
+        
+        hr {
+            width: 95%;
+            color: #0000001c;
+            margin: 0 auto;
+            
+            &:last-child {
+                display: none;
+            }
+        }
+    }
+}
 .agenda-table {
-    border: 2px solid black;
-    border-collapse: collapse;
 }
 
 .agenda-date {
-    vertical-align: top;
-    border: 1px solid black;
-    padding: 10px;
+    border-bottom: 2px solid #00000070;
+    padding-left: 10px;
+    margin: 7px;
+    
+    font-size: 1.1rem;
 }
 
 .agenda-time {
-    border: 1px solid black;
+    //border: 1px solid black;
     padding: 10px;
     text-align: center;
 }
 
 .agenda-detail {
-    border: 1px solid black;
+    //border: 1px solid black;
     padding: 10px;
 }

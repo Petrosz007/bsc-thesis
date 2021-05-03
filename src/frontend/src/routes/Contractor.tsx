@@ -9,6 +9,8 @@ import { NotificationContext } from "../components/contexts/NotificationProvider
 import {AppointmentAgenda} from "../components/AppointmentAgenda";
 import {ContractorCard} from "../components/ContractorCard";
 
+import './Contractor.scss';
+
 const ContractorPage = () => {
     const { contractorUserName } = useParams<{ contractorUserName: string }>();
     const { loginState } = useContext(LoginContext);
@@ -75,11 +77,11 @@ const ContractorBrowser = () => {
             {state instanceof Loading && <div>Loading...</div>}
 
             {state instanceof Loaded &&
-            <>
+            <div className="contractorBrowser">
                 {state.value.map(contractor =>
-                    <ContractorCard contractor={contractor}/>
+                    <ContractorCard contractor={contractor} key={contractor.userName}/>
                 )}
-            </>
+            </div>
             }
         </>
     );
