@@ -13,6 +13,7 @@ import {CategoriesEditable} from "../components/CategoryCard";
 
 import './OwnAppointments.scss'
 import {CategoryEditorCreate} from "../components/editors/CategoryEditor";
+import {EditIcon, PlusIcon} from "../SVGs";
 
 const OwnAppointments = ({ user }: { user: User }) => {
     const { dataState, dataDispatch } = useContext(DataContext);
@@ -49,24 +50,26 @@ const OwnAppointments = ({ user }: { user: User }) => {
         {state instanceof Loading && <div>Loading...</div>}
         
         {state instanceof Loaded && 
-        <>
-                <Modal isOpen={isCategoryModalOpen}>
-                    <CategoryEditorCreate owner={user} onClose={() => setIsCategoryModalOpen(false)} />
-                </Modal>
-                <Modal isOpen={isAppointmentModalOpen}>
-                    <AppointmentEditorCreate categories={categories} onClose={() => setIsAppointmentModalOpen(false)} />
-                </Modal>
-
-            <button onClick={() => setIsCategoryModalOpen(true)}>Új kategória</button>
-            {categories.length === 0
-                ? <p>Hozz létre egy kategóriát, hogy hirdethess időpontokat!</p>
-                : <button onClick={() => setIsAppointmentModalOpen(true)}>Új időpont</button>
-            }
+        <div className="ownAppointments">
+            <Modal isOpen={isCategoryModalOpen}>
+                <CategoryEditorCreate owner={user} onClose={() => setIsCategoryModalOpen(false)} />
+            </Modal>
+            <Modal isOpen={isAppointmentModalOpen}>
+                <AppointmentEditorCreate categories={categories} onClose={() => setIsAppointmentModalOpen(false)} />
+            </Modal>
+            
+            <div className="newButtons">
+                <button onClick={() => setIsCategoryModalOpen(true)}><PlusIcon className="plusSVG" />Új kategória</button>
+                {categories.length === 0
+                    ? <p>Hozz létre egy kategóriát, hogy hirdethess időpontokat!</p>
+                    : <button onClick={() => setIsAppointmentModalOpen(true)}><PlusIcon className="plusSVG" />Új időpont</button>
+                }
+            </div>
             
 
             <CategoriesEditable owner={user} categories={categories} />
             <AppointmentAgendaEditable appointments={appointments} categories={categories} />
-        </>
+        </div>
         }
         </>
     );

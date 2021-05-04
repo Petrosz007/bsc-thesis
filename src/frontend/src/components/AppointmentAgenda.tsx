@@ -62,34 +62,38 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
                     <AppointmentViewer appointment={appointmentToView} onClose={() => setAppointmentToView(undefined)}  />
                 </Modal>
             }
-            Kategóriák:
-            <Select options={selectableCategories.map(c => ({ value: c, label: c.name }))}
-                    onChange={e => {
-                        const arr = Array.isArray(e) ? e : [];
-                        setSelectedCategories(arr.length !== 0 ? e.map(x => x.value) : selectableCategories);
-                    }}
-                    placeholder="Válassz kategóriákat..."
-                    isMulti
-            />
-            Ezen dátumok között: <br/>
-            <DateRangePicker value={dateInterval} onChange={setDateInterval} />
-            <div className="agenda-table">
-                {Dictionary.keys(dictionary).map(key =>
-                    <div className="agenda-table-day" key={key}>
-                        <p className="agenda-date">{key}</p>
-                        <div className="agendaDayCards">
-                            
-                            {dictionary[key].map((appointment) =>
-                                <>
-                                {editable
-                                    ? <AppointmentCardEditable appointment={appointment} onEdit={a => setAppointmentToEdit(a)} onView={a => setAppointmentToView(a)}/>
-                                    : <AppointmentCard appointment={appointment} />}
-                                <hr/>
-                                </>
-                            )}
+            <h2>Időpontok</h2>
+            <div className="agendaContent">
+                <div className="agendaFilters">
+                    <p>Kategóriák:</p>
+                    <Select options={selectableCategories.map(c => ({ value: c, label: c.name }))}
+                            onChange={e => {
+                                const arr = Array.isArray(e) ? e : [];
+                                setSelectedCategories(arr.length !== 0 ? e.map(x => x.value) : selectableCategories);
+                            }}
+                            placeholder="Válassz kategóriákat..."
+                            isMulti
+                    />
+                    <p>Intervallum:</p>
+                    <DateRangePicker value={dateInterval} onChange={setDateInterval} />
+                </div>
+                <div className="agenda-table">
+                    {Dictionary.keys(dictionary).map(key =>
+                        <div className="agenda-table-day" key={key}>
+                            <p className="agenda-date">{key}</p>
+                            <div className="agendaDayCards">
+                                {dictionary[key].map((appointment) =>
+                                    <>
+                                    {editable
+                                        ? <AppointmentCardEditable appointment={appointment} onEdit={a => setAppointmentToEdit(a)} onView={a => setAppointmentToView(a)}/>
+                                        : <AppointmentCard appointment={appointment} />}
+                                    <hr/>
+                                    </>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </div>
     );

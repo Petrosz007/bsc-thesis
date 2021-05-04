@@ -1,11 +1,50 @@
 @use "./styles/variables" as var;
 
+.categories {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: var.$cardShadow;
+    overflow: hidden;
+
+    h2 {
+        padding: 20px;
+        line-height: 2rem;
+        font-size: 2rem;
+
+        border-bottom: 2px solid var.$mainDark;
+        background-color: white;
+        color: var.$mainDark;
+    }
+    
+    .categoryCards {
+        display: flex;
+        flex-direction: column;
+        
+        padding: 20px 30px;
+        row-gap: 15px;
+        
+        > div {
+            margin: 4px 0;
+        }
+
+        hr {
+            width: 100%;
+            color: #0000001c;
+            margin: 0 auto;
+
+            &:last-child {
+                display: none;
+            }
+        }
+    }
+}
+
 div.category-card {
     $borderRadius: 5px;
 
-    width: 600px;
+    width: 100%;
     display: grid;
-    grid-template-columns: 75% 25%;
+    grid-template-columns: 1fr 50px;
     grid-template-rows: 30px auto;
 
     .category-header {
@@ -22,6 +61,31 @@ div.category-card {
     }
     div.category-methods {
         grid-column: 2 / 3;
-        grid-row: 2 / 3;
+        grid-row: 1 / 3;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+
+        button {
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            padding: 5px;
+
+            .editIcon, .deleteIcon, .infoIcon {
+                height: 1rem;
+                width: 1rem;
+
+                fill: #b5b5b5;
+            }
+
+            &:hover {
+                .editIcon, .deleteIcon, .infoIcon {
+                    fill: black;
+                }
+            }
+        }
     }
 }

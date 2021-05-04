@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { Appointment } from '../logic/entities';
 import {LoggedIn, LoggedOut, LoginContext} from './contexts/LoginProvider';
 import { Failed, Loading, useApiCall } from '../hooks/apiCallHooks';
@@ -8,6 +8,7 @@ import { DataContext } from './contexts/DataProvider';
 import './AppointmentCard.scss';
 import { NotificationContext } from './contexts/NotificationProvider';
 import {DateTime} from "luxon";
+import {DeleteIcon, EditIcon, InfoIcon} from '../SVGs';
 
 const HourDuration = ({ startTime, endTime }: { startTime: Date, endTime: Date }) => {
     const minutes = Math.floor((endTime.getTime() - startTime.getTime()) / (1000 * 60));
@@ -29,7 +30,7 @@ const FormattedDate = ({ date }: { date: Date }) => {
     return <>{year}.{month}.{day} {hour}:{minute}</>;
 }
 
-const BookButton = ({ appointment }: { appointment: Appointment }) => {
+const BookButton = ({ appointment, className }: { appointment: Appointment, className?: string }) => {
     const { loginState } = useContext(LoginContext);
     const { dataDispatch } = useContext(DataContext);
     const { notificationDispatch } = useContext(NotificationContext);
@@ -65,17 +66,17 @@ const BookButton = ({ appointment }: { appointment: Appointment }) => {
     const isAttendee = () => loginState instanceof LoggedIn 
         && appointment.attendees.some(user => user.userName === loginState.user.userName);
 
-    if(bookingStatus instanceof Loading) return <span>Foglalás...</span>;
-    if(unBookingStatus instanceof Loading) return <span>Lemondás...</span>;
+    // if(bookingStatus instanceof Loading) return <span>Foglalás...</span>;
+    // if(unBookingStatus instanceof Loading) return <span>Lemondás...</span>;
     
     if(loginState instanceof LoggedOut)
         return null;
         
     if(isAttendee())
-        return <button onClick={() => unBook()}>Lemondás</button>;
+        return <button className={`unbook ${className}`} onClick={() => unBook()}>Lemondás</button>;
     
     if(appointment.maxAttendees > appointment.attendees.length)
-        return <button onClick={() => book()}>Foglalás</button>;
+        return <button className={`book ${className}`} onClick={() => book()}>Foglalás</button>;
     
     return null;
 }
@@ -97,10 +98,10 @@ const DeleteButton = ({ appointment }: { appointment: Appointment }) => {
         }
     }, [deleteStatus]);
 
-    if(deleteStatus instanceof Loading) return <span>Törlés...</span>;
+    // if(deleteStatus instanceof Loading) return <span>Törlés...</span>;
 
     return (
-        <button onClick={() => deleteAppointment()}>Törlés</button>
+        <button onClick={() => deleteAppointment()}><DeleteIcon className="deleteIcon" /></button>
     );
 }
 
@@ -115,9 +116,11 @@ const AppointmentCardBase = ({ editable, appointment }: {
 
     const isOwner = () => loginState instanceof LoggedIn
         && appointment.category.owner.userName === loginState.user.userName;
+    
+    const freeSlots = useMemo(() => appointment.maxAttendees - appointment.attendees.length, [appointment]);
 
     return (
-        <div className="appointmentCard">
+        <div className={`appointmentCard ${editable !== undefined ? 'editable' : ''}`}>
             <div className="appointmentTime">
                 {appointment.startTime.hasSame(appointment.endTime, 'day')
                     ? <>
@@ -134,17 +137,18 @@ const AppointmentCardBase = ({ editable, appointment }: {
                     </p>
                     </>}
             </div>
-            <a className="appointment-header clickable" onClick={() => editable?.onView(appointment)}>{appointment.category.name}</a>
+            <p className="appointment-header">{appointment.category.name}<span>{freeSlots === 0 ? 'Nincs' : freeSlots} szabad hely</span></p>
             <div className="appointment-description">
                 <p>{appointment.category.description}</p>
-                <p>{appointment.category.price} Ft - {appointment.maxAttendees - appointment.attendees.length} szabad hely</p>
+                <p>{appointment.category.price} Ft </p>
             </div>
+            <BookButton className="bookButton" appointment={appointment} />
             <div className="appointment-methods">
-                <BookButton appointment={appointment} />
                 {isOwner() && editable !== undefined &&
                 <>
+                    <button onClick={() => editable?.onView(appointment)}><InfoIcon className="infoIcon"/></button>
+                    <button onClick={() => editable.onEdit(appointment)}><EditIcon className="editIcon"/></button>
                     <DeleteButton appointment={appointment} />
-                    <button onClick={() => editable.onEdit(appointment)}>Szerkesztés</button>
                 </>
                 }
             </div>

@@ -1,5 +1,49 @@
-.own-appointments {
+@use "../components/styles/variables.scss" as var;
+
+.ownAppointments {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;   
+    flex-direction: column;
+    
+    row-gap: 40px;
+}
+
+.newButtons {
+    margin-bottom: -10px;
+    
+    button {
+        $color: #707070;
+        $hoverColor: black;
+        
+        margin-right: 20px;
+        padding: 10px;
+        font-size: 1rem;
+        
+        color: $color;
+        background-color: white;
+        cursor: pointer;
+        border-radius: 20px;
+        border: 2px solid #d9d9d9;
+        box-shadow: var.$cardShadow;
+        
+        transition: all 50ms ease-in-out;
+        
+        &:hover {
+            color: $hoverColor;
+            border-color: $hoverColor;
+            
+            .plusSVG {
+                fill: $hoverColor;
+            }
+        }
+        
+        .plusSVG {
+            height: 1rem;
+            width: 1rem;
+            fill: $color;
+            margin-right: 3px;
+            padding-top: 3px;
+
+            transition: fill 50ms ease-in-out;
+        }
+    }
 }

@@ -5,6 +5,7 @@ import './CategoryCard.scss';
 import {CategoryEditorUpdate} from "./editors/CategoryEditor";
 import Modal from "./Modal";
 import CategoryViewer from "./CategoryViewer";
+import {EditIcon, InfoIcon} from "../SVGs";
 
 export const CategoryCardEditable = ({ category, onEdit, onView }: { 
     category: Category, 
@@ -13,13 +14,14 @@ export const CategoryCardEditable = ({ category, onEdit, onView }: {
 }) => {
     return (
         <div className="category-card">
-            <span className="category-header clickable" onClick={() => onView(category)}>{category.name}</span>
+            <span className="category-header clickable">{category.name}</span>
             <div className="category-description">
                 <p>{category.description}</p>
                 <p>{category.price} Ft</p>
             </div>
             <div className="category-methods">
-                <button onClick={() => onEdit(category)}>Szerkesztés</button>
+                <button onClick={() => onView(category)}><InfoIcon className="infoIcon"/></button>
+                <button onClick={() => onEdit(category)}><EditIcon className="editIcon"/></button>
             </div>
         </div>
     );
@@ -41,10 +43,16 @@ export const CategoriesEditable = ({ owner, categories }: { owner: User, categor
                  <CategoryViewer category={categoryToView} onClose={() => setCategoryToView(undefined)}/>
              </Modal>
         }
-        <div>
-            {categories.map(category =>
-                <CategoryCardEditable category={category} onEdit={c => setCategoryToEdit(c)} key={category.id} onView={c => setCategoryToView(c)}/>
-            )}
+        <div className="categories">
+            <h2>Kategóriák</h2>
+            <div className="categoryCards">
+                {categories.map(category =>
+                    <>
+                    <CategoryCardEditable category={category} onEdit={c => setCategoryToEdit(c)} key={category.id} onView={c => setCategoryToView(c)}/>
+                    <hr/>
+                    </>
+                )}
+            </div>
         </div>
         </>
     );

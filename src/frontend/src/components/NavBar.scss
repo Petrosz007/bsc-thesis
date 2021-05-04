@@ -1,26 +1,56 @@
 @use "./styles/variables.scss" as var;
 
 $contentHeight: 40px;
-$height: 70px;
+$height: 80px;
 
 .navbar {
     width: 100%;
     height: $height;
-    padding: 0 15px;
-    border-bottom: 3px solid var.$mainColor;
+    padding: 0 40px;
+    margin-top: 10px;
+    //border-bottom: 3px solid var.$mainColor;
     // border-bottom: 4px solid green;
-    background-color: white;
+    //background-color: white;
 
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    
+    color: #282828;
 }
 
-.navCenter, .navRight {
+.navLeft {
+    display: flex;
+    flex-direction: row;
+    
+    p {
+        line-height: $height;
+        vertical-align: middle;
+        position: relative;
+        margin-right: 30px;
+        
+        &:after {
+            $percentage: 0.60;
+            $barHeight: $height * $percentage;
+            display: block;
+            width: 2px;
+            height: $barHeight;
+            background-color: black;
+            content: '';
+            
+            position: absolute;
+            top: ($height - $barHeight) / 2;
+            right: -20px;
+        }
+    }
+}
+
+.navRight, .navLinks {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    gap: 10px;
 
     vertical-align: middle;
 
@@ -42,8 +72,9 @@ $height: 70px;
             color: $color;
         }
         &.active {
-            color: white;
-            background-color: var.$mainColor;
+            //color: white;
+            //background-color: var.$mainColor;
+            color: var.$mainColor;
         }
         &:focus {
             outline: 0;

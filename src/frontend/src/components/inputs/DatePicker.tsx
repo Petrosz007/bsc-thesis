@@ -2,6 +2,9 @@
 import {DateTime, Interval} from "luxon";
 import React from "react";
 
+import './DatePicker.scss';
+import {RightArrow} from "../../SVGs";
+
 interface DatePickerProps extends InputHTMLAttributes<HTMLInputElement> {
     valueDate: DateTime,
     onChangeDate: (_: DateTime) => void,
@@ -25,7 +28,8 @@ export const DatePicker = ({ valueDate, onChangeDate, minDate, maxDate, ...props
                value={valueDate.toISODate()}
                onChange={handleChange}
                min={minDate?.toISODate()} 
-               max={maxDate?.toISODate()} 
+               max={maxDate?.toISODate()}
+               required
         />
     );
 }
@@ -42,10 +46,10 @@ export const DateRangePicker = ({ value, onChange }: { value: Interval, onChange
     }, [value, onChange]);
     
     return (
-        <>
+        <div className="dateRange">
         <DatePicker valueDate={value.start} onChangeDate={onStartDateChange} maxDate={value.end} />
-        {'->'}
+        <RightArrow className="rightArrow"/>
         <DatePicker valueDate={value.end} onChangeDate={onEndDateChange} minDate={value.start} />
-        </>
+        </div>
     );
 }

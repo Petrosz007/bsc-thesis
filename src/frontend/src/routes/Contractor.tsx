@@ -46,10 +46,10 @@ const ContractorPage = () => {
         {state instanceof Loading && <div>Loading...</div>}
         
         {state instanceof Loaded && 
-        <>
+        <div className="contractorLayout">
             <ContractorCard contractor={state.value[1]}/>
             <AppointmentAgenda appointments={dataState.appointments} showFull={false} />
-        </>
+        </div>
         }
         </>
     );
