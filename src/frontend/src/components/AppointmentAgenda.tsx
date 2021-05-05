@@ -83,12 +83,12 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
                             <p className="agenda-date">{key}</p>
                             <div className="agendaDayCards">
                                 {dictionary[key].map((appointment) =>
-                                    <>
+                                    <React.Fragment key={appointment.id}>
                                     {editable
                                         ? <AppointmentCardEditable appointment={appointment} onEdit={a => setAppointmentToEdit(a)} onView={a => setAppointmentToView(a)}/>
                                         : <AppointmentCard appointment={appointment} />}
                                     <hr/>
-                                    </>
+                                    </React.Fragment>
                                 )}
                             </div>
                         </div>

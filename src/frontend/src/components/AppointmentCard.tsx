@@ -124,16 +124,16 @@ const AppointmentCardBase = ({ editable, appointment }: {
             <div className="appointmentTime">
                 {appointment.startTime.hasSame(appointment.endTime, 'day')
                     ? <>
-                    <p>{appointment.startTime.toLocaleString(DateTime.TIME_24_SIMPLE)}</p>
-                    <p>{appointment.endTime.toLocaleString(DateTime.TIME_24_SIMPLE)}</p>
+                    <p>{appointment.startTime.toFormat('HH:mm')}</p>
+                    <p>{appointment.endTime.toFormat('HH:mm')}</p>
                     </>
                     : <>
-                    <p>{appointment.startTime.toLocaleString(DateTime.TIME_24_SIMPLE)}</p>
+                    <p>{appointment.startTime.toFormat('HH:mm')}</p>
                     <p>
                         {appointment.startTime.hasSame(appointment.endTime, 'year') || 
                             <>{appointment.endTime.toFormat('yyyy')}<br/></>}
                         {appointment.endTime.toFormat('MM.dd')}<br/>
-                        {appointment.endTime.toLocaleString(DateTime.TIME_24_SIMPLE)}
+                        {appointment.endTime.toFormat('HH:mm')}
                     </p>
                     </>}
             </div>

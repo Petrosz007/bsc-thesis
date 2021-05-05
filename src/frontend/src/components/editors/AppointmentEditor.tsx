@@ -13,13 +13,12 @@ import { ResultPromise } from "../../utilities/result";
 import {DateTime} from "luxon";
 import {EditorBase} from "./EditorBase";
 import Select from "react-select";
+import {DateTimePicker} from "../inputs/DatePicker";
 
 interface AppointmentEditdata {
     id: number;
-    startTimeDate: string;
-    startTimeTime: string;
-    endTimeDate: string;
-    endTimeTime: string;
+    startTime: DateTime;
+    endTime: DateTime;
     categoryId: number;
     maxAttendees: number;
 
@@ -39,10 +38,8 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
 }) => {
     const initialAppointmentEditorState: AppointmentEditdata = {
         ...initialAppointment,
-        startTimeDate: initialAppointment.startTime.toISODate(),
-        startTimeTime: initialAppointment.startTime.toFormat('HH:mm'),
-        endTimeDate: initialAppointment.endTime.toISODate(),
-        endTimeTime: initialAppointment.endTime.toFormat('HH:mm'),
+        startTime: initialAppointment.startTime,
+        endTime: initialAppointment.endTime,
         categoryId: initialAppointment.category.id,
         createAnother: false,
     };
@@ -70,10 +67,10 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
     
     const editorStateToDto = useCallback((editData: AppointmentEditdata) => ({
         ...editData,
-        startTime: DateTime.fromISO(`${editData.startTimeDate}T${editData.startTimeTime}`).toUTC().toISO(),
-        endTime: DateTime.fromISO(`${editData.endTimeDate}T${editData.endTimeTime}`).toUTC().toISO(),
+        startTime: editData.startTime.toUTC().toISO(),
+        endTime: editData.endTime.toUTC().toISO(),
         attendeeUserNames: users.map(user => user.userName),
-    }), [users, state]);
+    }), [users]);
 
     const dataDispatchAction = useCallback((appointment: Appointment) => ({ type: 'updateAppointment', appointment } as DataAction), []);
     
@@ -99,15 +96,25 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
             <div className="editorGroup">
                 <label htmlFor="startTimeDate">Kezdés</label>
                 <div>
-                    <input type="date" name="startTimeDate" value={state.startTimeDate} onChange={handleChange} />
-                    <input type="time" name="startTimeTime" value={state.startTimeTime} onChange={handleChange} />
+                    {/*<input type="date" name="startTimeDate" value={state.startTimeDate} onChange={handleChange} />*/}
+                    {/*<input type="time" name="startTimeTime" value={state.startTimeTime} onChange={handleChange} />*/}
+                    <DateTimePicker valueDate={state.startTime} 
+                                    onChangeDate={x => setState(prevState => ({ 
+                                        ...prevState, 
+                                        startTime: x,
+                                    }))}
+                    />
                 </div>
             </div>
             <div className="editorGroup">
                 <label htmlFor="startTimeDate">Vége</label>
                 <div>
-                    <input type="date" name="endTimeDate" value={state.endTimeDate} min={state.startTimeDate} onChange={handleChange} />
-                    <input type="time" name="endTimeTime" value={state.endTimeTime} onChange={handleChange} />
+                    {/*<input type="date" name="endTimeDate" value={state.endTimeDate} min={state.startTime.toISODate()} onChange={handleChange} />*/}
+                    {/*<input type="time" name="endTimeTime" value={state.endTimeTime} onChange={handleChange} />*/}
+                    <DateTimePicker valueDate={state.endTime}
+                                    onChangeDate={x => setState(prevState => ({ ...prevState, endTime: x }))}
+                                    minDate={state.startTime}
+                    />
                 </div>
             </div>
             <div className="editorGroup">
@@ -121,7 +128,7 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
                 />
             </div>
             <div className="editorGroup">
-                <label htmlFor="maxAttendees">Max résztvevők</label><br/>
+                <label htmlFor="maxAttendees">Max résztvevők</label>
                 <input type="number" name="maxAttendees" value={state.maxAttendees} min={Math.max(1, users.length)} onChange={handleChange} />
             </div>
             <div className="editorGroup">

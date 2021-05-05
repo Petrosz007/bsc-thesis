@@ -47,10 +47,10 @@ export const CategoriesEditable = ({ owner, categories }: { owner: User, categor
             <h2>Kategóriák</h2>
             <div className="categoryCards">
                 {categories.map(category =>
-                    <>
-                    <CategoryCardEditable category={category} onEdit={c => setCategoryToEdit(c)} key={category.id} onView={c => setCategoryToView(c)}/>
-                    <hr/>
-                    </>
+                    <React.Fragment key={category.id}>
+                        <CategoryCardEditable category={category} onEdit={c => setCategoryToEdit(c)} key={category.id} onView={c => setCategoryToView(c)}/>
+                        <hr/>
+                    </React.Fragment>
                 )}
             </div>
         </div>

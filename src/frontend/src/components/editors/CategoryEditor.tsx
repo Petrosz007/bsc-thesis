@@ -66,8 +66,9 @@ const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose, labels }
                 <input type="text" name="description" value={state.description} required={true} onChange={handleChange} />
             </div>
             <div className="editorGroup">
-                <label htmlFor="everyoneAllowed">Nyílt esemény</label>
-                <input type="checkbox" name="everyoneAllowed" checked={state.everyoneAllowed} onChange={handleChange} />
+                <label htmlFor="everyoneAllowed">Nyílt esemény 
+                    <input type="checkbox" name="everyoneAllowed" checked={state.everyoneAllowed} onChange={handleChange} />
+                </label>
             </div>
             <div className="editorGroup">
                 <label htmlFor="maxAttendees">Max résztvevők</label>

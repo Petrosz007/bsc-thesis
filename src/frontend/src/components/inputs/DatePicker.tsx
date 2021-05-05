@@ -34,6 +34,47 @@ export const DatePicker = ({ valueDate, onChangeDate, minDate, maxDate, ...props
     );
 }
 
+export const DateTimePicker = ({ valueDate, onChangeDate, minDate, maxDate, ...props}: DatePickerProps) => {
+    const handleDateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const date = DateTime.fromISO(e.target.value).set({ hour: valueDate.hour, minute: valueDate.hour });
+        if(!date.isValid) return;
+        // if(minDate !== undefined && date < minDate) return;
+        // if(maxDate !== undefined && date > maxDate) return;
+
+        onChangeDate(date);
+    }, [onChangeDate, minDate, maxDate]);
+    
+    const handleTimeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const date = DateTime.fromFormat(`${valueDate.toFormat('yyyy.MM.dd')} ${e.target.value}`, 'yyyy.MM.dd HH:mm');
+        if(!date.isValid) return;
+        // if(minDate !== undefined && date < minDate) return;
+        // if(maxDate !== undefined && date > maxDate) return;
+
+        onChangeDate(date);
+    }, [valueDate, onChangeDate, minDate, maxDate]);
+
+    return (
+        <div className="dateTimePicker">
+            <input {...props}
+                   type="date"
+                   value={valueDate.toISODate()}
+                   onChange={handleDateChange}
+                   min={minDate?.toISODate()}
+                   max={maxDate?.toISODate()}
+                   required
+            />
+            <input {...props}
+                   type="time"
+                   value={valueDate.toFormat('HH:mm')}
+                   onChange={handleTimeChange}
+                   min={minDate?.toFormat('HH:mm')}
+                   max={maxDate?.toFormat('HH:mm')}
+                   required
+            />
+        </div>
+    );
+}
+
 export const DateRangePicker = ({ value, onChange }: { value: Interval, onChange: (_: Interval) => void }) => {
     const onStartDateChange = useCallback((date: DateTime) => {
         const start = date.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
@@ -47,9 +88,9 @@ export const DateRangePicker = ({ value, onChange }: { value: Interval, onChange
     
     return (
         <div className="dateRange">
-        <DatePicker valueDate={value.start} onChangeDate={onStartDateChange} maxDate={value.end} />
-        <RightArrow className="rightArrow"/>
-        <DatePicker valueDate={value.end} onChangeDate={onEndDateChange} minDate={value.start} />
+            <DatePicker valueDate={value.start} onChangeDate={onStartDateChange} maxDate={value.end} />
+            <RightArrow className="rightArrow"/>
+            <DatePicker valueDate={value.end} onChangeDate={onEndDateChange} minDate={value.start} />
         </div>
     );
 }
