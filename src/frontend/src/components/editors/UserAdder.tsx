@@ -8,6 +8,9 @@ import {ResultPromise} from "../../utilities/result";
 import UserName from "../UserName";
 import UserSelector from "../inputs/UserSelector";
 
+import './UserAdder.scss';
+import {DeleteIcon} from "../../SVGs";
+
 const UserAdder = ({ usersToSelectFrom, users, setUsers, allowedUsers, max }: {
     usersToSelectFrom: User[],
     users: User[],
@@ -43,18 +46,24 @@ const UserAdder = ({ usersToSelectFrom, users, setUsers, allowedUsers, max }: {
     };
 
     return (
-        <div>
-            <UserSelector selectedUser={selectedUser} setSelectedUser={setSelectedUser} users={usersToSelectFrom} />
-            {addState instanceof Loading
-                ? <span>Loading...</span>
-                : <button onClick={e => {add(); e.preventDefault()}} disabled={max !== undefined && users.length >= max}>Hozzáadás</button>}<br/>
+        <div className="userAdder">
+            <div className="userAdderInputs">
+                <UserSelector className="userSelector" selectedUser={selectedUser} setSelectedUser={setSelectedUser} users={usersToSelectFrom} />
+                <button className="addButton" 
+                        onClick={e => {add(); e.preventDefault()}} 
+                        disabled={max !== undefined && users.length >= max}
+                >
+                    {max !== undefined && users.length >= max ? 'Betelt' : 'Felvétel'}
+                </button>
+            </div>
+            <ul className="userAdderUsers">
             {users.map(user =>
-                <React.Fragment key={user.userName}>
+                <li key={user.userName}>
                     <UserName user={user} />
-                    <button onClick={e => {remove(user.userName); e.preventDefault()}}>X</button>
-                    <br/>
-                </React.Fragment>
+                    <button onClick={e => {remove(user.userName); e.preventDefault()}}><DeleteIcon className="deleteIcon"/></button>
+                </li>
             )}
+            </ul>
         </div>
     )
 }

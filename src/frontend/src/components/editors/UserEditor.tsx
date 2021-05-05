@@ -23,6 +23,7 @@ const UserEditorBase = ({ initialUser, apiCall, onClose, labels }: {
     apiCall: (_: UserEditDTO) => ResultPromise<UserSelfInfo, Error>,
     onClose: () => void,
     labels: {
+        header: string,
         createAnother: string,
         submit: string,
     },
@@ -58,18 +59,26 @@ const UserEditorBase = ({ initialUser, apiCall, onClose, labels }: {
             onClose={onClose}
             dataDispatchAction={user => ({ type: 'updateUser', user })}
         >
-            <label htmlFor="name">Név</label>
-            <input type="text" name="name" value={state.name} required={true} onChange={handleChange} />
+            <div className="editorGroup">
+                <label htmlFor="name">Név</label>
+                <input type="text" name="name" value={state.name} required={true} onChange={handleChange} />
+            </div>
             
-            <label htmlFor="description">Email</label>
-            <input type="email" name="email" value={state.email} required={true} onChange={handleChange} />
+            <div className="editorGroup">
+                <label htmlFor="description">Email</label>
+                <input type="email" name="email" value={state.email} required={true} onChange={handleChange} />
+            </div>
             
             {initialUser.contractorPage !== null && <>
-                <label htmlFor="allowedUsers">Foglalkozás</label>
-                <input type="text" name="contractorPage__title" value={state.contractorPage__title} required={true} onChange={handleChange} />
+                <div className="editorGroup">
+                    <label htmlFor="allowedUsers">Foglalkozás</label>
+                    <input type="text" name="contractorPage__title" value={state.contractorPage__title} required={true} onChange={handleChange} />
+                </div>
                 
-                <label htmlFor="allowedUsers">Magamról</label>
-                <textarea name="contractorPage__bio" value={state.contractorPage__bio} required={true} onChange={handleChange} rows={3} />
+                <div className="editorGroup">
+                    <label htmlFor="allowedUsers">Magamról</label>
+                    <textarea name="contractorPage__bio" value={state.contractorPage__bio} required={true} onChange={handleChange} rows={3} />
+                </div>
             </>}
         </EditorBase>
     );
@@ -95,7 +104,7 @@ export const UserEditor = ({ user, onClose }: {
             apiCall={update}
             initialUser={user}
             onClose={onClose}
-            labels={{ createAnother: 'Maradok szerkeszteni', submit: 'Mentés' }}
+            labels={{ header: 'Profil szerkesztése', createAnother: 'Maradok szerkeszteni', submit: 'Mentés' }}
         />
     );
 }

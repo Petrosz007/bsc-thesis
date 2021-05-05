@@ -7,7 +7,7 @@ import {DataAction, DataContext} from "../contexts/DataProvider";
 import { DIContext } from "../contexts/DIContext";
 import UserAdder from "./UserAdder";
 
-import './AppointmentEditor.scss';
+// import './AppointmentEditor.scss';
 import { NotificationContext } from "../contexts/NotificationProvider";
 import { ResultPromise } from "../../utilities/result";
 import {DateTime} from "luxon";
@@ -31,9 +31,10 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
     apiCall: (_x: AppointmentDTO) => ResultPromise<Appointment,Error>,
     categories: Category[],
     onClose: () => void,
-    labels: {
-      createAnother: string,
-      submit: string,
+    labels: { 
+        header: string,
+        createAnother: string,
+        submit: string,
     },
 }) => {
     const initialAppointmentEditorState: AppointmentEditdata = {
@@ -95,28 +96,38 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
             onClose={onClose}
             dataDispatchAction={dataDispatchAction}
          >
-            <label htmlFor="startTimeDate">Kezdés</label>
-            <div>
-                <input type="date" name="startTimeDate" value={state.startTimeDate} onChange={handleChange} />
-                <input type="time" name="startTimeTime" value={state.startTimeTime} onChange={handleChange} />
+            <div className="editorGroup">
+                <label htmlFor="startTimeDate">Kezdés</label>
+                <div>
+                    <input type="date" name="startTimeDate" value={state.startTimeDate} onChange={handleChange} />
+                    <input type="time" name="startTimeTime" value={state.startTimeTime} onChange={handleChange} />
+                </div>
             </div>
-            <label htmlFor="startTimeDate">Vége</label>
-            <div>
-                <input type="date" name="endTimeDate" value={state.endTimeDate} min={state.startTimeDate} onChange={handleChange} />
-                <input type="time" name="endTimeTime" value={state.endTimeTime} onChange={handleChange} />
+            <div className="editorGroup">
+                <label htmlFor="startTimeDate">Vége</label>
+                <div>
+                    <input type="date" name="endTimeDate" value={state.endTimeDate} min={state.startTimeDate} onChange={handleChange} />
+                    <input type="time" name="endTimeTime" value={state.endTimeTime} onChange={handleChange} />
+                </div>
             </div>
-            <label htmlFor="categoryId">Kategória</label>
-            <Select options={selectOptions}
-                    value={selectOptions.find(x => x.value === state.categoryId)}
-                    onChange={x => {
-                        if(x === null) return;
-                        setState({ ...state, categoryId: x.value });
-                    }} 
-            />
-            <label htmlFor="maxAttendees">Max résztvevők</label>
-            <input type="number" name="maxAttendees" value={state.maxAttendees} min={Math.max(1, users.length)} onChange={handleChange} /><br/>
-            <label htmlFor="attendees">Résztvevők</label>
-            <UserAdder users={users} setUsers={setUsers} allowedUsers={allowedUsers()} max={state.maxAttendees} />
+            <div className="editorGroup">
+                <label htmlFor="categoryId">Kategória</label>
+                <Select options={selectOptions}
+                        value={selectOptions.find(x => x.value === state.categoryId)}
+                        onChange={x => {
+                            if(x === null) return;
+                            setState({ ...state, categoryId: x.value });
+                        }} 
+                />
+            </div>
+            <div className="editorGroup">
+                <label htmlFor="maxAttendees">Max résztvevők</label><br/>
+                <input type="number" name="maxAttendees" value={state.maxAttendees} min={Math.max(1, users.length)} onChange={handleChange} />
+            </div>
+            <div className="editorGroup">
+                <label htmlFor="attendees">Résztvevők</label>
+                <UserAdder users={users} setUsers={setUsers} allowedUsers={allowedUsers()} max={state.maxAttendees} />
+            </div>
         </EditorBase>
     );
 }
@@ -141,7 +152,7 @@ export const AppointmentEditorCreate = ({ categories, onClose }: {
             apiCall={appointmentRepo.create}
             categories={categories}
             onClose={onClose}
-            labels={{ createAnother: 'Több létrehozása', submit: 'Létrehozás' }}
+            labels={{ header: 'Új Időpont', createAnother: 'Több létrehozása', submit: 'Létrehozás' }}
         />
     );
 }
@@ -164,7 +175,7 @@ export const AppointmentEditorUpdate = ({ appointment, categories, onClose }: {
             initialAppointment={appointment}
             categories={categories}
             onClose={onClose}
-            labels={{ createAnother: 'Maradok szerkeszteni', submit: 'Mentés' }}
+            labels={{ header: 'Időpont Szerkesztése',createAnother: 'Maradok szerkeszteni', submit: 'Mentés' }}
         />
     );
 }

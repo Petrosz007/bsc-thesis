@@ -4,6 +4,8 @@ import {DataAction, DataContext} from "../contexts/DataProvider";
 import {NotificationContext} from "../contexts/NotificationProvider";
 import {Failed, Loaded, useApiCall} from "../../hooks/apiCallHooks";
 
+import './EditorBase.scss';
+
 export function EditorBase<TEditorState extends { createAnother: boolean },TEntity,TDto>({
     state, editorStateToDto, apiCall, onClose, handleChange, labels, children, dataDispatchAction
 }: {
@@ -13,6 +15,7 @@ export function EditorBase<TEditorState extends { createAnother: boolean },TEnti
     onClose: () => void,
     handleChange: (event: React.ChangeEvent<HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement>) => void
     labels: {
+        header: string,
         createAnother: string,
         submit: string,
     },
@@ -51,7 +54,8 @@ export function EditorBase<TEditorState extends { createAnother: boolean },TEnti
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="appointment-editor-form">
+            <form onSubmit={handleSubmit} className="editor-form">
+                <h2>{labels.header}</h2>
                 <div className="editor-inputs">
                     {children}
                 </div>
