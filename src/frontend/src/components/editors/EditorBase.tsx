@@ -7,7 +7,7 @@ import {Failed, Loaded, useApiCall} from "../../hooks/apiCallHooks";
 import './EditorBase.scss';
 
 export function EditorBase<TEditorState extends { createAnother: boolean },TEntity,TDto>({
-    state, editorStateToDto, apiCall, onClose, handleChange, labels, children, dataDispatchAction
+    state, editorStateToDto, apiCall, onClose, handleChange, labels, children, dataDispatchAction, validator
 }: {
     state: TEditorState,
     editorStateToDto: (_: TEditorState) => TDto,
@@ -20,7 +20,8 @@ export function EditorBase<TEditorState extends { createAnother: boolean },TEnti
         submit: string,
     },
     children: React.ReactNode,
-    dataDispatchAction: (_: TEntity) => DataAction,
+    dataDispatchAction?: (_: TEntity) => DataAction,
+    validator?: (_: TEditorState) => boolean,
 }) {
     const { notificationDispatch } = useContext(NotificationContext);
     const { dataDispatch } = useContext(DataContext);
@@ -30,17 +31,19 @@ export function EditorBase<TEditorState extends { createAnother: boolean },TEnti
     const [makeApiCallState, makeApiCall] = useApiCall((dto: TDto) =>
             apiCall(dto)
                 .sideEffect(result => {
-                    dataDispatch(dataDispatchAction(result));
+                    if(dataDispatchAction !== undefined)
+                        dataDispatch(dataDispatchAction(result));
                 })
         , [apiCall, dataDispatchAction]);
     
     const handleSubmit = useCallback((event: React.ChangeEvent<HTMLFormElement>) => {
-        console.log(state);
+        event.preventDefault();
+        
+        if(validator !== undefined && !validator(state)) return;
+            
         setCloseAfterLoad(!state.createAnother);
         makeApiCall(editorStateToDto(state));
-
-        event.preventDefault();
-    }, [state, setCloseAfterLoad, makeApiCall, editorStateToDto])
+    }, [state, setCloseAfterLoad, makeApiCall, editorStateToDto, validator])
 
     useEffect(() => {
         if(makeApiCallState instanceof Failed) {

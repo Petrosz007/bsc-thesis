@@ -9,8 +9,13 @@ import {NotificationContext} from "../components/contexts/NotificationProvider";
 import Modal from "../components/Modal";
 import {UserEditor} from "../components/editors/UserEditor";
 import AvatarUploader from "../components/editors/AvatarUploader";
+import {EditIcon, LogoutIcon} from "../SVGs";
 
-const UserSelfInfoDisplay = ({ user }: { user: UserSelfInfo }) => {
+import './Profile.scss';
+
+const ProfileInfo = ({ user }: { user: UserSelfInfo }) => {
+    const [editorOpen, setEditorOpen] = useState(false);
+    const [avatarEditorOpen, setAvatarEditorOpen] = useState(false);
     const [logoutState, logout] = useLogout();
     const { notificationDispatch } = useContext(NotificationContext);
 
@@ -21,41 +26,55 @@ const UserSelfInfoDisplay = ({ user }: { user: UserSelfInfo }) => {
     }, [logoutState]);
 
     return (
-        <div>
-            {logoutState instanceof Loading && <p>Logging out...</p>}
-            {logoutState instanceof Idle &&
-                <button className="buttonBase inverted" onClick={logout}>Kijelentkezés</button>
-            }
-
-            <p>Név: {user.name}</p>
-            <p>Felhasználónév: {user.userName}</p>
-            <p>Email: {user.email}</p>
-            {user.contractorPage !== null &&
-            <>
-                <p>Foglalkozás: {user.contractorPage.title}</p>
-                <p>Bio: {user.contractorPage.bio}</p>
-            </>
-            }
-        </div>
-    )
-}
-
-const ProfileInfo = ({ user }: { user: UserSelfInfo }) => {
-    const [editorOpen, setEditorOpen] = useState(false);
-
-    return (
-        <>
+        <div className="profilePage">
             {editorOpen &&
                 <Modal>
                     <UserEditor user={user} onClose={() => setEditorOpen(false)} />
                 </Modal>
             }
-            <button onClick={() => setEditorOpen(true)}>Szerkesztés</button>
-            {user.contractorPage !== null &&
-                <AvatarUploader />
+            {avatarEditorOpen && user.contractorPage !== null &&
+                <Modal>
+                    <AvatarUploader onClose={() => setAvatarEditorOpen(false)} user={user} />
+                </Modal>
             }
-            <UserSelfInfoDisplay user={user} />
-        </>
+            <div className="editButtons">
+                <button onClick={() => setEditorOpen(true)}><EditIcon className="editIcon" />Szerkesztés</button>
+                {user.contractorPage !== null &&
+                    <button onClick={() => setAvatarEditorOpen(true)}><EditIcon className="editIcon" />Profilkép Frissítése</button>
+                }
+                <button onClick={logout}><LogoutIcon className="logoutIcon" />Kijelentkezés</button>
+            </div>
+            
+            <div className="profileInfo">
+                <h2>Személyes adatok</h2>
+                <div className="profileInfoContent">
+                    <div>
+                        <span>Név</span>
+                        <p>{user.name}</p>
+                    </div>
+                    <div>
+                        <span>Felhasználónév</span>
+                        <p>{user.userName}</p>
+                    </div>
+                    <div>
+                        <span>Email</span>
+                        <p>{user.email}</p>
+                    </div>
+                    {user.contractorPage !== null &&
+                    <>
+                        <div>
+                            <span>Foglalkozás</span>
+                            <p>{user.contractorPage.title}</p>
+                        </div>
+                        <div>
+                            <span>Bio</span>
+                            <p>{user.contractorPage.bio}</p>
+                        </div>
+                    </>
+                    }
+                </div>
+            </div>
+        </div>
     );
 }
 
