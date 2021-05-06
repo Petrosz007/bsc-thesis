@@ -27,9 +27,9 @@ const ReportTable = ({ report }: { report: Report }) => {
         <table className="report-table">
             <thead>
             <tr>
-                <th>Kategória</th>
-                <th>Ár / alkalom</th>
-                <th>Alkalom</th>
+                <th>Megnevezés</th>
+                <th>Egységár</th>
+                <th>Darab</th>
                 <th>Összesen</th>
             </tr>
             </thead>
@@ -72,18 +72,23 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
         [usersAppointments, categories, owner, selectedUser]);
 
     return (
-        <div>
-            Ügyfél:
-            <UserSelector selectedUser={selectedUser} setSelectedUser={setSelectedUser} users={users} />
-
-            <DateRangePicker value={dateInterval} onChange={setDateInterval} />
-            <ReportTable report={report} />
-            <ul>
-            {usersAppointments.map(a => 
-                <li key={a.id}>{a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)} - {a.category.name}</li>
-            )}
-            </ul>
-            <button onClick={() => downloadReportPdf(report)}>Számla letöltése</button>
+        <div className="reportCard">
+            <h2>Számlázás</h2>
+            <div className="reportContent">
+                <p>Ügyfél:</p>
+                <UserSelector selectedUser={selectedUser} setSelectedUser={setSelectedUser} users={users} />
+            
+                <p>Intervallum:</p>
+                <DateRangePicker value={dateInterval} onChange={setDateInterval} />
+                
+                <ReportTable report={report} />
+                <ul>
+                {usersAppointments.map(a => 
+                    <li key={a.id}>{a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)} - {a.category.name}</li>
+                )}
+                </ul>
+                <button onClick={() => downloadReportPdf(report)}>Számla letöltése</button>
+            </div>
         </div>
     );
 }
@@ -125,7 +130,7 @@ const Reports = ({ user }: { user: User }) => {
         
         {state instanceof Loaded && 
             (users.length === 0
-                ? <div>No users attended your appointments.</div>
+                ? <p className="noUsersToReport">Egy ügyfél se foglalt időpontot még.</p>
                 : <ReportDisplay owner={user} users={users} appointments={appointments} categories={categories} />
             )}
         </>

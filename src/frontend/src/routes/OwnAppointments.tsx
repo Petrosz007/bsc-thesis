@@ -60,15 +60,18 @@ const OwnAppointments = ({ user }: { user: User }) => {
             
             <div className="newButtons">
                 <button onClick={() => setIsCategoryModalOpen(true)}><PlusIcon className="plusSVG" />Új kategória</button>
-                {categories.length === 0
-                    ? <p>Hozz létre egy kategóriát, hogy hirdethess időpontokat!</p>
-                    : <button onClick={() => setIsAppointmentModalOpen(true)}><PlusIcon className="plusSVG" />Új időpont</button>
+                {categories.length === 0 ||
+                    <button onClick={() => setIsAppointmentModalOpen(true)}><PlusIcon className="plusSVG" />Új időpont</button>
                 }
             </div>
             
-
-            <CategoriesEditable owner={user} categories={categories} />
-            <AppointmentAgendaEditable appointments={appointments} categories={categories} />
+            {categories.length === 0
+                ? <p className="noCategoriesFound">Hozz létre egy kategóriát, hogy hirdethess időpontokat!</p>
+                : <>
+                <CategoriesEditable owner={user} categories={categories} />
+                <AppointmentAgendaEditable appointments={appointments} categories={categories} />
+                </>
+            }
         </div>
         }
         </>

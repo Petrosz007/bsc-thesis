@@ -78,7 +78,9 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
                     <DateRangePicker value={dateInterval} onChange={setDateInterval} />
                 </div>
                 <div className="agenda-table">
-                    {Dictionary.keys(dictionary).map(key =>
+                    {Dictionary.keys(dictionary).length === 0
+                        ? <p className="noAppointmentsFound">Nem található egy időpont sem.</p>
+                        : Dictionary.keys(dictionary).map(key =>
                         <div className="agenda-table-day" key={key}>
                             <p className="agenda-date">{key}</p>
                             <div className="agendaDayCards">

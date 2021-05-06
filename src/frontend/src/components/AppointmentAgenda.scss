@@ -43,6 +43,14 @@
         color: #1a1a1a;
     }
     
+    .noAppointmentsFound {
+        text-align: center;
+        font-size: 1.1rem;
+        color: gray;
+        padding: 10px;
+        font-style: italic;
+    }
+    
     .agendaDayCards {
         display: flex;
         flex-direction: column;

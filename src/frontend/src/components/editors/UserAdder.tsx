@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, {useCallback, useContext, useEffect, useState} from "react"
 import {useApiCall, Loading, Failed, Idle} from "../../hooks/apiCallHooks";
 import { User } from "../../logic/entities";
 import { setValue } from "../../utilities/listExtensions";
@@ -18,39 +18,43 @@ const UserAdder = ({ usersToSelectFrom, users, setUsers, allowedUsers, max }: {
     allowedUsers?: User[],
     max?: number,
 }) => {
-    const { userRepo } = useContext(DIContext);
-    const { notificationDispatch } = useContext(NotificationContext);
+    // const { userRepo } = useContext(DIContext);
+    // const { notificationDispatch } = useContext(NotificationContext);
 
     const [selectedUser, setSelectedUser] = useState(usersToSelectFrom[0]);
 
-    const [addState, add] = useApiCall(() =>
-            userRepo.getByUserName(selectedUser.userName)
-                .andThen(user =>
-                    allowedUsers === undefined || allowedUsers.some(u => u.userName === user.userName)
-                        ? ResultPromise.ok<User,Error>(user)
-                        : ResultPromise.err<User,Error>(new Error(`${user.userName} is not allowed on this category. Edit the category accordingly.`))
-                )
-                .sideEffect(user => {
-                    setUsers(prevState => setValue(prevState, user, u => u.userName));
-                })
-        , [selectedUser]);
+    // const [addState, add] = useApiCall(() =>
+    //         userRepo.getByUserName(selectedUser.userName)
+    //             .andThen(user =>
+    //                 allowedUsers === undefined || allowedUsers.some(u => u.userName === user.userName)
+    //                     ? ResultPromise.ok<User,Error>(user)
+    //                     : ResultPromise.err<User,Error>(new Error(`${user.name} nem engedélyezett résztvevő a kategórián. Szekeszd a kategóriát, ha hozzá szeretnéd adni.`))
+    //             )
+    //             .sideEffect(user => {
+    //                 setUsers(prevState => setValue(prevState, user, u => u.userName));
+    //             })
+    //     , [selectedUser]);
+    
+    const add = useCallback((user: User) => {
+        setUsers(prevState => setValue(prevState, user, u => u.userName))
+    }, [setUsers]);
 
-    useEffect(() => {
-        if(addState instanceof Failed) {
-            notificationDispatch({ type: 'addError', message: `Error in UserAdder ${addState.error}` });
-        }
-    }, [addState]);
+    // useEffect(() => {
+    //     if(addState instanceof Failed) {
+    //         notificationDispatch({ type: 'addError', message: `${addState.error}` });
+    //     }
+    // }, [addState]);
 
-    const remove = (userName: string) => {
+    const remove = useCallback((userName: string) => {
         setUsers(prevState => prevState.filter(u => u.userName !== userName));
-    };
+    }, [setUsers]);
 
     return (
         <div className="userAdder">
             <div className="userAdderInputs">
                 <UserSelector className="userSelector" selectedUser={selectedUser} setSelectedUser={setSelectedUser} users={usersToSelectFrom} />
                 <button className="addButton" 
-                        onClick={e => {add(); e.preventDefault()}} 
+                        onClick={e => {add(selectedUser); e.preventDefault()}} 
                         disabled={max !== undefined && users.length >= max}
                 >
                     {max !== undefined && users.length >= max ? 'Betelt' : 'Felvétel'}
@@ -99,7 +103,7 @@ export default ({ users, setUsers, allowedUsers, max }: {
     
     return (
         <UserAdder 
-            usersToSelectFrom={allUsersState.value}
+            usersToSelectFrom={allowedUsers ?? allUsersState.value}
             users={users}
             setUsers={setUsers}
             allowedUsers={allowedUsers}
