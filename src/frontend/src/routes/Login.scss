@@ -1,0 +1,66 @@
+﻿@use "../components/styles/variables.scss" as var;
+
+.loginPage {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: var.$cardShadow;
+  overflow: hidden;
+  
+  width: 400px;
+  margin: 0 auto;
+
+  > h2 {
+    padding: 20px;
+    line-height: 2rem;
+    font-size: 2rem;
+
+    border-bottom: 2px solid var.$mainDark;
+    background-color: white;
+    color: var.$mainDark;
+  }
+
+  .loginForm {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      > label {
+        font-size: 1.07rem;
+        margin-bottom: 4px;
+        color: #5d5d5d;
+      }
+
+      > input, > textarea {
+        border: 1px solid hsl(0, 0%, 70%);
+        border-radius: 5px;
+        padding: 5px;
+      }
+    }
+    
+    > input[type=submit] {
+      width: 150px;
+      margin: 0 auto;
+
+      background: white;
+      color: #444;
+      padding: 8px;
+      border: 2px solid #888;
+      border-radius: 15px;
+      cursor: pointer;
+
+      transition: all 50ms ease-in-out;
+
+      &:hover {
+        background: var.$mainColor;
+        color: white;
+        border-color: var.$mainColor;
+      }
+    }
+  }
+}
