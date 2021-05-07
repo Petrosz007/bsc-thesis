@@ -17,6 +17,7 @@ import UserName from "../components/UserName";
 import {DateTime, Interval} from "luxon";
 import {DatePicker, DateRangePicker} from "../components/inputs/DatePicker";
 import UserSelector from "../components/inputs/UserSelector";
+import {BillIcon} from "../SVGs";
 
 const ReportTable = ({ report }: { report: Report }) => {
     const totalPrice = report.entries.reduce((acc, x) =>
@@ -82,12 +83,17 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
                 <DateRangePicker value={dateInterval} onChange={setDateInterval} />
                 
                 <ReportTable report={report} />
-                <ul>
+                <button className="reportGeneratorButton" onClick={() => downloadReportPdf(report)}><BillIcon className="billIcon"/>Számla letöltése</button>
+                
+                <h3>Számlázott időpontok</h3>
+                <ul className="reportAppointmentList">
                 {usersAppointments.map(a => 
-                    <li key={a.id}>{a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)} - {a.category.name}</li>
+                    <li key={a.id}>
+                        <span className="reportTime">{a.startTime.toFormat('yyyy.MM.dd, cccc')}</span>
+                        <span className="reportCategory">{a.category.name}</span>
+                    </li>
                 )}
                 </ul>
-                <button onClick={() => downloadReportPdf(report)}>Számla letöltése</button>
             </div>
         </div>
     );

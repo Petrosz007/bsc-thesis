@@ -44,7 +44,7 @@
             //box-shadow: 0 0 0 2px #c8c8c8; /* this draws the table border  */
 
             td {
-                border-bottom: 2px solid #c8c8c8;
+                border-bottom: 2px solid #e8e8e8;
             }
             
             th, td {
@@ -64,10 +64,78 @@
             }
             
             thead tr:last-child th {
-                border-bottom: 2px solid black;
+                border-bottom: 2px solid #6c6c6c;
                 
                 &:first-child {
                     text-align: left;
+                }
+            }
+        }
+        
+        .reportGeneratorButton {
+            $color: #707070;
+            $hoverColor: black;
+
+            margin-top: 20px;
+            margin-right: 20px;
+            padding: 10px;
+            font-size: 1rem;
+
+            color: $color;
+            background-color: white;
+            cursor: pointer;
+            border-radius: 20px;
+            border: 2px solid #d9d9d9;
+            box-shadow: var.$cardShadow;
+
+            transition: all 50ms ease-in-out;
+
+            &:hover {
+                color: $hoverColor;
+                border-color: $hoverColor;
+
+                .billIcon {
+                    fill: $hoverColor;
+                }
+            }
+
+            .billIcon {
+                height: 1rem;
+                width: 1rem;
+                fill: $color;
+                margin-right: 3px;
+                padding-top: 3px;
+
+                transition: fill 50ms ease-in-out;
+            }
+        }
+        
+        > h3 {
+            font-size: 1.2rem;
+            color: var.$mainDark;
+            margin-top: 50px;
+            margin-bottom: 15px;
+        }
+        
+        .reportAppointmentList {
+            display: flex;
+            flex-direction: column;
+            
+            gap: 10px;
+            
+            > li {
+                list-style: none;
+                display: grid;
+                grid-template-columns: 200px auto;
+                
+                .reportTime {
+                    grid-column: 1 / 2;
+                    color: gray;
+                }
+                
+                .reportCategory {
+                    grid-column: 2 / 3;
+                    color: gray;
                 }
             }
         }

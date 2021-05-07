@@ -7,6 +7,7 @@
     overflow: hidden;
 
     h2 {
+        position: relative;
         padding: 20px;
         line-height: 2rem;
         font-size: 2rem;
@@ -14,6 +15,26 @@
         border-bottom: 2px solid var.$mainDark;
         background-color: white;
         color: var.$mainDark;
+        
+        button {
+            position: absolute;
+            top: 1.3rem;
+            right: 1.3rem;
+            
+            border: none;
+            background: transparent;
+            height: 1.5rem;
+            width: 1.5rem;
+            cursor: pointer;
+            
+            
+            .downIcon {
+                height: 100%;
+                width: 100%;
+                fill: var.$mainDark;
+                transform: rotateX(180deg);
+            }
+        }
     }
     
     .categoryCards {
@@ -22,6 +43,7 @@
         
         padding: 20px 30px;
         row-gap: 15px;
+        
         
         > div {
             margin: 4px 0;
@@ -35,6 +57,17 @@
             &:last-child {
                 display: none;
             }
+        }
+    }
+    
+    &.collapsed {
+        .categoryCards {
+            max-height: 0;
+            padding: 0;
+        }
+        
+        .downIcon {
+            transform: rotateX(0deg);
         }
     }
 }

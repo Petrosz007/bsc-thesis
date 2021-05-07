@@ -18,32 +18,11 @@ const UserAdder = ({ usersToSelectFrom, users, setUsers, allowedUsers, max }: {
     allowedUsers?: User[],
     max?: number,
 }) => {
-    // const { userRepo } = useContext(DIContext);
-    // const { notificationDispatch } = useContext(NotificationContext);
-
     const [selectedUser, setSelectedUser] = useState(usersToSelectFrom[0]);
 
-    // const [addState, add] = useApiCall(() =>
-    //         userRepo.getByUserName(selectedUser.userName)
-    //             .andThen(user =>
-    //                 allowedUsers === undefined || allowedUsers.some(u => u.userName === user.userName)
-    //                     ? ResultPromise.ok<User,Error>(user)
-    //                     : ResultPromise.err<User,Error>(new Error(`${user.name} nem engedélyezett résztvevő a kategórián. Szekeszd a kategóriát, ha hozzá szeretnéd adni.`))
-    //             )
-    //             .sideEffect(user => {
-    //                 setUsers(prevState => setValue(prevState, user, u => u.userName));
-    //             })
-    //     , [selectedUser]);
-    
     const add = useCallback((user: User) => {
         setUsers(prevState => setValue(prevState, user, u => u.userName))
     }, [setUsers]);
-
-    // useEffect(() => {
-    //     if(addState instanceof Failed) {
-    //         notificationDispatch({ type: 'addError', message: `${addState.error}` });
-    //     }
-    // }, [addState]);
 
     const remove = useCallback((userName: string) => {
         setUsers(prevState => prevState.filter(u => u.userName !== userName));

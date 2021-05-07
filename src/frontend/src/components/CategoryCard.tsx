@@ -5,7 +5,7 @@ import './CategoryCard.scss';
 import {CategoryEditorUpdate} from "./editors/CategoryEditor";
 import Modal from "./Modal";
 import CategoryViewer from "./CategoryViewer";
-import {EditIcon, InfoIcon} from "../SVGs";
+import {DownArrow, EditIcon, InfoIcon} from "../SVGs";
 
 export const CategoryCardEditable = ({ category, onEdit, onView }: { 
     category: Category, 
@@ -30,6 +30,7 @@ export const CategoryCardEditable = ({ category, onEdit, onView }: {
 export const CategoriesEditable = ({ owner, categories }: { owner: User, categories: Category[] }) => {
     const [categoryToEdit, setCategoryToEdit] = useState<Category|undefined>(undefined);
     const [categoryToView, setCategoryToView] = useState<Category|undefined>(undefined);
+    const [collapsed, setCollapsed] = useState(false);
     
     return (
         <>
@@ -43,8 +44,8 @@ export const CategoriesEditable = ({ owner, categories }: { owner: User, categor
                  <CategoryViewer category={categoryToView} onClose={() => setCategoryToView(undefined)}/>
              </Modal>
         }
-        <div className="categories">
-            <h2>Kategóriák</h2>
+        <div className={`categories ${collapsed ? 'collapsed' : ''}`}>
+            <h2>Kategóriák <button onClick={() => setCollapsed(!collapsed)}><DownArrow className="downIcon"/></button></h2>
             <div className="categoryCards">
                 {categories.map(category =>
                     <React.Fragment key={category.id}>

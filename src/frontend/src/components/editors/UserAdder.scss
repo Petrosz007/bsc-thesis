@@ -35,7 +35,7 @@
   .userAdderUsers {
     margin-top: 10px;
     overflow-y: scroll;
-    height: 150px;
+    max-height: 150px;
     
     li {
       list-style: none;

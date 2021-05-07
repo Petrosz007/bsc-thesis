@@ -1,6 +1,10 @@
-﻿.avatarEditorPreview {
+﻿@use "../styles/variables.scss" as var;
+
+.avatarEditorPreview {
   width: 400px;
   height: 400px;
   margin: 0 auto;
   object-fit: cover;
+  border-radius: 12px;
+  box-shadow: var.$cardShadow;
 }
