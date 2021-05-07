@@ -1,7 +1,5 @@
 ﻿import React, {useMemo} from "react";
 import {Appointment} from "../logic/entities";
-
-import './AppointmentViewer.scss';
 import UserName from "./UserName";
 import {DateTime} from "luxon";
 
@@ -41,7 +39,7 @@ export default ({ appointment, onClose }: { appointment: Appointment, onClose: (
                 </div>
             </div>
             <div className="viewer-footer">
-                <button className="viewer-footer" onClick={e => {e.preventDefault(); onClose();}}>Mégse</button>
+                <button className="viewer-footer" onClick={e => {e.preventDefault(); onClose();}}>Bezárás</button>
             </div>
         </div>
     );

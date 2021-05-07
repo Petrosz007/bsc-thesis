@@ -37,7 +37,7 @@ export default ({ category, onClose }: { category: Category, onClose: () => void
                 </div>
             </div>
             <div className="viewer-footer">
-                <button className="viewer-footer" onClick={e => {e.preventDefault(); onClose();}}>Mégse</button>
+                <button className="viewer-footer" onClick={e => {e.preventDefault(); onClose();}}>Bezárás</button>
             </div>
         </div>
     );

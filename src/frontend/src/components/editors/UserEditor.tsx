@@ -5,8 +5,6 @@ import {UserSelfInfo} from "../../logic/entities";
 import { DIContext } from "../contexts/DIContext";
 import {ResultPromise} from "../../utilities/result";
 import {EditorBase} from "./EditorBase";
-
-import './CategoryEditor.scss';
 import {LoginContext} from "../contexts/LoginProvider";
 
 interface UserEditData {

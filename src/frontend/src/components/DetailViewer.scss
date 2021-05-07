@@ -63,6 +63,20 @@
   
     button {
       float: right;
+      background: none;
+      color: #444;
+      padding: 8px;
+      border: 2px solid #888;
+      border-radius: 15px;
+      cursor: pointer;
+
+      transition: all 50ms ease-in-out;
+
+      &:hover {
+        background: #444;
+        color: white;
+        border-color: #444;
+      }
     }
   }
 }
