@@ -1,19 +1,15 @@
-import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
-import { useApiCall, Failed, Loaded } from "../../hooks/apiCallHooks";
-import { useHandleChange } from "../../hooks/useEditorForm";
+import React, {useCallback, useContext, useMemo, useState} from "react";
 import { AppointmentDTO } from "../../logic/dtos";
 import { Appointment, Category, User } from "../../logic/entities";
-import {DataAction, DataContext} from "../contexts/DataProvider";
-import { DIContext } from "../contexts/DIContext";
+import {DataAction} from "../contexts/DataProvider";
 import UserAdder from "./UserAdder";
-
-// import './AppointmentEditor.scss';
-import { NotificationContext } from "../contexts/NotificationProvider";
 import { ResultPromise } from "../../utilities/result";
 import {DateTime} from "luxon";
 import {EditorBase} from "./EditorBase";
 import Select from "react-select";
 import {DateTimePicker} from "../inputs/DatePicker";
+import {NotificationContext} from "../contexts/NotificationProvider";
+import {DIContext} from "../contexts/DIContext";
 
 interface AppointmentEditdata {
     id: number;
@@ -107,8 +103,6 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
             <div className="editorGroup">
                 <label htmlFor="startTimeDate">Kezdés</label>
                 <div>
-                    {/*<input type="date" name="startTimeDate" value={state.startTimeDate} onChange={handleChange} />*/}
-                    {/*<input type="time" name="startTimeTime" value={state.startTimeTime} onChange={handleChange} />*/}
                     <DateTimePicker valueDate={state.startTime} 
                                     onChangeDate={x => setState(prevState => ({ 
                                         ...prevState, 
@@ -121,8 +115,6 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
             <div className="editorGroup">
                 <label htmlFor="startTimeDate">Vége</label>
                 <div>
-                    {/*<input type="date" name="endTimeDate" value={state.endTimeDate} min={state.startTime.toISODate()} onChange={handleChange} />*/}
-                    {/*<input type="time" name="endTimeTime" value={state.endTimeTime} onChange={handleChange} />*/}
                     <DateTimePicker valueDate={state.endTime}
                                     onChangeDate={x => setState(prevState => ({ ...prevState, endTime: x }))}
                                     minDate={state.startTime}

@@ -7,8 +7,6 @@ import UserAdder from "./UserAdder";
 import {ResultPromise} from "../../utilities/result";
 import {EditorBase} from "./EditorBase";
 
-// import './CategoryEditor.scss';
-
 interface CategoryEditdata {
     id: number;
     name: string;

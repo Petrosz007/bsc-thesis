@@ -1,0 +1,68 @@
+﻿@use "./styles/variables" as var;
+
+.detailViewer {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: auto auto 1fr;
+  height: 100%;
+  row-gap: 20px;
+
+  .viewer-header {
+    color: var.$mainDark;
+
+    font-size: 1.5rem;
+    position: relative;
+
+    &:after {
+      $padding: 20px;
+      display: block;
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: -$padding;
+      width: calc(100% + #{$padding}*2);
+      height: 2px;
+      background-color: var.$mainDark;
+    }
+  }
+
+  .viewer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      > span {
+        font-size: 1.1rem;
+        color: #797979;
+      }
+      
+      .allowedUsersList {
+        margin-top: 10px;
+        max-height: 250px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        
+        gap: 10px;
+        
+        li {
+          list-style: none;
+        }
+      }
+    }
+  }
+
+  .viewer-footer {
+    grid-row: -2 / -1;
+    align-self: end;
+  
+    button {
+      float: right;
+    }
+  }
+}
