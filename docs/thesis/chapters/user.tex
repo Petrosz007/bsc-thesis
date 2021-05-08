@@ -55,33 +55,119 @@ Időpont szerkesztésnél a vállalkozónak van lehetősége változtatni egy id
 
 A számlázás funkciónál a vállalkozók adott felhasználók lefoglalt időpontjaiból tudnak számlát generálni egy időszakra, például Április 1 és 30 között. Ez a számla jelenlegi formájában nem minősül NAV által elfogadott számlának, viszont a vállalkozónak nagyon jó segítség, hogy a saját számlázó szoftverébe (pl.: számlázz.hu) miről írjon számlát. Az alkalmazásba azért se került online fizetési lehetőség vagy számlázz.hu integráció, mert a valóságban az időpontokon kívül mást is tartalmazni szokott a számla (pl.: edzőterem bérlet, edzésterv) és ezekre akkor ezen felül egy külön számlát kéne kiállítania a vállalkozónak.
 
+\clearpage
+
 \section{Használat}
 
-A regisztrációs oldalon lehet regisztrálni az alkalmazásba. Itt meg kell adni egy felhasználónevet, saját nevet, email címet, jelszót. Van leehtőség vállalkozóként regisztrálni, ekkor meg kell adni a foglalkozást és egy magáról szóló rövid leírást is.
+A regisztrációs oldalon lehet regisztrálni az alkalmazásba. Itt meg kell adni egy felhasználónevet, saját nevet, email címet, jelszót. Van lehetőség vállalkozóként regisztrálni, ekkor meg kell adni a foglalkozást és egy magáról szóló rövid leírást is.
 
 Regisztráció után automatikusan be is jelentkeztet az oldal. Ekkor elérhető a saját profil oldal, ahova a navigációs sáv jobb fölső sarkában a saját névre kattintva lehet eljutni.
 
-A profil oldalon láthatók a személyes adatok, a Szerkesztés gombbal lehet ezeket szerkeszteni. \todo{profil szerkesztése png} Vállalkozók a Profilkép Frissítése gombbal lecserélhetik a profilképüket. \todo{profilkép frissítés}.
+A profil oldalon láthatók a személyes adatok, a Szerkesztés gombbal lehet ezeket szerkeszteni. Vállalkozók a Profilkép Frissítése gombbal lecserélhetik a profilképüket.
 
-Kijelentkezni szintén a profil oldalon lehet. Bejelentkezni a Navigációs sávon a Bejelentkezés gombbal lehet, felhasználónévvel és jelszóval. \todo{bejelentkezés png}
+\begin{figure}[H]
+    \centering
+    \subfigure[Profil szerkesztése]{
+        \includegraphics[width=0.45\textwidth]{css/profile_editor}
+    }
+    \subfigure[Profilkép frissítése]{
+        \includegraphics[width=0.45\textwidth]{css/avatar_editor}
+    }
+    \caption{Profil és profilkép szerkesztése}
+\end{figure}
+
+% \clearpage
+
+Kijelentkezni szintén a profil oldalon lehet. Bejelentkezni a Navigációs sávon a Bejelentkezés gombbal lehet, felhasználónévvel és jelszóval.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=1.0\textwidth]{css/register}
+%     \caption{Regisztrációs oldal}
+% \end{figure}
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=1.0\textwidth]{css/login}
+%     \caption{Bejelentkező oldal}
+% \end{figure}
 
 \subsection{Ügyfeleknek}
 
-Az alkalmazásban a Vállalkozók fülre kattintva lehet böngészni a vállalkozók között. Itt megjelennek a vállalkozók profilképei, nevei, foglalkozásai és leírásai. \todo{contractors.png} 
+Az alkalmazásban a Vállalkozók fülre kattintva lehet böngészni a vállalkozók között. Itt megjelennek a vállalkozók profilképei, nevei, foglalkozásai és leírásai.
 
-Egy vállalkozó nevére kattintva böngészhetjük a vállalkozó időpontjait. Ezeket lehet szűrni kategóriák és kezdő dátum szerint, például szűrhetünk csak május 15 és június 13 közötti időpontokra. Egy időpontnál látható a kezdés és alatta a befejezés időpontja, a az időpont kategóriájának neve, leírása, ára és, hogy hány szabad hely van. Bejelentkezéssel látható egy Foglalás vagy Lemondás gomb, ezzel lehet lefoglalni vagy lemondani az időpontot. A vállalkozói oldalon nem jelennek meg olyan időpontok, amik tele vannak vagy amikre az ügyfél nincs engedélyezve. \todo{one contractor detail png}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{css/contractors}
+    \caption{Vállalkozó böngésző oldal}
+\end{figure}
 
-A Foglalások oldalon találhatók az általunk lefoglalt időpontok. Ugyan úgy lehet őket szűrni, mint a vállalkozók időpontjait. \todo{Foglalások png}
+Egy vállalkozó nevére kattintva böngészhetjük a vállalkozó időpontjait. Ezeket lehet szűrni kategóriák és kezdő dátum szerint, például szűrhetünk csak május 15 és június 13 közötti időpontokra. Egy időpontnál látható a kezdés és alatta a befejezés időpontja, a az időpont kategóriájának neve, leírása, ára és, hogy hány szabad hely van. Bejelentkezéssel látható egy Foglalás vagy Lemondás gomb, ezzel lehet lefoglalni vagy lemondani az időpontot. A vállalkozói oldalon nem jelennek meg olyan időpontok, amik tele vannak vagy amikre az ügyfél nincs engedélyezve.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{css/contractor}
+    \caption{Egy vállalkozó oldala}
+\end{figure}
+
+A Foglalások oldalon találhatók az általunk lefoglalt időpontok. Ugyan úgy lehet őket szűrni, mint a vállalkozók időpontjait.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{css/booked}
+    \caption{Lefoglalt időpontok oldala}
+\end{figure}
+
+\clearpage
 
 \subsection{Vállalkozóknak}
 
-A vállalkozóknak elérhető az összes funkció ami az ügyefeleknek. 
+A vállalkozóknak elérhető az összes funkció ami az ügyfeleknek. 
 
-A Vállalkozói oldalon tudják a kategóriáikat és az időpontjaikat kezelni. A Kategóriák alatt találhatók meg a kategóriáik, ezeket meg tudják tekinteni és szerkeszteni. \todo{kategóriák png} Egy kategória létrehozásánál vagy szerkesztésénél felvehetik egy kategória adatait. Ha nem nyílt az esemény, akkor egy lenyíló menüből választhatnak az ügyfelek közül, akiket a Felvétel gombbal engedélyezhetnek egy kategóriára. \todo{cat edit png}
+A Vállalkozói oldalon tudják a kategóriáikat és az időpontjaikat kezelni. A Kategóriák alatt találhatók meg a kategóriáik, ezeket meg tudják tekinteni és szerkeszteni. Az Időpontok alatt szűrhetően a saját időpontok találhatók.
 
-Az időpontokat ugyan úgy lehet szűrni mint a vállalkozói oldalon, azon felül egy megtekintő, szerkesztő és törlő gomb található rajtuk. A megtekintés és a szerkesztés hasonló egy kategória szerkesztéséhez és megtekintéséhez. \todo{app edit png}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{css/own_everything}
+    \caption{Saját kategóriák és időpontok}
+\end{figure}
 
-A Számlázás oldalon tudják adott ügyfélnek egy időintervallumban a lefoglalt időpontjaikat összegezni. \todo{report page png} A számla letöltése gombbal a jelenlegi szűrés eredményeiből lehet egy PDF formátumú számlát generálni. \todo{report pdf png}
+\clearpage
+
+\subsubsection{Kategóriák és Időpontok kezelése}
+
+Egy kategória létrehozásánál vagy szerkesztésénél felvehetik egy kategória adatait. Ha nem nyílt az esemény, akkor egy lenyíló menüből választhatnak az ügyfelek közül, akiket a Felvétel gombbal engedélyezhetnek egy kategóriára.
+
+\begin{figure}[H]
+    \centering
+    \subfigure[Kategória megtekintése]{
+        \includegraphics[width=0.45\textwidth]{css/cat_viewer}
+    }
+    \subfigure[Kategória frissítése]{
+        \includegraphics[width=0.45\textwidth]{css/cat_editor}
+    }
+    \caption{Kategória megtekintése és szerkesztése}
+\end{figure}
+
+Az időpontokat ugyan úgy lehet szűrni mint a vállalkozói oldalon, azon felül egy megtekintő, szerkesztő és törlő gomb található rajtuk. A megtekintés és a szerkesztés hasonló egy kategória szerkesztéséhez és megtekintéséhez.
+
+\clearpage
+
+\subsubsection{Számlázás}
+
+A Számlázás oldalon tudják adott ügyfélnek egy időintervallumban a lefoglalt időpontjaikat összegezni. A számla letöltése gombbal a jelenlegi szűrés eredményeiből lehet egy PDF formátumú számlát generálni.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{css/reports2}
+    \caption{Számlázás oldal}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{css/invoice}
+    \caption{PDF formátumú számla}
+\end{figure}
 
 
 
