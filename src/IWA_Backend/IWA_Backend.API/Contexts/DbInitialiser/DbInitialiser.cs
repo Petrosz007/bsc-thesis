@@ -69,8 +69,11 @@ namespace IWA_Backend.API.Contexts.DbInitialiser
             };
             await RoleManager.CreateAsync(role);
 
-            await UserManager.AddToRoleAsync(Context.Users.First(u => u.UserName == "contractor1"), "Contractor");
-            await UserManager.AddToRoleAsync(Context.Users.First(u => u.UserName == "contractor2"), "Contractor");
+            var contractors = Context.Users.Where(u => u.ContractorPage != null).ToList();
+            foreach (var contractor in contractors)
+            {
+                await UserManager.AddToRoleAsync(contractor, "Contractor");
+            }
             await Context.SaveChangesAsync();
 
 

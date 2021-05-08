@@ -57,23 +57,31 @@ A számlázás funkciónál a vállalkozók adott felhasználók lefoglalt időp
 
 \section{Használat}
 
-\todo{Használati rész kifejte screenshotokkal, ha kész a CSS}
+A regisztrációs oldalon lehet regisztrálni az alkalmazásba. Itt meg kell adni egy felhasználónevet, saját nevet, email címet, jelszót. Van leehtőség vállalkozóként regisztrálni, ekkor meg kell adni a foglalkozást és egy magáról szóló rövid leírást is.
 
-Regisztráció, bejelentkezés
+Regisztráció után automatikusan be is jelentkeztet az oldal. Ekkor elérhető a saját profil oldal, ahova a navigációs sáv jobb fölső sarkában a saját névre kattintva lehet eljutni.
+
+A profil oldalon láthatók a személyes adatok, a Szerkesztés gombbal lehet ezeket szerkeszteni. \todo{profil szerkesztése png} Vállalkozók a Profilkép Frissítése gombbal lecserélhetik a profilképüket. \todo{profilkép frissítés}.
+
+Kijelentkezni szintén a profil oldalon lehet. Bejelentkezni a Navigációs sávon a Bejelentkezés gombbal lehet, felhasználónévvel és jelszóval. \todo{bejelentkezés png}
 
 \subsection{Ügyfeleknek}
-Felhasználói leírás, hogy lehet böngészni a vállalkozókat, hogy lehet szűrni az időpontokat, hogy lehet lefoglalni időpontot, foglalt időpontokat hol lehet megnézni, hogy lehet lemondani időpontot, saját profilt megnézni és szerkeszteni
+
+Az alkalmazásban a Vállalkozók fülre kattintva lehet böngészni a vállalkozók között. Itt megjelennek a vállalkozók profilképei, nevei, foglalkozásai és leírásai. \todo{contractors.png} 
+
+Egy vállalkozó nevére kattintva böngészhetjük a vállalkozó időpontjait. Ezeket lehet szűrni kategóriák és kezdő dátum szerint, például szűrhetünk csak május 15 és június 13 közötti időpontokra. Egy időpontnál látható a kezdés és alatta a befejezés időpontja, a az időpont kategóriájának neve, leírása, ára és, hogy hány szabad hely van. Bejelentkezéssel látható egy Foglalás vagy Lemondás gomb, ezzel lehet lefoglalni vagy lemondani az időpontot. A vállalkozói oldalon nem jelennek meg olyan időpontok, amik tele vannak vagy amikre az ügyfél nincs engedélyezve. \todo{one contractor detail png}
+
+A Foglalások oldalon találhatók az általunk lefoglalt időpontok. Ugyan úgy lehet őket szűrni, mint a vállalkozók időpontjait. \todo{Foglalások png}
 
 \subsection{Vállalkozóknak}
-vállalkozói oldal, kategória létrehozás, szerkesztés, megtekintés
 
-Időpont létrehozás, megtekintés, szerkesztés, törlés
+A vállalkozóknak elérhető az összes funkció ami az ügyefeleknek. 
 
-profil szerkesztése, profilkép frissítése
+A Vállalkozói oldalon tudják a kategóriáikat és az időpontjaikat kezelni. A Kategóriák alatt találhatók meg a kategóriáik, ezeket meg tudják tekinteni és szerkeszteni. \todo{kategóriák png} Egy kategória létrehozásánál vagy szerkesztésénél felvehetik egy kategória adatait. Ha nem nyílt az esemény, akkor egy lenyíló menüből választhatnak az ügyfelek közül, akiket a Felvétel gombbal engedélyezhetnek egy kategóriára. \todo{cat edit png}
 
-számlázás, szűrés, számla letöltése
+Az időpontokat ugyan úgy lehet szűrni mint a vállalkozói oldalon, azon felül egy megtekintő, szerkesztő és törlő gomb található rajtuk. A megtekintés és a szerkesztés hasonló egy kategória szerkesztéséhez és megtekintéséhez. \todo{app edit png}
 
-
+A Számlázás oldalon tudják adott ügyfélnek egy időintervallumban a lefoglalt időpontjaikat összegezni. \todo{report page png} A számla letöltése gombbal a jelenlegi szűrés eredményeiből lehet egy PDF formátumú számlát generálni. \todo{report pdf png}
 
 
 
