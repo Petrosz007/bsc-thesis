@@ -15,8 +15,8 @@ Az alkalmazást legegyszerűbben Docker\footnote{\url{https://www.docker.com/}} 
 
 A Dockeres telepítéshez szükséges a Docker\footnote{\url{https://www.docker.com/get-started}} és Docker Compose\footnote{\url{https://docs.docker.com/compose/install/}} telepítése.
 
-A fő mappában megtalálható \textit{docker-compse.yml} fájlban találhatók meg a konténerek konfigurációi. Három konténerből áll, egy MariaDB \footnote{\url{https://mariadb.org/}} adatbázisból, a backend REST API-ból és a frontendből.
-A yml fájlban a konfigurációs lehetőségek a \ref{tab:config} táblázatban találhatók.
+A fő mappában a \textit{docker-compse.yml} fájlban találhatók meg a konténerek konfigurációi. Három konténerből áll, egy MariaDB \footnote{\url{https://mariadb.org/}} adatbázisból, a backend REST API-ból és a frontendből.
+A yml fájlban a konfigurációs lehetőségek az \ref{tab:config} táblázatban találhatók.
 
 Az alap beállításokkal a \textit{http://localhost:8100}-on érhető el az alkalmazás. HTTPS-t és tűzfalat érdemes bekonfigurálni egy Reverse Proxy\cite{nginxReverseProxy}-val, például Nginx-el.
 
@@ -28,9 +28,9 @@ További docker-compose parancsok a docker-compose dokumentációjában\footnote
 
 Az alkalmazás futtatásához szükség lesz egy MariaDB szerverre és azon belül egy \textit{iwa} nevű adatbázisra. Az alkalmazás Linux és Windows rendszereken is futhat, ehhez a megfelelő backend fájl futtatása szükséges.
 
-A backend futtatása parancssorból az \textit{IWA\_Backend.API} futtatható fájllal lehet. A konfigurációja az \text{appsettings.json} fájlban található, kitöltése a \ref{tab:config} táblázat alapján történik. A backend így a host 80-as portján fog futni. \\ Ezt a \textit{$--$urls=http://localhost:5001/} konzoli argumentummal lehet megváltoztatni, ebben az esetben az 5001-es porton futna az alkalmazás.
+A backend futtatása parancssorból az \textit{IWA\_Backend.API} futtatható fájllal lehet. A konfigurációja az \text{appsettings.json} fájlban található, kitöltése az \ref{tab:config} táblázat alapján történik. A backend így a host 80-as portján fog futni. \\ Ezt a \textit{$--$urls=http://localhost:5001/} konzoli argumentummal lehet megváltoztatni, ebben az esetben az 5001-es porton futna az alkalmazás.
 
-A frontend statikus HTML, JS és CSS fájlokból áll, ezt például Apache\footnote{\url{https://httpd.apache.org/}} vagy Nginx\footnote{\url{https://www.nginx.com/}} szerverekkel, vagy más hasonló webhost szolgáltatásokkal lehet kitelepíteni. A frontend konfigurációja a mappájában a \textit{config.js} fájlban történik, kitöltési útmutató a \ref{tab:config} táblázatban található.
+A frontend statikus HTML, JS és CSS fájlokból áll, ezt például Apache\footnote{\url{https://httpd.apache.org/}} vagy Nginx\footnote{\url{https://www.nginx.com/}} szerverekkel, vagy más hasonló webhost szolgáltatásokkal lehet kitelepíteni. A frontend konfigurációja a mappájában a \textit{config.js} fájlban történik, kitöltési útmutató az \ref{tab:config} táblázatban található.
 
 \section{Funkciók leírása}
 \label{sec:functionDefinitions}
@@ -102,7 +102,7 @@ Az alkalmazásban a Vállalkozók fülre kattintva lehet böngészni a vállalko
     \caption{Vállalkozó böngésző oldal}
 \end{figure}
 
-Egy vállalkozó nevére kattintva böngészhetjük a vállalkozó időpontjait. Ezeket lehet szűrni kategóriák és kezdő dátum szerint, például szűrhetünk csak május 15 és június 13 közötti időpontokra. Egy időpontnál látható a kezdés és alatta a befejezés időpontja, a az időpont kategóriájának neve, leírása, ára és, hogy hány szabad hely van. Bejelentkezéssel látható egy Foglalás vagy Lemondás gomb, ezzel lehet lefoglalni vagy lemondani az időpontot. A vállalkozói oldalon nem jelennek meg olyan időpontok, amik tele vannak vagy amikre az ügyfél nincs engedélyezve.
+Egy vállalkozó nevére kattintva böngészhetjük a vállalkozó időpontjait. Ezeket lehet szűrni kategóriák és kezdő dátum szerint, például szűrhetünk csak május 15 és június 13 közötti időpontokra. Egy időpontnál látható a kezdés és alatta a befejezés időpontja, az időpont kategóriájának neve, leírása, ára és, hogy hány szabad hely van. Bejelentkezéssel látható egy Foglalás vagy Lemondás gomb, ezzel lehet lefoglalni vagy lemondani az időpontot. A vállalkozói oldalon nem jelennek meg olyan időpontok, amik tele vannak vagy amikre az ügyfél nincs engedélyezve.
 
 \begin{figure}[H]
     \centering
@@ -122,9 +122,7 @@ A Foglalások oldalon találhatók az általunk lefoglalt időpontok. Ugyan úgy
 
 \subsection{Vállalkozóknak}
 
-A vállalkozóknak elérhető az összes funkció ami az ügyfeleknek. 
-
-A Vállalkozói oldalon tudják a kategóriáikat és az időpontjaikat kezelni. A Kategóriák alatt találhatók meg a kategóriáik, ezeket meg tudják tekinteni és szerkeszteni. Az Időpontok alatt szűrhetően a saját időpontok találhatók.
+A vállalkozóknak elérhető az összes funkció, ami az ügyfeleknek. A Vállalkozói oldalon tudják a kategóriáikat és az időpontjaikat kezelni. A Kategóriák alatt találhatók meg a kategóriáik, ezeket meg tudják tekinteni és szerkeszteni. Az Időpontok alatt szűrhetően a saját időpontok találhatók.
 
 \begin{figure}[H]
     \centering
@@ -155,7 +153,7 @@ Az időpontokat ugyan úgy lehet szűrni mint a vállalkozói oldalon, azon fel�
 
 \subsubsection{Számlázás}
 
-A Számlázás oldalon tudják adott ügyfélnek egy időintervallumban a lefoglalt időpontjaikat összegezni. A számla letöltése gombbal a jelenlegi szűrés eredményeiből lehet egy PDF formátumú számlát generálni.
+A Számlázás oldalon lehet adott ügyfélnek egy időintervallumban a lefoglalt időpontjaikat összegezni. A számla letöltése gombbal a jelenlegi szűrés eredményeiből lehet egy PDF formátumú számlát generálni.
 
 \begin{figure}[H]
     \centering

@@ -8,7 +8,7 @@
 Az alkalmazás két részből áll, egy böngészős frontendből és egy szerveren futó backendből. Az alkalmazás funkcióit a \ref{sec:functionDefinitions} részben írtam le bővebben. Tervezés szempontjából a funkcionális követelmények a következők:
 
 \begin{compactitem}
-	\item Egy kategória látható egy felhasználónak, ha: nyílt a kategória, a felhasználó hozta létre a kategóriát, a felhasználó engedélyezve van a kategórián, a felhasználó résztvevő egy időponton ami aminek ez a kategóriája
+	\item Egy kategória látható egy felhasználónak, ha: nyílt a kategória, a felhasználó hozta létre a kategóriát, a felhasználó engedélyezve van a kategórián, a felhasználó résztvevő egy időponton aminek ez a kategóriája
 	\item Egy időpont látható egy felhasználónak, ha látható a kategóriája vagy ha résztvevő az időponton
 	\item Kategóriát nem lehet törölni
 	\item Profilkép feltöltésnél validálni kell a fájl típusát és méretét
@@ -48,13 +48,13 @@ Mivel az API-t így programatikusan tudjuk elérni, ezért más alkalmazásokkal
 
 A REST API állapot mentes, ami azt jelenti, hogy a szerver nem függ valamilyen kontextustól, csak a kérésben szereplő adattal elég dolgoznia. Ez lehetővé teszi, hogy a backend több szerveren horizontálisan egy load balancer (terheléselosztó) segítségével legyen skálázva. Egy ilyen rendszerben az egymást követő kérések akár különböző backend példányokhoz futhatnak be, az alkalmazás ugyan olyan pontosan működik.
 
-A programozható felület lehetővé teszi, hogy a szerver ne teljes oldalakat küldjön vissza válasznak, hanem csak adatot. Ez a rugalmasság lehetővé teszi, hogy a frontend dinamikus legyen. Például az én alkalmazásomban egy új időpont hirdetésénél a böngésző tesz egy kérést a szerver felé, ami visszaadja a létrejött időpont adatát és a frontend azt az egy időpontot beilleszti a jelenleg megjelenített időpontok közé, nem kell a teljes oldalt az összes időponttal újra tölteni.
+A programozható felület lehetővé teszi, hogy a szerver ne teljes oldalakat küldjön vissza válasznak, hanem csak adatot. Ez a rugalmasság lehetővé teszi, hogy a frontend dinamikus legyen. Például az én alkalmazásomban egy új időpont hirdetésénél a böngésző tesz egy kérést a szerver felé, ami visszaadja a létrejött időpont adatait és a frontend azt az egy időpontot beilleszti a jelenleg megjelenített időpontok közé, nem kell a teljes oldalt az összes időponttal újra tölteni.
 
-A hátránya ennek az architektúrának, hogy a backend és frontend teljesen különálló, akár más programozási nyelvekben vannak írva, más eszközökkel kell fejleszteni őket, így nagyobb a projekt komplexitása. Vállalati környezetben ez előny lehet, mert külön csapatokra szét lehet osztani a frontend és backend fejlesztést. További nehézség lehet, hogy az backendet és a frontendet össze kell kötni, ez az integráció nem olyan triviális, mint egy monolitikus MVC alkalmazásban, ahol egyből a modell adatát bele lehet renderelni HTML tagek közé. Továbbá, mivel az API így egy külön álló alkalmazás, amit bárhonnan lehet lekérdezni, fontos biztonsági lépésekkel le kell védeni, hogy jogosulatlan adathoz ne lehessen hozzáférni, szennyezett adattal ne lehessen elrontani az alkalmazást.
+A hátránya ennek az architektúrának, hogy a backend és frontend teljesen különálló, akár más programozási nyelvekben vannak írva, más eszközökkel kell fejleszteni őket, így nagyobb a projekt komplexitása. Vállalati környezetben ez előny lehet, mert külön csapatokra szét lehet osztani a frontend és backend fejlesztést. További nehézség lehet, hogy az backendet és a frontendet össze kell kötni, ez az integráció nem olyan triviális, mint egy monolitikus MVC alkalmazásban, ahol egyből a modell adatát bele lehet renderelni HTML tagek közé. Továbbá, mivel az API így egy különálló alkalmazás, amit bárhonnan lehet lekérdezni, fontos biztonsági lépésekkel le kell védeni, hogy jogosulatlan adathoz ne lehessen hozzáférni, szennyezett adattal ne lehessen elrontani az alkalmazást.
 
 \subsection{Clean Architecture Backenden}
 \subsubsection{Clean Architecture}
-Uncle Bob Clean Architecture\cite{cleanArchitecturePost}-jének a lényege, hogy az alkalmazás különböző rétegei minél kevésbé függjenek egymástól. Ő négy réteget definiál: entitások, felhasználói esetek, kontrollerek és külső szolgáltatások. Az én alkalmazásomban az entitások az alkalmazás belő reprezentációs adattagjai. A felhasználói esetek a logika osztályokban vannak, minden egyes függvény a logika osztályban egy felhasználói esetet fed le. A kontrollerek az ASP.NET-es kontrollerek. A külső szolgáltatások pedig az adatbázis kezeléssel foglalkozó repository-k és majd a jövőben az email küldő szolgáltatás.
+Uncle Bob Clean Architecture\cite{cleanArchitecturePost}-jének a lényege, hogy az alkalmazás különböző rétegei minél kevésbé függjenek egymástól. Ő négy réteget definiál: entitások, felhasználói esetek, kontrollerek és külső szolgáltatások. Az én alkalmazásomban az entitások az alkalmazás belső reprezentációs adattagjai. A felhasználói esetek a logika osztályokban vannak, minden egyes függvény a logika osztályban egy felhasználói esetet fed le. A kontrollerek az ASP.NET-es kontrollerek. A külső szolgáltatások pedig az adatbázis kezeléssel foglalkozó repository-k és majd a jövőben az email küldő szolgáltatás.
 
 A különböző rétegek csak egymás interfészeitől, nem implementációitól függenek. Így például a logikában nincsenek SQL lekérdezések, a kontroller nem tud fájlokat megnyitni a háttértárról. Ezt a függőségi befecskendezés elvével (Dependency inversion principle) valósítom meg. Ez azt jelenti, hogy egy osztály ha valami más rétegre hivatkozna, pl.: logika egy repository-ra, akkor a logika osztály konstruktora csak a repository egy interfészét várja, mert a logika szempontjából csak az a lényeg, hogy le tudjon kérdezni adatot, az nem, hogy az konkrétan hogy történik.
 
@@ -113,7 +113,7 @@ A kontrollerek ugyan azokat a felhasználói eseteket fedik le, mint a logika os
 
 \subsubsection{Repository-k}
 
-Az adat elérő repository interfészek az alábbi \ref{fig:repoInterfaces} ábrán láthatók.
+Az adatelérő repository interfészek az alábbi \ref{fig:repoInterfaces} ábrán láthatók.
 A repository megvalósítások nem képezik részét a diagrammnak, mert nem térnek el érdemben a megvalósított interfészektől, csak megvalósítjk azt.
 
 \begin{figure}[H]
@@ -165,7 +165,7 @@ Azonban EF-el sem triviális az adatbázis kezelés, több a többhöz kapcsolat
 
 Az adatbázis terve egyezik az előző részben definiált entitásokkal, mivel ezekből az entitásokból generálja a táblákat az EF. Ez a \ref{fig:entities}-es ábrán látható.
 
-Az EF-ben a DbContext osztály biztosítja az adat elérést és definíciót. A DbContext virtual DbSet propertyjei lesznek azok az értékek, amiket az EF használni fog. Az OnModelCreating metódusban lehet testre szabni, hogy hogyan is generálja le az objektumok között a kapcsolatok az EF. A backend DbContext-je az IWAContext a következőképpen néz ki:
+Az EF-ben a DbContext osztály biztosítja az adatelérést és definíciót. A DbContext virtual DbSet propertyjei lesznek azok az értékek, amiket az EF használni fog. Az OnModelCreating metódusban lehet testre szabni, hogy hogyan is generálja le az objektumok között a kapcsolatokat az EF. A backend DbContext-je az IWAContext a következőképpen néz ki:
 
 \begin{figure}[H]
 	\centering
@@ -180,7 +180,7 @@ Az EF-ben a DbContext osztály biztosítja az adat elérést és definíciót. A
 
 Az alkalmazás frontendjét React.js\footnote{https://reactjs.org/} keretrendszerrel Typescriptben valósítom meg. A Typescript kibővíti a Javascript nyelvet és típusellenőrzést biztosít fordítási időben. A Typescript fájlokat a fordító Javascript fájlokká fordítja, közben szintaktikai és szemantikai elemzéseket hajt végre.
 
-A React keretrendszer alappillére, hogy komponensekből épül fel a felhasználói felület. Ezeket a komponenseket újra felhasználhatóra lehet tervezni, így kód duplikációt elkerülni. Meg van a lehetőség őket egymásba ágyazni, egymás között a komponenseknek kommunikálni, így komplex rendszereket lehet építeni relatíve kis építőelemekből.
+A React keretrendszer alappillére, hogy komponensekből épül fel a felhasználói felület. Ezeket a komponenseket újra felhasználhatóra lehet tervezni, így kód duplikációt el lehet kerülni. Meg van a lehetőség őket egymásba ágyazni, egymás között a komponenseknek kommunikálni, így komplex rendszereket lehet építeni relatíve kis építőelemekből.
 
 A React a nevét a reaktivitásból kapta, a lényege, hogy dinamikusan változó felhasználói felületeket lehessen létrehozni, elkerülve a régi statikus, bármi változtatás után újra töltést igénylő oldalakat. Ezt egy virtuális DOM-al éri el, nem a böngészőre hagyja az oldal szerkezet kezelését, hanem Javascriptben kódban csinálja. Ennek az előnye, ha bármilyen érték változik és frissíteni kell a DOM elemeket, akkor a React el tudja dönteni, hogy konkrétan melyik elemeket kell újra rajzolni és csak azokat változtatja meg a böngésző DOM-jában, ezáltal nagyon gyors és hatékony.
 
@@ -190,7 +190,7 @@ Ennek ellenére valahogy mégis le kell kezelni például állapotok változás�
 
 \subsubsection{Async Result Monád típus}
 
-Hibakezelésre imperatív programozási nyelvekben hagyományosan kivételeket használnak. Typescriptben is meg van a lehetősék kivételek dobására és elkapására. Viszont, mivel funkcionális komponensekkel dolgozok és fejlesztés közben párszor nem lekezelt kivételek miatt inkonzisztens állapotba került a UI, ezért a Haskellben \textit{Either} és Rust-ban \textit{Result} néven ismert monádhoz fordultam. Röviden ezeknek az a lényegük, hogy típus szinten kezeljük le a hibákat, amikor egy függvény alkalmazás lánc végén akarjuk használni az értéket, akkor muszáj megvizsgálnunk, hogy hibába ütköztünk-e vagy lefutott az összes számítás és felhasználhatjuk az értéket.
+Hibakezelésre imperatív programozási nyelvekben hagyományosan kivételeket használnak. Typescriptben is meg van a lehetőség kivételek dobására és elkapására. Viszont, mivel funkcionális komponensekkel dolgozok és fejlesztés közben párszor nem lekezelt kivételek miatt inkonzisztens állapotba került a UI, ezért a Haskellben \textit{Either} és Rust-ban \textit{Result} néven ismert monádhoz fordultam. Röviden ezeknek az a lényegük, hogy típus szinten kezeljük le a hibákat, amikor egy függvény alkalmazás lánc végén akarjuk használni az értéket, akkor muszáj megvizsgálnunk, hogy hibába ütköztünk-e vagy lefutott az összes számítás és felhasználhatjuk az értéket.
 
 A Rust mintájára egy Result nevű unió típust\cite{tsUnionTypes} hoztam létre, ami egyszerre vagy egy Ok vagy egy Err osztályt tartalmazhat. Az Ok és Err is egy-egy értéket tartalmaznak, az Ok-ban szereplő érték egy jó értéket szimbolizál, amit utána tovább fel lehet használni, az Err pedig valamilyen hibát tartalmaz (pl.: string, Exception, saját osztály), mellyel nem folytatódik tovább a számítás.
 
@@ -210,13 +210,13 @@ A Result függvények amik Async végződésűek ugyan azon az elven alapulnak, 
 
 Az entitások és a DTO-k egyeznek a \ref{fig:entities} és \ref{fig:dtos} ábrák UML diagrammjaival. Ez azért célszerű, mert így ugyan azon belső reprezentációval tudunk dolgozni front és backenden is.
 
-Frontend logikához tartozik a \textit{reportGenerator} és a \textit{pdfReportGenerátor modul}. Az előbbi adott időpontokból generálja le a számla adatait, az utóbbi pedig PDF-et generál belőle. A PDF készítés így a frontenden történik, ehhez a PDFMake könyvtárat használtam. Ebben egy sajátos adatszerkezetben kell definiálni a PDF tartalmát és stílusát, a PDFMake dokumentációjában\footnote{\url{https://pdfmake.github.io/docs/0.1/}} erről lehet bővebben olvasni.
+Frontend logikához tartozik a \textit{reportGenerator} és a \textit{pdfReportGenerator modul}. Az előbbi adott időpontokból generálja le a számla adatait, az utóbbi pedig PDF-et generál belőle. A PDF készítés így a frontenden történik, ehhez a PDFMake könyvtárat használtam. Ebben egy sajátos adatszerkezetben kell definiálni a PDF tartalmát és stílusát, a PDFMake dokumentációjában\footnote{\url{https://pdfmake.github.io/docs/0.1/}} erről lehet bővebben olvasni.
 
 \subsubsection{Repository-k}
 
 A fronetenden is a backendhez hasonlóan az adatelérést repository osztályokba és interfészekbe szerveztem, azzal a különbséggel, hogy itt a REST API-n keresztül éri el az adatot. A repositoryk struktúrája egyezik az API végpontokkal, melyek a \ref{fig:apiDoc1} és \ref{fig:apiDoc2} ábrákon találhatók.
 
-A repository-k a ResultPromise típust használják, a \textit{safeApiFetch} függvény valamelyik változatával. Ez a függvény család a Javascript-es fetch függvényt csomagolja ResultPromise típusba, a függvényhívás után ha nem 2** a státusz kód akkor Err-t adnak vissza, az \textit{As} függvények jó érték esetén transzformálják az adatot megfelelő alakra. 
+A repository-k a ResultPromise típust használják, a \textit{safeApiFetch} függvény valamelyik változatával. Ez a függvénycsalád a Javascript-es fetch függvényt csomagolja ResultPromise típusba, a függvényhívás után ha nem 2** a státusz kód akkor Err-t adnak vissza, az \textit{As} függvények jó érték esetén transzformálják az adatot megfelelő alakra. 
 
 \subsubsection{Hook-ok}
 
@@ -242,13 +242,13 @@ A \textit{DataProvider} entitások listáját tudja szolgáltatni a komponensekn
 
 \subsubsection{Komponensek}
 
-Az \textit{AppointmentCard} komponens egy időpont jelenít meg. Az \textit{AppointmentCardEditable} a vállalkozói oldalon érhető el, itt elérhető a törlés és szerkesztés gomb, továbbá megtekinthető kattintásra.
+Az \textit{AppointmentCard} komponens egy időpontot jelenít meg. Az \textit{AppointmentCardEditable} a vállalkozói oldalon érhető el, itt elérhető a törlés és szerkesztés gomb, továbbá megtekinthető kattintásra.
 
 Az \textit{AppointmentAgenda} egy szűrhető listában jeleníti meg időpont szerint csoportosítva az időpontokat. Ennek is van vállalkozóknak elérhető szerkeszthető változata az \textit{AppointmentAgendaEditable} révén. A szűrés történhet kategóriák és időintervallum szerint. Az időintervallum megadja, megadja, hogy az időpont kezdés milyen napok között lehet, például március 10 és 25 között. A komponens logikájának nehézsége, hogy ha változnak az időpontok vagy kategóriák, mert például ha a vállalkozó felvett egy újat, akkor a szűrőknek ugyan olyan állapotban kell maradniuk, viszont az új elemeket számításba kell venni a szűrésnél.
 
 A \textit{CategoryCard} megjeleníti egy kategória információit. Ez csak a vállalkozóknak érhető el, ezért alapból szerkeszthető és megtekinthető.
 
-A \textit{DatePicker} és \textit{DateRange} komponens egy Luxon-os dátum és idő objektumokkal dolgoznak, egy absztrakciós szint a HTML dátum és idő bemenetek fölött. A \textit{UserSelector} egy lenyíló menü, ahol felhasználók közül lehet egyet kiválasztani, gépeléssel szűrni közülük, a React Select komponens segítségével.
+A \textit{DatePicker} és \textit{DateRange} komponensek egy Luxon-os dátum és idő objektumokkal dolgoznak, egy absztrakciós szint a HTML dátum és idő bemenetek fölött. A \textit{UserSelector} egy lenyíló menü, ahol felhasználók közül lehet egyet kiválasztani, gépeléssel szűrni közülük, a React Select komponens segítségével.
 
 A Modal osztály a bele helyezett komponenseknek így egy felugró modális ablakot biztosít. A szerkesztő és megjelenítő komponensek az időpontokra, kategóriákra és profil adat módosításra ilyen modális ablakot használnak.
 
@@ -285,7 +285,7 @@ A backend-hez .NET 5\footnote{\url{https://dotnet.microsoft.com/download/dotnet/
 	\item Coverlet: Teszt lefedettség generálásához szükséges csomag
 \end{compactitem}
 
-A frontend Node.js\footnote{\url{https://nodejs.org/en/}}-t, TypeScript-et, React.js-t használ. Stílust CSS helyett SASS\footnote{\url{https://sass-lang.com}}-el készítek, a SASS egy sok funkcióval kiegészített változata a CSS-nek, a SASS fájlok CSS-re fordulnak. Csomag kezelőnek Yarn\footnote{\url{https://yarnpkg.com/}}-t, build eszköznek és bundler-nek Snowpack\footnote{\url{https://www.snowpack.dev/}}-et használtam. Ezeken kívül a következő csomagokat használja a frontend:
+A frontend Node.js\footnote{\url{https://nodejs.org/en/}}-t, TypeScript-et, React.js-t használ. Stílust CSS helyett SASS\footnote{\url{https://sass-lang.com}}-el készítek, a SASS egy sok funkcióval kiegészített változata a CSS-nek, a SASS fájlok CSS-re fordulnak. Csomagkezelőnek Yarn\footnote{\url{https://yarnpkg.com/}}-t, build eszköznek és bundler-nek Snowpack\footnote{\url{https://www.snowpack.dev/}}-et használtam. Ezeken kívül a következő csomagokat használja a frontend:
 
 \begin{compactitem}
 	\item Jest: JavaScript teszt keretrendszer
@@ -350,9 +350,9 @@ Erre az volt a megoldás, hogy az SQLite keepalive conneciton-t minden teszt des
 \subsection{CI/CD}
 Fejlesztéshez Github\footnote{\url{https://github.com/}}-ot használtam, ez a Git verziókövető rendszernek egy online kód tárolója és kollaborációs platformja. Bár a szakdolgozatomban a kollaborációs lehetőségeket nem használhattam ki, a projektmenedzsment eszközök hasznosak voltak.
 
-A Github lehetőséget biztosít Continous Integration (röviden CI) és Continous Deployment (röviden CD) használatára a Github Actions-ön belül. A CI lényege, hogy amikor egy új változtatás kerül fel Github-ra, akkor automatikusan le tudja fordítani és tesztelni a kódot, esetleg különböző elemzéseket vagy dokumentációt tud generálni. Ezzel megfelelő tesztelési lefedettség mellett lehet garantálni, hogy ha hibák kerülnének a programba, akkor azokat hamar észre vegyük.
+A Github lehetőséget biztosít Continous Integration (röviden CI) és Continous Deployment (röviden CD) használatára a Github Actions-ön belül. A CI lényege, hogy amikor egy új változtatás kerül fel Github-ra, akkor automatikusan le tudja fordítani és tesztelni a kódot, esetleg különböző elemzéseket vagy dokumentációt tud generálni. Ezzel megfelelő tesztelési lefedettség mellett lehet garantálni, hogy ha hibák kerülnének a programba, akkor azokat hamar észrevegyük.
 
-A CD lényege, hogy a változtatott kódot és frissített alkalmazást minél többször és gyorsabban lehessen megjelentetni, kihelyezni. \todo{Ha lesz CD akkor azt ide kifejteni}Az én alkalmazásomban végül időhiány miatt ezt nem implementáltam, de a modern fejlesztői környezet és dockerizált architektúra miatt a jövőben meg lehetne valósítani. A gyakorlatban ez úgy nézne ki, hogy vagy a master branch-be minden commitnál, vagy minden éjszaka, a CI lefordítja és leteszteli a kódot. Ha nem talál benne hibát, akkor a CD megépíti a Docker konténereit az alkalmazásnak amit utána egy egyszerű script-tel kihelyez a szerverre. Ezt például úgy teheti meg, hogy a szerveren levő Docker letölti ezt a frissebb konténert és lecseréli a jelenleg futót.
+A CD lényege, hogy a változtatott kódot és frissített alkalmazást minél többször és minél gyorsabban lehessen megjelentetni, kihelyezni. \todo{Ha lesz CD akkor azt ide kifejteni}Az én alkalmazásomban végül időhiány miatt ezt nem implementáltam, de a modern fejlesztői környezet és dockerizált architektúra miatt a jövőben meg lehetne valósítani. A gyakorlatban ez úgy nézne ki, hogy vagy a master branch-be minden commitnál, vagy minden éjszaka, a CI lefordítja és leteszteli a kódot. Ha nem talál benne hibát, akkor a CD megépíti a Docker konténereit az alkalmazásnak amit utána egy egyszerű script-tel kihelyez a szerverre. Ezt például úgy teheti meg, hogy a szerveren levő Docker letölti ezt a frissebb konténert és lecseréli a jelenleg futót.
 
 A jelenlegi CI konfiguráció a \textit{.github/workflows} mappában található.
 
@@ -379,6 +379,7 @@ Az alkalmazásban így például a MariaDB adatbázist deklaráltam egy konténe
 
 Mind az integrációs, mind a unit teszteknél a következő struktúrát használtam. Létrehoztam egy teszt osztályt a tesztelendő osztálynak (logika, repository, mapper). Ezen belül létrehoztam egy osztályt a függvény / metódus nevével, azon belül pedig a függvények nevei az adott esetet írják le. Például, sikeres, nem engedélyezett felhasználó, már lefoglalt időpont.
 
+\todo{light mode}
 \begin{figure}[H]
 	\centering
 	\includegraphics{test-naming}
@@ -416,7 +417,7 @@ Ahhoz, hogy az integrációs tesztek gyorsak és külső szolgáltatás függetl
 
 Az integrációs tesztekhez egy előre elkészített adat csomagot töltök be mindig az adatbázisba, ezt az IntegrationTestData osztály tartalmazza.
 
-A TestWebApplicationFactory egy gyár tervmintát alkalmazó osztály, ami az előbb említett SQLite imemory adabázzissal konfigurál fel és készít el egy alkalmazás példányt.
+A TestWebApplicationFactory egy gyár tervmintát alkalmazó osztály, ami az előbb említett SQLite inmemory adabázzissal konfigurál fel és készít el egy alkalmazás példányt.
 
 Az IntegrationTestBase osztály az ősosztálya az összes integrációs teszt osztálynak, tartalmaz egy TestWebApplicationFactory-t és pár segédfüggvényt, hogy egyszerűbb legyen megírni a teszteseteket.
 
