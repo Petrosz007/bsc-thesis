@@ -379,14 +379,19 @@ Az alkalmazásban így például a MariaDB adatbázist deklaráltam egy konténe
 
 Mind az integrációs, mind a unit teszteknél a következő struktúrát használtam. Létrehoztam egy teszt osztályt a tesztelendő osztálynak (logika, repository, mapper). Ezen belül létrehoztam egy osztályt a függvény / metódus nevével, azon belül pedig a függvények nevei az adott esetet írják le. Például, sikeres, nem engedélyezett felhasználó, már lefoglalt időpont.
 
-\todo{light mode}
 \begin{figure}[H]
 	\centering
 	\includegraphics{test-naming}
 	\caption{Teszt struktúra}
 \end{figure}
 
-\todo{screenshot, hogy lefutott az összes teszt}
+Az összes unit és integrációs teszt sikeresen lefut, ezt mutatja a következő ábra.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics{alltests_success}
+	\caption{Sikeres teszt futtatás}
+\end{figure}
 
 \subsection{Unit tesztek}
 \label{sec:unittests}
