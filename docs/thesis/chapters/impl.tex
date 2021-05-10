@@ -159,7 +159,7 @@ A REST API végpontok a következőféleképpen néznek ki:
 \end{figure}
 
 \subsection{Adatbázis - Entity Framework}
-Az Entity Framework\footnote{\url{https://docs.microsoft.com/en-us/ef/}} (továbbiakban EF) egy Microsoft által fejlesztett könyvtár a .NET-hez, egy ORM\footnote{Object-Relational Mapping - Objektum-Reláció fordítás} keretrendszer, mely C\# osztályokat fordít adatbázis elemekre és vissza. Code first módon elég a C\# osztályokat definiálni és az EF létrehozza az SQL táblákat és kapcsolatokat, a lekérdezéseket C\#-ban LINQ\footnote{\url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/}} segítségével lehet végezni.
+Az Entity Framework\footnote{\url{https://docs.microsoft.com/en-us/ef/} (utolsó elérés: 2021.05.10)} (továbbiakban EF) egy Microsoft által fejlesztett könyvtár a .NET-hez, egy ORM\footnote{Object-Relational Mapping - Objektum-Reláció fordítás} keretrendszer, mely C\# osztályokat fordít adatbázis elemekre és vissza. Code first módon elég a C\# osztályokat definiálni és az EF létrehozza az SQL táblákat és kapcsolatokat, a lekérdezéseket C\#-ban LINQ\footnote{\url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/} (utolsó elérés: 2021.05.10)} segítségével lehet végezni.
 
 Azonban EF-el sem triviális az adatbázis kezelés, több a többhöz kapcsolatokat (pl.: egy ügyfél több időpontra is jelentkezhet és egy időpontra több ügyfél is jelentkezhet) elég sok manuális konfigurálással kell létrehozni, erről bővebben a megvalósítás \ref{sec:devProblems} részében írok.
 
@@ -178,7 +178,7 @@ Az EF-ben a DbContext osztály biztosítja az adatelérést és definíciót. A 
 \subsection{Funkcionális Frontend}
 \subsubsection{React és Typescript}
 
-Az alkalmazás frontendjét React.js\footnote{https://reactjs.org/} keretrendszerrel Typescriptben valósítom meg. A Typescript kibővíti a Javascript nyelvet és típusellenőrzést biztosít fordítási időben. A Typescript fájlokat a fordító Javascript fájlokká fordítja, közben szintaktikai és szemantikai elemzéseket hajt végre.
+Az alkalmazás frontendjét React.js\footnote{\url{https://reactjs.org/} (utolsó elérés: 2021.05.10)} keretrendszerrel Typescriptben valósítom meg. A Typescript kibővíti a Javascript nyelvet és típusellenőrzést biztosít fordítási időben. A Typescript fájlokat a fordító Javascript fájlokká fordítja, közben szintaktikai és szemantikai elemzéseket hajt végre.
 
 A React keretrendszer alappillére, hogy komponensekből épül fel a felhasználói felület. Ezeket a komponenseket újra felhasználhatóra lehet tervezni, így kód duplikációt el lehet kerülni. Meg van a lehetőség őket egymásba ágyazni, egymás között a komponenseknek kommunikálni, így komplex rendszereket lehet építeni relatíve kis építőelemekből.
 
@@ -210,7 +210,7 @@ A Result függvények amik Async végződésűek ugyan azon az elven alapulnak, 
 
 Az entitások és a DTO-k egyeznek a \ref{fig:entities} és \ref{fig:dtos} ábrák UML diagrammjaival. Ez azért célszerű, mert így ugyan azon belső reprezentációval tudunk dolgozni front és backenden is.
 
-Frontend logikához tartozik a \textit{reportGenerator} és a \textit{pdfReportGenerator modul}. Az előbbi adott időpontokból generálja le a számla adatait, az utóbbi pedig PDF-et generál belőle. A PDF készítés így a frontenden történik, ehhez a PDFMake könyvtárat használtam. Ebben egy sajátos adatszerkezetben kell definiálni a PDF tartalmát és stílusát, a PDFMake dokumentációjában\footnote{\url{https://pdfmake.github.io/docs/0.1/}} erről lehet bővebben olvasni.
+Frontend logikához tartozik a \textit{reportGenerator} és a \textit{pdfReportGenerator modul}. Az előbbi adott időpontokból generálja le a számla adatait, az utóbbi pedig PDF-et generál belőle. A PDF készítés így a frontenden történik, ehhez a PDFMake könyvtárat használtam. Ebben egy sajátos adatszerkezetben kell definiálni a PDF tartalmát és stílusát, a PDFMake dokumentációjában\footnote{\url{https://pdfmake.github.io/docs/0.1/} (utolsó elérés: 2021.05.10)} erről lehet bővebben olvasni.
 
 \subsubsection{Repository-k}
 
@@ -272,11 +272,11 @@ A \textit{routes} mappában találhatók az egyes oldalak, ezeknek a funkciói:
 \section{Megvalósítás}
 \subsection{Fejlesztési környezet}
 
-Fejlesztői környezetnek eleinte Microsoft Visual Studio 2019\footnote{\url{https://visualstudio.microsoft.com/}}-et használtam a backend C\# kód írásához, a frontendhez pedig Visual Studio Code\footnote{\url{https://code.visualstudio.com}}-ot. Ezek teljes funkcionalitású fejlesztői környezetek, mindent képesek voltak nyújtani ami a fejlesztéshez szükséges volt. Viszont időközben JetBrains Rider\footnote{\url{https://www.jetbrains.com/rider/}}-re váltottam, egyrészt azért, mert a Visual Studio-val ellentétben cross-platform, másrészt mert a JetBrains IDE-k egymás között tudnak funkcionalitást használni, így volt TypeScript nyelv támogatás, ezzel egy IDE-t kellett csak használnom.
+Fejlesztői környezetnek eleinte Microsoft Visual Studio 2019\footnote{\url{https://visualstudio.microsoft.com/} (utolsó elérés: 2021.05.10)}-et használtam a backend C\# kód írásához, a frontendhez pedig Visual Studio Code\footnote{\url{https://code.visualstudio.com} (utolsó elérés: 2021.05.10)}-ot. Ezek teljes funkcionalitású fejlesztői környezetek, mindent képesek voltak nyújtani ami a fejlesztéshez szükséges volt. Viszont időközben JetBrains Rider\footnote{\url{https://www.jetbrains.com/rider/} (utolsó elérés: 2021.05.10)}-re váltottam, egyrészt azért, mert a Visual Studio-val ellentétben cross-platform, másrészt mert a JetBrains IDE-k egymás között tudnak funkcionalitást használni, így volt TypeScript nyelv támogatás, ezzel egy IDE-t kellett csak használnom.
 
-Verziókövetésre Git\footnote{\url{https://git-scm.com/}}-et, a konténerizációhoz Docker-t használtam.
+Verziókövetésre Git\footnote{\url{https://git-scm.com/} (utolsó elérés: 2021.05.10)}-et, a konténerizációhoz Docker-t használtam.
 
-A backend-hez .NET 5\footnote{\url{https://dotnet.microsoft.com/download/dotnet/5.0}}-öt használtam C\# 9-el. A .NET csomagkezelő rendszere a NuGet, a következő NuGet csomagokat használtam az ASP.NET keretrendszerhez szükségeseken kívül:
+A backend-hez .NET 5\footnote{\url{https://dotnet.microsoft.com/download/dotnet/5.0} (utolsó elérés: 2021.05.10)}-öt használtam C\# 9-el. A .NET csomagkezelő rendszere a NuGet, a következő NuGet csomagokat használtam az ASP.NET keretrendszerhez szükségeseken kívül:
 
 \begin{compactitem}
 	\item XUnit: Egységtesztelést segítő csomag
@@ -285,7 +285,7 @@ A backend-hez .NET 5\footnote{\url{https://dotnet.microsoft.com/download/dotnet/
 	\item Coverlet: Teszt lefedettség generálásához szükséges csomag
 \end{compactitem}
 
-A frontend Node.js\footnote{\url{https://nodejs.org/en/}}-t, TypeScript-et, React.js-t használ. Stílust CSS helyett SASS\footnote{\url{https://sass-lang.com}}-el készítek, a SASS egy sok funkcióval kiegészített változata a CSS-nek, a SASS fájlok CSS-re fordulnak. Csomagkezelőnek Yarn\footnote{\url{https://yarnpkg.com/}}-t, build eszköznek és bundler-nek Snowpack\footnote{\url{https://www.snowpack.dev/}}-et használtam. Ezeken kívül a következő csomagokat használja a frontend:
+A frontend Node.js\footnote{\url{https://nodejs.org/en/} (utolsó elérés: 2021.05.10)}-t, TypeScript-et, React.js-t használ. Stílust CSS helyett SASS\footnote{\url{https://sass-lang.com} (utolsó elérés: 2021.05.10)}-el készítek, a SASS egy sok funkcióval kiegészített változata a CSS-nek, a SASS fájlok CSS-re fordulnak. Csomagkezelőnek Yarn\footnote{\url{https://yarnpkg.com/} (utolsó elérés: 2021.05.10)}-t, build eszköznek és bundler-nek Snowpack\footnote{\url{https://www.snowpack.dev/} (utolsó elérés: 2021.05.10)}-et használtam. Ezeken kívül a következő csomagokat használja a frontend:
 
 \begin{compactitem}
 	\item Jest: JavaScript teszt keretrendszer
@@ -348,7 +348,7 @@ Erre az volt a megoldás, hogy az SQLite keepalive conneciton-t minden teszt des
 
 \section{DevOps}
 \subsection{CI/CD}
-Fejlesztéshez Github\footnote{\url{https://github.com/}}-ot használtam, ez a Git verziókövető rendszernek egy online kód tárolója és kollaborációs platformja. Bár a szakdolgozatomban a kollaborációs lehetőségeket nem használhattam ki, a projektmenedzsment eszközök hasznosak voltak.
+Fejlesztéshez Github\footnote{\url{https://github.com/} (utolsó elérés: 2021.05.10)}-ot használtam, ez a Git verziókövető rendszernek egy online kód tárolója és kollaborációs platformja. Bár a szakdolgozatomban a kollaborációs lehetőségeket nem használhattam ki, a projektmenedzsment eszközök hasznosak voltak.
 
 A Github lehetőséget biztosít Continous Integration (röviden CI) és Continous Deployment (röviden CD) használatára a Github Actions-ön belül. A CI lényege, hogy amikor egy új változtatás kerül fel Github-ra, akkor automatikusan le tudja fordítani és tesztelni a kódot, esetleg különböző elemzéseket vagy dokumentációt tud generálni. Ezzel megfelelő tesztelési lefedettség mellett lehet garantálni, hogy ha hibák kerülnének a programba, akkor azokat hamar észrevegyük.
 
@@ -365,7 +365,7 @@ Egy konténer adatait egy Dockerfile nevű fájlban definiálhatjuk. Itt megadha
 
 \subsubsection{Konténerek optimalizálása}
 
-A konténereimben Alpine Linux\footnote{https://alpinelinux.org/}-ot használok. Az Alpine egy minimális Linux disztribúció, melynek a konténerekre optimált változata <3MB. Ezzel szemben egy Ubuntu vagy Debian alapú konténer csak a disztribúciók miatt több száz MB is lehet.
+A konténereimben Alpine Linux\footnote{\url{https://alpinelinux.org/} (utolsó elérés: 2021.05.10)}-ot használok. Az Alpine egy minimális Linux disztribúció, melynek a konténerekre optimált változata <3MB. Ezzel szemben egy Ubuntu vagy Debian alapú konténer csak a disztribúciók miatt több száz MB is lehet.
 
 Egy Docker konténer buildelése közben a Docker megjegyzi, hogy az egyes utasításokat ugyan ilyen környezetben végrehajtotta-e már, ha igen, akkor az elcache-elt értéket használja. Ez azt jelenti, hogy ha a konténerünk elején telepítünk fordításhoz szükséges programokat, akkor a következő buildnél nem fogja még egyszer feltelepíteni őket nulláról, hanem használja az előző build cache-ét. Ezt a cache-t a COPY felrúghatja, amikor a fájlrendszerünkről másolunk a konténerbe fájlokat. Ezek a fájlok változhatnak builek között, így nem biztos, hogy lehet cache-elni. A Docker ezeket a fájlokat hash-eli és összehasonlítja, ha nem változtak akkor használja a cache-t. Ez a gyakorlatban azért jó, mert például a frontendél a sok npm csomag sokáig települ. Ha a konténerbe bemásolom csak a \textit{package.json} és \textit{yarn.lock} fájlokat és hívom meg a \textit{yarn install} parancsot, akkor ha a következő konténer buildnél nem változnak a dependency-k, akkor lehet cache-ből betölteni azokat. Ez által fejlesztés közben gyorsítható a buildelés folyamata.
 
@@ -413,7 +413,7 @@ Az unit tesztek a következő struktúrájúak:
 \label{sec:integrationTests}
 A backendem integrációs tesztelve is lett. Ez azt jelenti, hogy az api-t futtatom és nem egyesével az egységeit tesztelem mint unit tesztelésnél, hanem hogy az egész rendszer a bejövő kéréstől a kiadott válaszig jól működik-e.
 
-Ahhoz, hogy az integrációs tesztek gyorsak és külső szolgáltatás függetlenek legyenek SQLite\footnote{\url{https://www.sqlite.org}} inmemory adatbázist használok. Ez egy teljes értékű SQL szerverrel ér fel, ami az eszköz memóriájában fut. Így az integrációs futhatnak Coninous Integration közben, nem kell egy MardiaDB szervert futtatni a felhőben.
+Ahhoz, hogy az integrációs tesztek gyorsak és külső szolgáltatás függetlenek legyenek SQLite\footnote{\url{https://www.sqlite.org} (utolsó elérés: 2021.05.10)} inmemory adatbázist használok. Ez egy teljes értékű SQL szerverrel ér fel, ami az eszköz memóriájában fut. Így az integrációs futhatnak Coninous Integration közben, nem kell egy MardiaDB szervert futtatni a felhőben.
 
 Az integrációs tesztekhez egy előre elkészített adat csomagot töltök be mindig az adatbázisba, ezt az IntegrationTestData osztály tartalmazza.
 

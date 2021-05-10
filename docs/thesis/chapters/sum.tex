@@ -1,19 +1,27 @@
 \chapter{Összegzés} % Conclusion
 \label{ch:sum}
 
-\todo{Kell egy összefoglaló}
+Összességében szerintem sikerült specifikációnak megfelelően implementálnom az alkalmazást. Nem először csináltam ilyen architectúrával fullstack webes alkalmazást, így az alapok megtanulása helyett a jó architektúrális döntésekbe fektethettem sok időt, így egy könnyen bővíthető, könnyen skálázható programot tudtam létrehozni.
 
+A szoftverfejlesztési folyamatot is próbáltam minél mondernebb eszközökkel könnyíteni. A CI/CD és jó teszt lefedettség segítségével hamar kijöttek fejlesztés közbeni hibák. Docker konténerkkel egyszerűen és platform függetlenül deploy-olható lett az alkalmazás, egyszerű konfogurációval. Git és Github miatt a kód verziókövetve és a felhőben biztonságosan volt tárolva.
+
+Az egyetemen tanult tudásomat is a lehető legjobban kihasználtam. Webes Alkalmazások Fejlesztésétől, Bevezetés a DevOps tárgyon át a Funkcionális programozás és Haladó Haskell órák anyagait mind hasznosítani tudtam. Ezeken kívül az egyetem mellett tanult technológiáknak is nagy szerepe volt a projektben, Typescriptet és React.js-t magamtól a szabadidőmben tanultam, most ezt tudtam kamatoztatni.
+
+Szeretnék köszönetet nyilvánítani Gyimesi Kristófnak, Szalai Patriknak és Hajdu Marcell-nek, amiért egész félévben kíméletlenül bombázhattam őket kérdéseimmel, és segítettek a véleményükkel, hogy a lehető legjobb programot tudjam kiadni a kezeim közül.
+
+\clearpage
 
 \section{További fejlesztői lehetőségek}
-\begin{itemize}
-    \item email - confirmation, password reset, időpont változás
-    \item mobil alkalmazások
-    \item mobil optimalizált weblap (?) \todo{Mobil optimalizált weblap?}
-    \item Adószám, számlázási infó, hogy lehessen rendes valid számlát kiállítani
-    \item Számlázz.hu integráció
-    \item Lemondás X időn (24 órán) belül nem lehetséges
-    \item emailt használni username helyett kb mindenhol
-    \item continous integration, kubernetes
-\end{itemize}
+Az Időpont foglaló webes alkalmazás már így is nagyon sok funkcióval bír, viszont, mint egy jó alkalmazás, soha sem állhat meg a fejlődésben. A következő jövőbeli fejlesztési ötletek kivitelezésében gondolkom:
+
+\begin{compactitem}
+    \item Email service, ami regisztrációnál megerősíti a fiókot, jelszó emlékeztetőt tud küldeni, esetleg időpont változásnál értesítést
+    \item Mobilra optimalizált frontend
+    \item Mobil optimalizált alkalmazások. Akár Progresszív Web Applikáció, akár natív pl.: React Native keretrendszerrel
+    \item Adószám, számlázási infó, hogy lehessen rendes tényleges számlát kiállítani, esetleg fizetési rendszert integrálni, akár Számlázz.hu-n keresztül
+    \item Lemondás X időn (pl.: 24 órán) belül nem lehetséges, ezt kategóriánként lehetne megadni
+    \item Email címet használni felhasználónév helyett az alkalmazásban, mellette egy egyedi felhasználói azonosító
+    \item CD, Kubernetes deployment, Selenium automatizált end-to-end tesztek
+\end{compactitem}
 
 

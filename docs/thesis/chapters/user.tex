@@ -4,25 +4,24 @@
 \section{Rendszerkövetelmények}
 Szerver oldalon: Windows 10 vagy Linux operációs rendszer, 2GB RAM, legalább 5GB tárhely az adatoknak, port nyitási lehetőség, domain cím, esetleg SSL tanusítvány.
 
-\todo{Telefonra ha meg lesz akkor az jöhet ide}
 Kliens oldalon: Legalább Chrome 90, Firefox 88, Edge 90, ezek mind asztali számítógépen, legalább 1280x720-as képernyő felbontással.
 
 \section{Telepítés}
 
-Az alkalmazást legegyszerűbben Docker\footnote{\url{https://www.docker.com/}} segítségével lehet telepíteni. Van lehetőség Docker nélkül is, viszont az több konfigurációval és üzemeltetési idővel és költséggel jár.
+Az alkalmazást legegyszerűbben Docker\footnote{\url{https://www.docker.com/} (utolsó elérés: 2021.05.10)} segítségével lehet telepíteni. Van lehetőség Docker nélkül is, viszont az több konfigurációval és üzemeltetési idővel és költséggel jár.
 
 \subsection{Telepítés Dockerrel}
 
-A Dockeres telepítéshez szükséges a Docker\footnote{\url{https://www.docker.com/get-started}} és Docker Compose\footnote{\url{https://docs.docker.com/compose/install/}} telepítése.
+A Dockeres telepítéshez szükséges a Docker\footnote{\url{https://www.docker.com/get-started} (utolsó elérés: 2021.05.10)} és Docker Compose\footnote{\url{https://docs.docker.com/compose/install/} (utolsó elérés: 2021.05.10)} telepítése.
 
-A fő mappában a \textit{docker-compse.yml} fájlban találhatók meg a konténerek konfigurációi. Három konténerből áll, egy MariaDB \footnote{\url{https://mariadb.org/}} adatbázisból, a backend REST API-ból és a frontendből.
+A fő mappában a \textit{docker-compse.yml} fájlban találhatók meg a konténerek konfigurációi. Három konténerből áll, egy MariaDB \footnote{\url{https://mariadb.org/} (utolsó elérés: 2021.05.10)} adatbázisból, a backend REST API-ból és a frontendből.
 A yml fájlban a konfigurációs lehetőségek az \ref{tab:config} táblázatban találhatók.
 
 Az alap beállításokkal a \textit{http://localhost:8100}-on érhető el az alkalmazás. HTTPS-t és tűzfalat érdemes bekonfigurálni egy Reverse Proxy\cite{nginxReverseProxy}-val, például Nginx-el.
 
 Az alkalmazást ez után a \textit{docker-compose up} paranccsal indíthatjuk el. Első futtatásra ez eltarthat pár percig, mert a Dockernek le kell töltenie a megfelelő alap konténereket az internetről és utána létre kell hozni ezeket a konténereket a forráskódból.
 
-További docker-compose parancsok a docker-compose dokumentációjában\footnote{\url{https://docs.docker.com/compose/reference/}} találhatók.
+További docker-compose parancsok a docker-compose dokumentációjában\footnote{\url{https://docs.docker.com/compose/reference/} (utolsó elérés: 2021.05.10)} találhatók.
 
 \subsection{Telepítés Docker nélkül}
 
@@ -30,7 +29,7 @@ Az alkalmazás futtatásához szükség lesz egy MariaDB szerverre és azon bel�
 
 A backend futtatása parancssorból az \textit{IWA\_Backend.API} futtatható fájllal lehet. A konfigurációja az \text{appsettings.json} fájlban található, kitöltése az \ref{tab:config} táblázat alapján történik. A backend így a host 80-as portján fog futni. \\ Ezt a \textit{$--$urls=http://localhost:5001/} konzoli argumentummal lehet megváltoztatni, ebben az esetben az 5001-es porton futna az alkalmazás.
 
-A frontend statikus HTML, JS és CSS fájlokból áll, ezt például Apache\footnote{\url{https://httpd.apache.org/}} vagy Nginx\footnote{\url{https://www.nginx.com/}} szerverekkel, vagy más hasonló webhost szolgáltatásokkal lehet kitelepíteni. A frontend konfigurációja a mappájában a \textit{config.js} fájlban történik, kitöltési útmutató az \ref{tab:config} táblázatban található.
+A frontend statikus HTML, JS és CSS fájlokból áll, ezt például Apache\footnote{\url{https://httpd.apache.org/} (utolsó elérés: 2021.05.10)} vagy Nginx\footnote{\url{https://www.nginx.com/} (utolsó elérés: 2021.05.10)} szerverekkel, vagy más hasonló webhost szolgáltatásokkal lehet kitelepíteni. A frontend konfigurációja a mappájában a \textit{config.js} fájlban történik, kitöltési útmutató az \ref{tab:config} táblázatban található.
 
 \section{Funkciók leírása}
 \label{sec:functionDefinitions}
@@ -167,7 +166,17 @@ A Számlázás oldalon lehet adott ügyfélnek egy időintervallumban a lefoglal
     \caption{PDF formátumú számla}
 \end{figure}
 
+\subsubsection{Hibakezelés}
 
+Az alkalmazásban a különböző hibaüzenetek felugró ablakok jelenítik meg. Ezek a hibák mindig leírják, hogy mi a probléma, ebből a felhasználó tud következtetni, hogy mit rontott el. Például nem megfelelő formátumú fájlt válaszott ki profilképnek, túl nagy a fájl mérete.
+
+A hibaüzeneteket a jobb fölső sarkukban az X gombbal lehet bezárni.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{css/errors}
+    \caption{Felugró hibaüzenetekre példa}
+\end{figure}
 
 
 
