@@ -430,6 +430,26 @@ Az integrációs tesztek a következő struktúrájúak:
 
 \clearpage
 
+\subsection{Benchmark-ok}
+
+Az alkalmazás gyorsaságát és hatékonyságát nagy adatok mellett benchmarkokkal teszteltem. Erre a BenchmarkDotNet\footnote{\url{https://benchmarkdotnet.org/} (utolsó elérés: 2021.05.11)} könyvtárat használtam és az integrációs tesztjeimből a \textit{TestWebApplicationFactory}-val futtattam inmemory SQLite adatbázissal. A lekérdezések szekvenciálisak voltak, amint véget ért az egyik indítottam a következőt, ezzel a lehető legrosszabb helyzetet próbáltam ki, mert az ASP.NET így nem tudta kihasználni a párhuzamosítását.
+
+Három tesztem volt, az elsőben 500 időpontot hoztam létre, a másodikban 500-szor kértem le a vállalkozókat, az utolsóban pedig 500-szor kértem le egy vállalkozó összes időpontját.
+
+A következő eredményeket kaptam:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{benchmarks2}
+	\caption{Benchmark eredmények}
+\end{figure}
+
+Mint a táblázatról leolvasható, sorban 2.5, 0.6 és 2.8 másodpercig tartott az 500 lekérdezés és ez alatt 182MB, 55MB és 163MB memóriát allokált a program, melyet utána a garbage collector összegyűjtött.
+
+Ez az egyből egymás után 500 lekérdezés bőven túllövi azt, amire ez az alkalmazás tervezve lett, hogy pár vállalkozó naponta egyszer kétszer pár időpontot hirdet, meg minden időpontot lefoglal egy pár ember. Viszont, mint az adatból látható, így is elég gyorsan végrehajtotta ezeket az alkalmazás, valós keretek között is hasonlóan gyors végrehajtásra lehet számítani.
+
+\clearpage
+
 \subsection{Manuális tesztek}
 
 A manuális tesztelést a felhasználói történetek alapján végeztem, ezek a \ref{ch:stories} függelékben találhatók.
