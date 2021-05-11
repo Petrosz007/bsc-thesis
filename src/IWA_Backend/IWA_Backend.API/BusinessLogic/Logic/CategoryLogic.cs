@@ -90,15 +90,5 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             
             await CategoryRepository.UpdateAsync(category);
         }
-
-        public async Task DeleteCategoryAsync(int categoryId, string? userName)
-        {
-            var category = CategoryRepository.GetById(categoryId);
-
-            if (!HasWriteAccess(category, userName))
-                throw new UnauthorisedException("Unauthorised to delete this category.");
-
-            await CategoryRepository.DeleteAsync(category);
-        }
     }
 }

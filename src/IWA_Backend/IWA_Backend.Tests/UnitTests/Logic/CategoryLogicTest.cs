@@ -182,58 +182,6 @@ namespace IWA_Backend.Tests.UnitTests.Logic
             }
         }
 
-        public class Delete : CategoryLogicTest
-        {
-            [Fact]
-            public async Task Successful()
-            {
-                // Arrange
-                var category = new Category
-                {
-                    Id = 2,
-                    Owner = new User { UserName = "Owner" }
-                };
-
-                MockCategoryRepo.Setup(r => r.GetById(2)).Returns(category);
-
-                // Act
-                await Logic.DeleteCategoryAsync(2, "Owner");
-
-                // Assert
-                MockCategoryRepo.Verify(r => r.DeleteAsync(category), Times.Once());
-            }
-
-            [Fact]
-            public async Task Unauthorised()
-            {
-                // Arrange
-                var category = new Category
-                {
-                    Id = 2,
-                    Owner = new User { UserName = "Owner" }
-                };
-
-                MockCategoryRepo.Setup(r => r.GetById(2)).Returns(category);
-
-                // Act
-                // Assert
-                await Assert.ThrowsAsync<UnauthorisedException>(() => Logic.DeleteCategoryAsync(2, "Not Owner"));
-                MockCategoryRepo.Verify(r => r.DeleteAsync(category), Times.Never());
-            }
-
-            [Fact]
-            public async Task DoesntExist()
-            {
-                // Arrange
-                MockCategoryRepo.Setup(r => r.GetById(2)).Throws(new NotFoundException(""));
-
-                // Act
-                // Assert
-                await Assert.ThrowsAsync<NotFoundException>(() => Logic.DeleteCategoryAsync(2, "Not Owner"));
-                MockCategoryRepo.Verify(r => r.DeleteAsync(It.IsAny<Category>()), Times.Never());
-            }
-        }
-
         public class GetContractorsCategories : CategoryLogicTest
         {
             [Fact]

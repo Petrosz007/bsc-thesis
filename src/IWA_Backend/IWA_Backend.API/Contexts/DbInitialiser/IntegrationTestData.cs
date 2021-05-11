@@ -4,7 +4,7 @@ using IWA_Backend.API.BusinessLogic.Entities;
 
 namespace IWA_Backend.API.Contexts.DbInitialiser
 {
-    public class UnitTestData : ISeedData
+    public class IntegrationTestData : ISeedData
     {
         public List<User> Users() =>
             new()

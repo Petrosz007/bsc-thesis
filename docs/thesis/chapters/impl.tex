@@ -52,6 +52,8 @@ A programozható felület lehetővé teszi, hogy a szerver ne teljes oldalakat k
 
 A hátránya ennek az architektúrának, hogy a backend és frontend teljesen különálló, akár más programozási nyelvekben vannak írva, más eszközökkel kell fejleszteni őket, így nagyobb a projekt komplexitása. Vállalati környezetben ez előny lehet, mert külön csapatokra szét lehet osztani a frontend és backend fejlesztést. További nehézség lehet, hogy az backendet és a frontendet össze kell kötni, ez az integráció nem olyan triviális, mint egy monolitikus MVC alkalmazásban, ahol egyből a modell adatát bele lehet renderelni HTML tagek közé. Továbbá, mivel az API így egy különálló alkalmazás, amit bárhonnan lehet lekérdezni, fontos biztonsági lépésekkel le kell védeni, hogy jogosulatlan adathoz ne lehessen hozzáférni, szennyezett adattal ne lehessen elrontani az alkalmazást.
 
+\clearpage
+
 \subsection{Clean Architecture Backenden}
 \subsubsection{Clean Architecture}
 Uncle Bob Clean Architecture\cite{cleanArchitecturePost}-jének a lényege, hogy az alkalmazás különböző rétegei minél kevésbé függjenek egymástól. Ő négy réteget definiál: entitások, felhasználói esetek, kontrollerek és külső szolgáltatások. Az én alkalmazásomban az entitások az alkalmazás belső reprezentációs adattagjai. A felhasználói esetek a logika osztályokban vannak, minden egyes függvény a logika osztályban egy felhasználói esetet fed le. A kontrollerek az ASP.NET-es kontrollerek. A külső szolgáltatások pedig az adatbázis kezeléssel foglalkozó repository-k és majd a jövőben az email küldő szolgáltatás.
@@ -146,17 +148,19 @@ A REST API végpontok a következőféleképpen néznek ki:
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\textwidth]{api_doc_1}
+	\includegraphics[width=1.0\textwidth]{api_doc_1}
 	\caption{REST API végpontok}
 	\label{fig:apiDoc1}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\textwidth]{api_doc_2}
+	\includegraphics[width=1.0\textwidth]{api_doc_2}
 	\caption{REST API végpontok folytatása}
 	\label{fig:apiDoc2}
 \end{figure}
+
+\clearpage
 
 \subsection{Adatbázis - Entity Framework}
 Az Entity Framework\footnote{\url{https://docs.microsoft.com/en-us/ef/} (utolsó elérés: 2021.05.10)} (továbbiakban EF) egy Microsoft által fejlesztett könyvtár a .NET-hez, egy ORM\footnote{Object-Relational Mapping - Objektum-Reláció fordítás} keretrendszer, mely C\# osztályokat fordít adatbázis elemekre és vissza. Code first módon elég a C\# osztályokat definiálni és az EF létrehozza az SQL táblákat és kapcsolatokat, a lekérdezéseket C\#-ban LINQ\footnote{\url{https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/} (utolsó elérés: 2021.05.10)} segítségével lehet végezni.
@@ -174,6 +178,7 @@ Az EF-ben a DbContext osztály biztosítja az adatelérést és definíciót. A 
 	\label{fig:dbcontext}
 \end{figure}
 
+\clearpage
 
 \subsection{Funkcionális Frontend}
 \subsubsection{React és Typescript}

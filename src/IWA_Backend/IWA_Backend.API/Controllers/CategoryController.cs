@@ -91,18 +91,5 @@ namespace IWA_Backend.API.Controllers
             catch (UnauthorisedException) { return Unauthorized(); }
             catch(InvalidEntityException ex) { return BadRequest(ex.Message); }
         }
-
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Contractor")]
-        public async Task<ActionResult> DeleteCategory(int id)
-        {
-            try
-            {
-                await Logic.DeleteCategoryAsync(id, CurrentUserName);
-                return NoContent();
-            }
-            catch (NotFoundException ex) { return NotFound(ex.Message); }
-            catch (UnauthorisedException) { return Unauthorized(); }
-        }
     }
 }
