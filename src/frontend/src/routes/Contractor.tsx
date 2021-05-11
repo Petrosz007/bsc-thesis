@@ -78,8 +78,10 @@ const ContractorBrowser = () => {
 
             {state instanceof Loaded &&
             <div className="contractorBrowser">
-                {state.value.map(contractor =>
-                    <ContractorCard contractor={contractor} key={contractor.userName}/>
+                {state.value.length === 0
+                    ? <p className="noContractorsToShow">Még egy vállalkozó sem regisztrált a weboldalra.</p>
+                    : state.value.map(contractor =>
+                        <ContractorCard contractor={contractor} key={contractor.userName}/>
                 )}
             </div>
             }

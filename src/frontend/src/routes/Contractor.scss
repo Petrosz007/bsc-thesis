@@ -1,4 +1,12 @@
-﻿.contractorBrowser {
+﻿.noContractorsToShow {
+  text-align: center;
+  font-size: 1.1rem;
+  color: gray;
+  padding: 10px;
+  font-style: italic;
+}
+
+.contractorBrowser {
   display: flex;
   flex-direction: column;
   row-gap: 20px;

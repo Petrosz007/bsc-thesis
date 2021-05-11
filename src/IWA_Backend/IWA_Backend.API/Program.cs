@@ -41,8 +41,13 @@ namespace IWA_Backend.API
             using var scope = host.Services.CreateScope();
             var serviceProvider = scope.ServiceProvider;
             var dbInitialiser = serviceProvider.GetRequiredService<DbInitialiser>();
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
             dbInitialiser.Initialise();
+
+            var seedInitialData = configuration.GetValue<bool>("SeedInitialData");
+            if (!seedInitialData) return;
+                
             if (dbInitialiser.AnyCategories())
             {
                 await dbInitialiser.ReseedDataAsync();

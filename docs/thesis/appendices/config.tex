@@ -11,7 +11,7 @@
 		\hline \hline
 		\multicolumn{3}{|l|}{db} \\
 		\hline
-		\tiny{MYSQL\_ROOT\_PASSWORD} & kebab & MariaDB adatbázis root felhasználójának jelszava \\
+		\tiny{MYSQL\_ROOT\_PASSWORD} & kebab & MariaDB root jelszava \\
 		\hline
 		\small{volumes} & \tiny{./db\_data:/var/lib/mysql} & MariaDB adatbázis perzisztens tárolása a lokális db\_data mappában  \\ \hline
 		\small{ports} & 3306:3306 & A konténer 3306-os portja a hoston a 3306-os portra forwardolása \\ \hline
@@ -19,11 +19,13 @@
 		\multicolumn{3}{|l|}{backend} \\
 		\hline
 		\small{IWA\_CorsAllowUrls} & http://127.0.0.1:8100 & Vesszővel elválasztva az engedélyezett publikus frontend url-ek felsorolása. Pl.: \url{https://andipeter.me} \\ \hline
+		\small{IWA\_SeedInitialData} & "true" & "true"-nál teszt adatokkal tölti fel az adatbázist, amúgy "false" \\ \hline
 		\small{IWA\_MYSQL\_HOST} & db & MariaDB adatbázis host neve \\ \hline
-		\small{IWA\_MYSQL\_PORT} & 3306 & MariaDB adatbázis portja \\ \hline
-		\small{IWA\_MYSQL\_DB} & iwa & MariaDB adatbázison belül használandó adatbázis \\ \hline
-		\small{IWA\_MYSQL\_USER} & root & MariaDB adatbázis felhasználója \\ \hline
-		\small{IWA\_MYSQL\_PASS} & kebab & MariaDB adatbázis felhasználójának jelszava \\ \hline
+		\small{IWA\_MYSQL\_HOST} & db & MariaDB host neve \\ \hline
+		\small{IWA\_MYSQL\_PORT} & 3306 & MariaDB portja \\ \hline
+		\small{IWA\_MYSQL\_DB} & iwa & MariaDB-n belüli adatbázis \\ \hline
+		\small{IWA\_MYSQL\_USER} & root & MariaDB felhasználója \\ \hline
+		\small{IWA\_MYSQL\_PASS} & kebab & MariaDB felhasználójának jelszava \\ \hline
 		\small{volumes} & \tiny{./avatars:/app/AvatarData} & A profilképek perzisztens tárolása a lokális avatars mappában  \\ \hline
 		\small{ports} & 5000:80 & A konténer 80-as portja a hoston az 5000-es portra forwardolása \\
 		\hline \hline
