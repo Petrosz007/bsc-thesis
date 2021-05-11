@@ -73,7 +73,10 @@ const BookButton = ({ appointment, className }: { appointment: Appointment, clas
         return null;
         
     if(isAttendee())
-        return <button className={`unbook ${className}`} onClick={() => unBook()}>Lemondás</button>;
+        return <button className={`unbook ${className}`} onClick={() => {
+            if(window.confirm('Biztos le szeretnéd mondani ezt az időpontot?')) 
+                unBook();
+        }}>Lemondás</button>;
     
     if(appointment.maxAttendees > appointment.attendees.length)
         return <button className={`book ${className}`} onClick={() => book()}>Foglalás</button>;
@@ -101,7 +104,10 @@ const DeleteButton = ({ appointment }: { appointment: Appointment }) => {
     // if(deleteStatus instanceof Loading) return <span>Törlés...</span>;
 
     return (
-        <button onClick={() => deleteAppointment()}><DeleteIcon className="deleteIcon" /></button>
+        <button onClick={() => {
+            if(window.confirm('Biztos ki szeretnéd törölni ezt az időpontot?'))
+                deleteAppointment();
+        }}><DeleteIcon className="deleteIcon" /></button>
     );
 }
 
