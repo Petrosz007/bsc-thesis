@@ -45,7 +45,7 @@ const Main = () => {
     useEffect(() => {
         if(loginStatus instanceof Failed) {
             console.error('Error communicating with the server', loginStatus.error);
-            notificationDispatch({ type: 'addError', message: 'Error communication with the server' });
+            notificationDispatch({ type: 'addError', message: 'Hiba a szerverrel való kommunikációban' });
         }
 
     }, [loginStatus]);

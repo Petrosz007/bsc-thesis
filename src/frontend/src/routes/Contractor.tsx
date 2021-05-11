@@ -34,7 +34,7 @@ const ContractorPage = () => {
     
     useEffect(() => {
         if(state instanceof Failed) {
-            notificationDispatch({ type: 'addError', message: `Hiba: ${state.error.message}` });
+            notificationDispatch({ type: 'addError', message: `${state.error.message}` });
         }
         else if(state instanceof Idle) {
             refreshData();
@@ -65,7 +65,7 @@ const ContractorBrowser = () => {
 
     useEffect(() => {
         if(state instanceof Failed) {
-            notificationDispatch({ type: 'addError', message: `Hiba: ${state.error.message}` });
+            notificationDispatch({ type: 'addError', message: `${state.error.message}` });
         }
         else if(state instanceof Idle) {
             refreshData();

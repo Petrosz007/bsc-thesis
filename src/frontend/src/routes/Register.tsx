@@ -126,7 +126,7 @@ export default () => {
 
     useEffectAsync(async () => {
         if(registerStatus instanceof Failed) {
-            notificationDispatch({ type: 'addError', message: `Error while registering: ${registerStatus.error}` });
+            notificationDispatch({ type: 'addError', message: `HIba regisztráció közben: ${registerStatus.error}` });
         }
         if(registerStatus instanceof Loaded) {
             await login(registerStatus.value.userName, registerStatus.value.password);

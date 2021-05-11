@@ -35,7 +35,7 @@ const OwnAppointments = ({ user }: { user: User }) => {
 
     useEffect(() => {
         if(state instanceof Failed) {
-            notificationDispatch({ type: 'addError', message: `Hiba: ${state.error.message}` });
+            notificationDispatch({ type: 'addError', message: `${state.error.message}` });
         }
         else if(state instanceof Idle) {
             refreshData();

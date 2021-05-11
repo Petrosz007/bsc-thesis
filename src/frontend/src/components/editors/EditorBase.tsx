@@ -48,7 +48,7 @@ export function EditorBase<TEditorState extends { createAnother: boolean },TEnti
     useEffect(() => {
         if(makeApiCallState instanceof Failed) {
             console.error('Error in EditorBase: ', makeApiCallState.error);
-            notificationDispatch({ type: 'addError', message: `Error: ${makeApiCallState.error}` });
+            notificationDispatch({ type: 'addError', message: `${makeApiCallState.error}` });
         }
         if(makeApiCallState instanceof Loaded && closeAfterLoad){
             onClose();

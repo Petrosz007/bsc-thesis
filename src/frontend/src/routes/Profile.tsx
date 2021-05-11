@@ -21,7 +21,7 @@ const ProfileInfo = ({ user }: { user: UserSelfInfo }) => {
 
     useEffect(() => {
         if(logoutState instanceof Failed) {
-            notificationDispatch({ type: 'addError', message: `Logout failed: ${logoutState.error}` })
+            notificationDispatch({ type: 'addError', message: `Nem sikerült kijelentkezni: ${logoutState.error}` })
         }
     }, [logoutState]);
 
