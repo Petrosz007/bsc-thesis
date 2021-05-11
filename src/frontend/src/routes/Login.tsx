@@ -22,10 +22,8 @@ export default () => {
         }
     }, [loginStatus]);
 
-    if(loginState instanceof LoggedIn && loginStatus instanceof Loaded)
+    if(loginState instanceof LoggedIn)
         return <Redirect to="/" />;
-
-    if(loginStatus instanceof Loading) return <div>Bejelentkezés...</div>
 
     return (
         <div className="loginPage">
