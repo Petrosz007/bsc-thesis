@@ -46,7 +46,7 @@ const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }:
             .filter(a => selectedCategories.length === 0 ||  selectedCategories.some(category => a.category.id === category.id))
             .filter(a => dateInterval.contains(a.startTime))
             .filter(a => showFull || a.maxAttendees > a.attendees.length)
-            .sort((left, right) => left.startTime.toMillis() - right.startTime.toMillis());
+            .sort((left, right) => (left.startTime.toMillis() - right.startTime.toMillis()) * 10000 + (right.id - left.id));
         return groupBy(sorted, a => a.startTime.toFormat('yyyy.MM.dd, cccc'));
     }, [appointments, selectedCategories, dateInterval, showFull]);
 

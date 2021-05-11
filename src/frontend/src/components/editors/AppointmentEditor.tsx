@@ -38,7 +38,7 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
         startTime: initialAppointment.startTime,
         endTime: initialAppointment.endTime,
         category: initialAppointment.category,
-        maxAttendees: initialAppointment.category.maxAttendees,
+        maxAttendees: initialAppointment.maxAttendees,
         createAnother: false,
     };
     
@@ -154,7 +154,7 @@ export const AppointmentEditorCreate = ({ categories, onClose }: {
         endTime: DateTime.now().plus({ hours: 1 }),
         category: categories[0],
         attendees: [],
-        maxAttendees: 1,
+        maxAttendees: categories[0].maxAttendees,
     };
     
     return (
