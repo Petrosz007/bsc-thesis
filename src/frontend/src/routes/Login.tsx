@@ -1,13 +1,13 @@
 import LoginCard from "../components/LoginCard";
 import React, {useContext, useEffect, useState} from "react";
-import {LoggedIn, LoginContext} from "../components/contexts/LoginProvider";
+import {LoggedIn, LoggedOut, LoginContext} from "../components/contexts/LoginProvider";
 import {NotificationContext} from "../components/contexts/NotificationProvider";
 import {Failed, Loaded, Loading, useLogin} from "../hooks/apiCallHooks";
 import {Redirect} from "react-router";
 
 import './Login.scss'
 
-export default () => {
+const LoginPage = () => {
     const { loginState } = useContext(LoginContext);
     const { notificationDispatch } = useContext(NotificationContext);
 
@@ -22,8 +22,10 @@ export default () => {
         }
     }, [loginStatus]);
 
-    if(loginState instanceof LoggedIn)
+    if(loginState instanceof LoggedIn && loginStatus instanceof Loaded)
         return <Redirect to="/" />;
+
+    if(loginStatus instanceof Loading) return <div>Bejelentkezés...</div>
 
     return (
         <div className="loginPage">
@@ -41,4 +43,13 @@ export default () => {
             </form>
         </div>
     );
+}
+
+export default () => {
+    const { loginState } = useContext(LoginContext);
+
+    if (loginState instanceof LoggedIn)
+        return <Redirect to='/' />;
+    
+    return <LoginPage />;
 }
