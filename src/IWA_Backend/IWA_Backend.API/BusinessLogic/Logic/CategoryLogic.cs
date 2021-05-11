@@ -42,7 +42,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             var category = CategoryRepository.GetById(id);
 
             if (!HasReadAccess(category, userName))
-                throw new UnauthorisedException($"You are unauthorized to view this category.");
+                throw new UnauthorisedException("Nem vagy jogosult megtekinteni ezt a kategóriát.");
 
             return category;
         }
@@ -50,7 +50,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
         public IEnumerable<Category> GetContractorsCategories(string contractorUserName, string? userName)
         {
             if (!UserRepository.Exists(contractorUserName))
-                throw new NotFoundException($"Contractor with username {contractorUserName} not found.");
+                throw new NotFoundException($"Vállalkozó '{contractorUserName}' felhasználónévvel nem található.");
 
             var categories = CategoryRepository.GetUsersCategories(contractorUserName)
                 .Where(category => HasReadAccess(category, userName));
@@ -81,7 +81,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
                 .Select(UserRepository.GetByUserName);
 
             if (!HasWriteAccess(category, userName))
-                throw new UnauthorisedException("Unauthorised to update this category");
+                throw new UnauthorisedException("Nincs jogosultsága frissíteni ezt a kategóriát.");
             
             if (CategoryRepository.GetUsersCategories(userName).Any(c => c.Name == categoryDto.Name && c.Id != categoryDto.Id))
                 throw new InvalidEntityException($"'{categoryDto.Name}' nevű kategória már létezik.");

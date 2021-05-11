@@ -52,7 +52,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
 
             var size = file.Length;
             if (size == 0)
-                throw new InvalidAvatarFileException("Empty file");
+                throw new InvalidAvatarFileException("Üres fájl.");
 
             var extension = AvatarFileTypesExtensions.FromExtension(
                     Path.GetExtension(file.FileName).ToLowerInvariant()
@@ -79,7 +79,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
         {
             var user = UserRepository.GetByUserName(userName);
             if(user.ContractorPage is null)
-                throw new NotContractorException("User is not a contractor");
+                throw new NotContractorException("A felhasználó nem vállalkozó.");
 
             // Checking if the file is still on the filesystem
             bool returnUsersAvatar = user.ContractorPage.Avatar is not null && AvatarRepository.Exists(user.ContractorPage.Avatar);

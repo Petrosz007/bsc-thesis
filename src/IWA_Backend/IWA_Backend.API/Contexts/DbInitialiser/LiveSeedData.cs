@@ -116,7 +116,7 @@ namespace IWA_Backend.API.Contexts.DbInitialiser
                 },
                 new() // Index: 12
                 {
-                    UserName = "andi_de_nem_péter",
+                    UserName = "andi_de_nem_peter",
                     Email = "andi@andikvarium.net",
                     Name = "Góga Andrea",
                     ContractorPage = null

@@ -32,7 +32,7 @@ namespace IWA_Backend.API.Controllers
             var result = await signInManager.PasswordSignInAsync(login.UserName, login.Password, isPersistent: true, lockoutOnFailure: false);
             if(!result.Succeeded)
             {
-                return NotFound();
+                return BadRequest("Rossz felhasználónév vagy jelszó!");
             }
 
             return Ok();
@@ -52,7 +52,6 @@ namespace IWA_Backend.API.Controllers
             var result = await userManager.CreateAsync(user, register.Password);
             if(!result.Succeeded)
             {
-                // TODO: Better error handling
                 if(result.Errors.Any())
                 {
                     if(result.Errors.First().Code == "DuplicateUserName")
@@ -61,7 +60,7 @@ namespace IWA_Backend.API.Controllers
                     }
                 }
 
-                return StatusCode(500);
+                return BadRequest(result.Errors);
             }
 
             if(user.ContractorPage is not null)

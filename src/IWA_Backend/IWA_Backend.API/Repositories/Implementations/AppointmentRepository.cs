@@ -39,7 +39,7 @@ namespace IWA_Backend.API.Repositories.Implementations
         public Appointment GetById(int id) =>
             Context.Appointments
                 .FirstOrDefault(appointment => appointment.Id == id)
-                ?? throw new NotFoundException($"Appointment with id '{id}' not found.");
+                ?? throw new NotFoundException($"'{id}' azonosítójú időpont nem található.");
 
         public IEnumerable<Appointment> GetContractorsAllAppointments(string contractorUserName) =>
             Context.Appointments
