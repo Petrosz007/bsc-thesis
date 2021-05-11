@@ -22,18 +22,19 @@ const ContractorPageInputs = ({ state, setState }: { state: ContractorPage, setS
     <>
         <div>
             <label htmlFor="title">Foglalkozás</label>
-            <input type="text" name="title" value={state.title} required={true} onChange={handleContractorChange}/>
+            <input type="text" name="title" value={state.title} required placeholder="Angol tanár, Személyi edző..." onChange={handleContractorChange}/>
         </div>
 
         <div>
             <label htmlFor="bio">Magamról</label>
-            <textarea name="bio" value={state.bio} required={true} onChange={handleContractorChange} rows={3}/>
+            <textarea name="bio" value={state.bio} required placeholder="Rövid profil leírás, amit az ügyfelek elolvashatnak..." onChange={handleContractorChange} rows={3}/>
         </div>
     </>
     );
 }
 
 const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => {
+    const { notificationDispatch } = useContext(NotificationContext);
     const [isContractor, setIsContractor] = useState(false);
     const [contractorPageState, setContractorPageState] = useState<ContractorPage>({
         title: '',
@@ -57,11 +58,16 @@ const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => 
     };
 
     const handleSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        
+        if(state.password !== state.passwordConfirmation) {
+            notificationDispatch({ type: 'addError', message: 'Nem egyezik a jelszó és jelszó ismétlés!' });
+            return;
+        }
         onSubmit({
             ...state,
             contractorPage: isContractor ? contractorPageState : null,
         });
-        event.preventDefault();
     }
 
     return (
@@ -70,27 +76,38 @@ const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => 
             <form className="registerForm" onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="userName">Felhasználónév</label>
-                    <input type="text" name="userName" value={state.userName} required={true} onChange={handleChange} />
+                    <input type="text" name="userName" value={state.userName} required
+                           placeholder="felhasznalo42" 
+                           onChange={handleChange}
+                           pattern="[a-zA-Z0-9_]{3,25}"
+                           title="3-25 karakter, a-z kisebetű, A-Z nagybetű, 0-9 szám"
+                    />
                 </div>
     
                 <div>
                     <label htmlFor="email">Email</label>
-                    <input type="email" name="email" value={state.email} required={true} onChange={handleChange} />
+                    <input type="email" name="email" value={state.email} required placeholder="felhasznalo@example.com" onChange={handleChange} />
                 </div>
     
                 <div>
                     <label htmlFor="name">Név</label>
-                    <input type="text" name="name" value={state.name} required={true} onChange={handleChange} />
+                    <input type="text" name="name" value={state.name} required placeholder="Felhasználó Ferenc" onChange={handleChange} />
                 </div>
     
                 <div>
                     <label htmlFor="password">Jelszó</label>
-                    <input type="password" name="password" value={state.password} required={true} autoComplete="new-password" onChange={handleChange} />
+                    <input type="password" name="password" value={state.password} required 
+                           placeholder=" " autoComplete="new-password" onChange={handleChange} 
+                           minLength={6}
+                    />
                 </div>
     
                 <div>
                     <label htmlFor="passwordConfirmation">Jelszó megerősítés</label>
-                    <input type="password" name="passwordConfirmation" value={state.passwordConfirmation} required={true} onChange={handleChange} />
+                    <input type="password" name="passwordConfirmation" value={state.passwordConfirmation} required 
+                           placeholder=" " onChange={handleChange}
+                           minLength={6}
+                    />
                 </div>
     
                 <div>

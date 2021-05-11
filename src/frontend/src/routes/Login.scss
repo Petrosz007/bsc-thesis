@@ -40,6 +40,10 @@
         border: 1px solid hsl(0, 0%, 70%);
         border-radius: 5px;
         padding: 5px;
+
+        &:not(:placeholder-shown):not(:focus):invalid {
+          border-color: var.$red;
+        }
       }
     }
     

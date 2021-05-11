@@ -33,11 +33,19 @@ const LoginPage = () => {
             <form className="loginForm" onSubmit={() => login(userName, password)}>
                 <div>
                     <label htmlFor="username">Felhasználónév</label>
-                    <input type="text" name="username" value={userName} required={true} onChange={e => setUserName(e.target.value)}/>
+                    <input type="text" name="username" value={userName} required onChange={e => setUserName(e.target.value)}
+                           placeholder="felhasznalo42"
+                           pattern="[a-zA-Z0-9_]{3,25}"
+                           title="3-25 karakter, a-z kisebetű, A-Z nagybetű, 0-9 szám"
+                    />
                 </div>
                 <div>
                     <label htmlFor="password">Jelszó</label>
-                    <input type="password" name="password" value={password} required={true} autoComplete="current-password" onChange={e => setPassword(e.target.value)}/><br/>
+                    <input type="password" name="password" value={password} required 
+                           autoComplete="current-password" onChange={e => setPassword(e.target.value)}
+                           placeholder=" "
+                           minLength={6}
+                    />
                 </div>
                 <input type="submit" value="Bejelentkezés" />
             </form>
