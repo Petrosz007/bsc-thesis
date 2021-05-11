@@ -44,7 +44,7 @@ const UserAdder = ({ usersToSelectFrom, users, setUsers, allowedUsers, max }: {
                 ? <p className="noUserInUserAdder">Nincs egy ügyfél se</p>
                 : users.map(user =>
                 <li key={user.userName}>
-                    <UserName user={user} />
+                    <UserName user={user} className={allowedUsers !== undefined && allowedUsers.every(u => u.userName !== user.userName) ? 'invalid' : ''} />
                     <button onClick={e => {remove(user.userName); e.preventDefault()}}><DeleteIcon className="deleteIcon"/></button>
                 </li>
             )}
