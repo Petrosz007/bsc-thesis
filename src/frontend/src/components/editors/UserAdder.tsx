@@ -40,7 +40,9 @@ const UserAdder = ({ usersToSelectFrom, users, setUsers, allowedUsers, max }: {
                 </button>
             </div>
             <ul className="userAdderUsers">
-            {users.map(user =>
+            {users.length === 0
+                ? <p className="noUserInUserAdder">Nincs egy ügyfél se</p>
+                : users.map(user =>
                 <li key={user.userName}>
                     <UserName user={user} />
                     <button onClick={e => {remove(user.userName); e.preventDefault()}}><DeleteIcon className="deleteIcon"/></button>

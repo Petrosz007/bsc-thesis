@@ -36,6 +36,14 @@
     margin-top: 10px;
     overflow-y: auto;
     max-height: 150px;
+
+    p.noUserInUserAdder {
+      text-align: center;
+      font-size: 1.1rem;
+      color: gray;
+      padding: 10px;
+      font-style: italic;
+    }
     
     li {
       list-style: none;
