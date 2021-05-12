@@ -98,7 +98,7 @@ const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => 
                     <label htmlFor="password">Jelszó</label>
                     <input type="password" name="password" value={state.password} required 
                            placeholder=" " autoComplete="new-password" onChange={handleChange} 
-                           minLength={6}
+                           minLength={5}
                     />
                 </div>
     
@@ -106,7 +106,7 @@ const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => 
                     <label htmlFor="passwordConfirmation">Jelszó megerősítés</label>
                     <input type="password" name="passwordConfirmation" value={state.passwordConfirmation} required 
                            placeholder=" " onChange={handleChange}
-                           minLength={6}
+                           minLength={5}
                     />
                 </div>
     

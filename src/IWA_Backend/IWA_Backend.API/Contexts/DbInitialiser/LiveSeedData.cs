@@ -31,7 +31,7 @@ namespace IWA_Backend.API.Contexts.DbInitialiser
                     {
                         Title = "Angol tanár",
                         Bio = "Nyelvizsgára felkészítést, magán angol órákat vállalok",
-                        Avatar = "seed_angola.jpg",
+                        Avatar = null,
                     },
                 },
                 new() // Index: 2

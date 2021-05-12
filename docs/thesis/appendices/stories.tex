@@ -67,6 +67,14 @@
 		WHEN  & Egy vállalkozó időpontjait nézi & \\ \cline{1-2}
 		THEN  & Nem jelenik meg az az időpont & \\ 
 		\hline
+		GIVEN & Egy időponton más napon végződik mint kezdődik & \multirow{3}{*}{A13} \\ \cline{1-2}
+		WHEN  & Egy vállalkozó időpontjait nézi & \\ \cline{1-2}
+		THEN  & Az időpont befejezésének hónapja és napja is megfjelenik & \\ 
+		\hline
+		GIVEN & Egy időponton más évben végződik mint kezdődik & \multirow{3}{*}{A14} \\ \cline{1-2}
+		WHEN  & Egy vállalkozó időpontjait nézi & \\ \cline{1-2}
+		THEN  & Az időpont befejezésének éve, hónapja és napja is megfjelenik & \\ 
+		\hline
 	\end{tabular}
 \end{table}
 
@@ -262,6 +270,10 @@
 		GIVEN & Profilképét szerkeszti, megfelelő fájlt tölt fel & \multirow{3}{*}{D20} \\ \cline{1-2}
 		WHEN  & Rányom a Profilkép Frissítése gombra & \\ \cline{1-2}
 		THEN  & Frissül a profilkép & \\ 
+		\hline
+		GIVEN & Kategóriát hoz létre vagy töröl, már létezik neki olyan nevű kategóriája & \multirow{3}{*}{D21} \\ \cline{1-2}
+		WHEN  & Rányom a Létrehozás / Mentés gombra & \\ \cline{1-2}
+		THEN  & Nem mentődik el, hibát kap & \\ 
 		\hline
 	\end{tabular}
 \end{table}

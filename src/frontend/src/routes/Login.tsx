@@ -44,7 +44,7 @@ const LoginPage = () => {
                     <input type="password" name="password" value={password} required 
                            autoComplete="current-password" onChange={e => setPassword(e.target.value)}
                            placeholder=" "
-                           minLength={6}
+                           minLength={5}
                     />
                 </div>
                 <input type="submit" value="Bejelentkezés" />
