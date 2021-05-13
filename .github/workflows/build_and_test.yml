@@ -32,6 +32,21 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity minimal
       working-directory: ./src/IWA_Backend/
+
+    - name: Publish Windows
+      run: dotnet publish -c Release --no-build -o build/windows -r win-x64
+      working-directory: ./src/IWA_Backend/
+
+    - name: Publish Linux
+      run: dotnet publish -c Release --no-build -o build/linux -r linux-x64
+      working-directory: ./src/IWA_Backend/
+
+    - name: Cache build files
+      uses: actions/cache@v2
+      id: cache-backend-build
+      with:
+        path: ./src/IWA_Backend/build
+        key: ${{ github.sha }}
   
   frontend:
     runs-on: ubuntu-latest
@@ -70,8 +85,42 @@ jobs:
         env:
           CI: false
       
-      # TODO: Add unit testing when it is ready
-      # - run: yarn test
-      #   working-directory: ./src/frontend
-      #   env:
-      #     CI: false
+      - name: Cache build files
+        uses: actions/cache@v2
+        id: cache-frontend-build
+        with:
+          path: ./src/frontend/build
+          key: ${{ github.sha }}
+
+  create-release:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Restore frontend build
+        uses: actions/cache@v2
+        id: cache-frontend-build
+        with:
+          path: ./build/frontend
+          key: ${{ github.sha }}
+
+      - name: Restore backend build
+        uses: actions/cache@v2
+        id: cache-backend-build
+        with:
+          path: ./build/backend
+          key: ${{ github.sha }}
+
+      - name: Copy source
+        run: cp -R ./src ./build/src
+
+      - name: Copy thesis
+        run: cp ./docs/thesis/thesis.pdf ./build/thesis.pdf
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: bsc-thesis-artifact
+          path: ./build
+
