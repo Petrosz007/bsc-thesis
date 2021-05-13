@@ -133,7 +133,10 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
             </div>
             <div className="editorGroup">
                 <label htmlFor="maxAttendees">Max résztvevők</label>
-                <input type="number" name="maxAttendees" value={state.maxAttendees} min={Math.max(1, users.length)} onChange={handleChange} />
+                <input type="number" name="maxAttendees" value={state.maxAttendees} 
+                       min={Math.max(1, users.length)}
+                       max={10000000}
+                       onChange={handleChange} />
             </div>
             <div className="editorGroup">
                 <label htmlFor="attendees">Résztvevők</label>

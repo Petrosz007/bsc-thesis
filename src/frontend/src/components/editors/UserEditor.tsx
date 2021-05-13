@@ -59,23 +59,36 @@ const UserEditorBase = ({ initialUser, apiCall, onClose, labels }: {
         >
             <div className="editorGroup">
                 <label htmlFor="name">Név</label>
-                <input type="text" name="name" value={state.name} required={true} onChange={handleChange} />
+                <input type="text" name="name" value={state.name} required
+                       pattern="\S(.*\S)?"
+                       title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                       maxLength={50}
+                       onChange={handleChange} />
             </div>
             
             <div className="editorGroup">
                 <label htmlFor="description">Email</label>
-                <input type="email" name="email" value={state.email} required={true} onChange={handleChange} />
+                <input type="email" name="email" value={state.email} required onChange={handleChange} />
             </div>
             
             {initialUser.contractorPage !== null && <>
                 <div className="editorGroup">
                     <label htmlFor="allowedUsers">Foglalkozás</label>
-                    <input type="text" name="contractorPage__title" value={state.contractorPage__title} required={true} onChange={handleChange} />
+                    <input type="text" name="contractorPage__title" value={state.contractorPage__title} required
+                           pattern="\S(.*\S)?"
+                           maxLength={50}
+                           title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                           onChange={handleChange} />
                 </div>
                 
                 <div className="editorGroup">
                     <label htmlFor="allowedUsers">Magamról</label>
-                    <textarea name="contractorPage__bio" value={state.contractorPage__bio} required={true} onChange={handleChange} rows={3} />
+                    <textarea name="contractorPage__bio" value={state.contractorPage__bio}
+                              required
+                              // pattern="\S(.*\S)?"
+                              maxLength={500}
+                              title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                              onChange={handleChange} rows={3} />
                 </div>
             </>}
         </EditorBase>

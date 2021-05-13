@@ -57,11 +57,19 @@ const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose, labels }
         >
             <div className="editorGroup">
                 <label htmlFor="name">Név</label>
-                <input type="text" name="name" value={state.name} required={true} onChange={handleChange} />
+                <input type="text" name="name" value={state.name} 
+                       required
+                       pattern="\S(.*\S)?"
+                       maxLength={50}
+                       title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                       onChange={handleChange} />
             </div>
             <div className="editorGroup">
                 <label htmlFor="description">Leírás</label>
-                <input type="text" name="description" value={state.description} required={true} onChange={handleChange} />
+                <input type="text" name="description" value={state.description} required
+                       pattern="\S(.*\S)?"
+                       title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                       onChange={handleChange} />
             </div>
             <div className="editorGroup">
                 <label htmlFor="everyoneAllowed">Nyílt esemény 
@@ -70,11 +78,11 @@ const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose, labels }
             </div>
             <div className="editorGroup">
                 <label htmlFor="maxAttendees">Max résztvevők</label>
-                <input type="number" name="maxAttendees" value={state.maxAttendees} min="1" onChange={handleChange} />
+                <input type="number" name="maxAttendees" value={state.maxAttendees} min="1" max={10000000} onChange={handleChange} />
             </div>
             <div className="editorGroup">
                 <label htmlFor="price">Ár</label>
-                <input type="number" name="price" value={state.price} min="0" onChange={handleChange} />
+                <input type="number" name="price" value={state.price} min="0" max={10000000} onChange={handleChange} />
             </div>
             {!state.everyoneAllowed && <>
                 <label htmlFor="allowedUsers">Engedélyezett résztvevők</label>

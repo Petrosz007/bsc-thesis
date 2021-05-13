@@ -22,12 +22,20 @@ const ContractorPageInputs = ({ state, setState }: { state: ContractorPage, setS
     <>
         <div>
             <label htmlFor="title">Foglalkozás</label>
-            <input type="text" name="title" value={state.title} required placeholder="Angol tanár, Személyi edző..." onChange={handleContractorChange}/>
+            <input type="text" name="title" value={state.title} required
+                   pattern="\S(.*\S)?"
+                   maxLength={50}
+                   title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                   placeholder="Angol tanár, Személyi edző..." onChange={handleContractorChange}/>
         </div>
 
         <div>
             <label htmlFor="bio">Magamról</label>
-            <textarea name="bio" value={state.bio} required placeholder="Rövid profil leírás, amit az ügyfelek elolvashatnak..." onChange={handleContractorChange} rows={3}/>
+            <textarea name="bio" value={state.bio} required
+                      // pattern="\S(.*\S)?"
+                      maxLength={500}
+                      title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                      placeholder="Rövid profil leírás, amit az ügyfelek elolvashatnak..." onChange={handleContractorChange} rows={3}/>
         </div>
     </>
     );
@@ -91,7 +99,11 @@ const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => 
     
                 <div>
                     <label htmlFor="name">Név</label>
-                    <input type="text" name="name" value={state.name} required placeholder="Felhasználó Ferenc" onChange={handleChange} />
+                    <input type="text" name="name" value={state.name} required
+                           pattern="\S(.*\S)?"
+                           maxLength={50}
+                           title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                           placeholder="Felhasználó Ferenc" onChange={handleChange} />
                 </div>
     
                 <div>
