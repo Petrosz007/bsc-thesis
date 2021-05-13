@@ -21,8 +21,10 @@ namespace IWA_Backend.API.BusinessLogic.DTOs
         // Not required, always set to the current user on create, update
         public string OwnerUserName { get; init; } = null!;
         [Required]
+        [Range(1, int.MaxValue)]
         public int MaxAttendees { get; init; }
         [Required]
+        [Range(0, int.MaxValue)]
         public int Price { get; init; }
 
         public bool ValuesEqual(object? obj)

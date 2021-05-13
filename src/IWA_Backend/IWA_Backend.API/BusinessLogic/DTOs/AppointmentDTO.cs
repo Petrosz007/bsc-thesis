@@ -18,6 +18,7 @@ namespace IWA_Backend.API.BusinessLogic.DTOs
         [Required]
         public IEnumerable<string> AttendeeUserNames { get; init; } = new List<string>();
         [Required]
+        [Range(1, int.MaxValue)]
         public int MaxAttendees { get; init; }
 
         public bool ValuesEqual(object? obj)
