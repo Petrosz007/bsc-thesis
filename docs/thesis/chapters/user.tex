@@ -27,7 +27,7 @@ További docker-compose parancsok a docker-compose dokumentációjában\footnote
 
 Az alkalmazás futtatásához szükség lesz egy MariaDB szerverre és azon belül egy \textit{iwa} nevű adatbázisra. Az alkalmazás Linux és Windows rendszereken is futhat, ehhez a megfelelő backend fájl futtatása szükséges.
 
-A backend futtatása parancssorból az \textit{IWA\_Backend.API} futtatható fájllal lehet. A konfigurációja az \text{appsettings.json} fájlban található, kitöltése az \ref{tab:config} táblázat alapján történik. A backend így a host 80-as portján fog futni. \\ Ezt a \textit{$--$urls=http://localhost:5001/} konzoli argumentummal lehet megváltoztatni, ebben az esetben az 5001-es porton futna az alkalmazás.
+A backend-hez szükséges a .NET ASP.NET Core 5.0 runtime\footnote{\url{https://dotnet.microsoft.com/download/dotnet/5.0} (utolsó elérés: 2021.05.14)} telepítése. Futtatása parancssorból az \textit{IWA\_Backend.API} futtatható fájllal lehet. A konfigurációja az \text{appsettings.json} fájlban található, kitöltése az \ref{tab:config} táblázat alapján történik. A backend így a host 80-as portján fog futni. \\ Ezt a \textit{$--$urls=http://localhost:5001/} konzoli argumentummal lehet megváltoztatni, ebben az esetben az 5001-es porton futna az alkalmazás.
 
 A frontend statikus HTML, JS és CSS fájlokból áll, ezt például Apache\footnote{\url{https://httpd.apache.org/} (utolsó elérés: 2021.05.10)} vagy Nginx\footnote{\url{https://www.nginx.com/} (utolsó elérés: 2021.05.10)} szerverekkel, vagy más hasonló webhost szolgáltatásokkal lehet kitelepíteni. A frontend konfigurációja a mappájában a \textit{config.js} fájlban történik, kitöltési útmutató az \ref{tab:config} táblázatban található.
 
