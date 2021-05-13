@@ -34,11 +34,11 @@ jobs:
       working-directory: ./src/IWA_Backend/
 
     - name: Publish Windows
-      run: dotnet publish -c Release --no-build -o build/windows -r win-x64
+      run: dotnet publish -c Release -o build/windows -r win-x64
       working-directory: ./src/IWA_Backend/
 
     - name: Publish Linux
-      run: dotnet publish -c Release --no-build -o build/linux -r linux-x64
+      run: dotnet publish -c Release -o build/linux -r linux-x64
       working-directory: ./src/IWA_Backend/
 
     - name: Cache build files
