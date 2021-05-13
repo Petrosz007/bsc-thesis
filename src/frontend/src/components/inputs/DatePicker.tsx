@@ -36,10 +36,8 @@ export const DatePicker = ({ valueDate, onChangeDate, minDate, maxDate, ...props
 
 export const DateTimePicker = ({ valueDate, onChangeDate, minDate, maxDate, ...props}: DatePickerProps) => {
     const handleDateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        const date = DateTime.fromISO(e.target.value).set({ hour: valueDate.hour, minute: valueDate.hour });
+        const date = DateTime.fromISO(e.target.value).set({ hour: valueDate.hour, minute: valueDate.minute });
         if(!date.isValid) return;
-        // if(minDate !== undefined && date < minDate) return;
-        // if(maxDate !== undefined && date > maxDate) return;
 
         onChangeDate(date);
     }, [onChangeDate, minDate, maxDate]);
@@ -47,8 +45,6 @@ export const DateTimePicker = ({ valueDate, onChangeDate, minDate, maxDate, ...p
     const handleTimeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const date = DateTime.fromFormat(`${valueDate.toFormat('yyyy.MM.dd')} ${e.target.value}`, 'yyyy.MM.dd HH:mm');
         if(!date.isValid) return;
-        // if(minDate !== undefined && date < minDate) return;
-        // if(maxDate !== undefined && date > maxDate) return;
 
         onChangeDate(date);
     }, [valueDate, onChangeDate, minDate, maxDate]);
@@ -67,8 +63,8 @@ export const DateTimePicker = ({ valueDate, onChangeDate, minDate, maxDate, ...p
                    type="time"
                    value={valueDate.toFormat('HH:mm')}
                    onChange={handleTimeChange}
-                   min={minDate?.toFormat('HH:mm')}
-                   max={maxDate?.toFormat('HH:mm')}
+                   min={minDate?.hasSame(valueDate, 'day') ? minDate?.toFormat('HH:mm') : undefined}
+                   max={minDate?.hasSame(valueDate, 'day') ? maxDate?.toFormat('HH:mm') : undefined}
                    required
             />
         </div>

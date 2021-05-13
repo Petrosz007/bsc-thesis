@@ -68,6 +68,7 @@ const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose, labels }
                 <label htmlFor="description">Leírás</label>
                 <input type="text" name="description" value={state.description} required
                        pattern="\S(.*\S)?"
+                       maxLength={50}
                        title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
                        onChange={handleChange} />
             </div>
