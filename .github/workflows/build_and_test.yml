@@ -101,15 +101,17 @@ jobs:
 
       - name: Create build folder
         run: |
-          mkdir -p ./build/src
+          mkdir -p ./build/src/.github/workflows
           mkdir -p ./build/bin/frontend
           mkdir -p ./build/bin/backend
 
       - name: Copy source code
         run: |
-          cp -R ./src ./build/src
+          cp -R ./src/* ./build/src/
+          cp -R .github/workflows/build_and_test.yml ./build/src/.github/workflows/build_and_test.yml
           cp ./docker-compose.yml ./build/
           cp ./docs/thesis/thesis.pdf ./build/thesis.pdf
+          cp ./docs/formal-requirements/témabejelentő.pdf ./build/témabejelentő.pdf
 
       - name: Restore frontend build
         uses: actions/cache@v2
@@ -127,8 +129,8 @@ jobs:
 
       - name: Copy build files
         run: |
-          cp -R ./src/frontend/build ./build/bin/frontend
-          cp -R ./src/IWA_Backend/build ./build/bin/backend
+          cp -R ./src/frontend/build/* ./build/bin/frontend/
+          cp -R ./src/IWA_Backend/build/* ./build/bin/backend/
 
       - uses: actions/upload-artifact@v2
         with:
