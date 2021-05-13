@@ -99,25 +99,33 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Create build folder
+        run: |
+          mkdir -p ./build/src
+          mkdir -p ./build/bin/frontend
+          mkdir -p ./build/bin/backend
+
       - name: Restore frontend build
         uses: actions/cache@v2
         id: cache-frontend-build
         with:
-          path: ./build/frontend
+          path: ./src/frontend/build
           key: ${{ github.sha }}
 
       - name: Restore backend build
         uses: actions/cache@v2
         id: cache-backend-build
         with:
-          path: ./build/backend
+          path: ./src/IWA_Backend/build
           key: ${{ github.sha }}
 
       - name: Copy source
-        run: cp -R ./src ./build/src
-
-      - name: Copy thesis
-        run: cp ./docs/thesis/thesis.pdf ./build/thesis.pdf
+        run: |
+          cp -R ./src/frontend/build ./build/bin/frontend
+          cp -R ./src/IWA_Backend/build ./build/bin/backend
+          cp -R ./src ./build/src
+          cp ./docker-compose.yml ./build/
+          cp ./docs/thesis/thesis.pdf ./build/thesis.pdf
 
       - uses: actions/upload-artifact@v2
         with:
