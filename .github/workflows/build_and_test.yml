@@ -34,11 +34,11 @@ jobs:
       working-directory: ./src/IWA_Backend/
 
     - name: Publish Windows
-      run: dotnet publish -c Release -o build/windows -r win-x64
+      run: dotnet publish -c Release -o build/windows -r win-x64 --self-contained false
       working-directory: ./src/IWA_Backend/
 
     - name: Publish Linux
-      run: dotnet publish -c Release -o build/linux -r linux-x64
+      run: dotnet publish -c Release -o build/linux -r linux-x64 --self-contained false
       working-directory: ./src/IWA_Backend/
 
     - name: Cache build files
@@ -105,6 +105,12 @@ jobs:
           mkdir -p ./build/bin/frontend
           mkdir -p ./build/bin/backend
 
+      - name: Copy source code
+        run: |
+          cp -R ./src ./build/src
+          cp ./docker-compose.yml ./build/
+          cp ./docs/thesis/thesis.pdf ./build/thesis.pdf
+
       - name: Restore frontend build
         uses: actions/cache@v2
         id: cache-frontend-build
@@ -119,13 +125,10 @@ jobs:
           path: ./src/IWA_Backend/build
           key: ${{ github.sha }}
 
-      - name: Copy source
+      - name: Copy build files
         run: |
           cp -R ./src/frontend/build ./build/bin/frontend
           cp -R ./src/IWA_Backend/build ./build/bin/backend
-          cp -R ./src ./build/src
-          cp ./docker-compose.yml ./build/
-          cp ./docs/thesis/thesis.pdf ./build/thesis.pdf
 
       - uses: actions/upload-artifact@v2
         with:
