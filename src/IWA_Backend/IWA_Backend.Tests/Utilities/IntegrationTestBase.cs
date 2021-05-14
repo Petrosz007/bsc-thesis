@@ -11,13 +11,13 @@ namespace IWA_Backend.Tests.Utilities
     {
         protected readonly TestWebApplicationFactory<TestStartup> Factory = new();
         protected IWAContext Context =>
-            Factory.Services.GetRequiredService<IWAContext>();
+            Factory.Services.CreateScope().ServiceProvider.GetRequiredService<IWAContext>();
 
         protected UserManager<User> UserManager =>
-            Factory.Services.GetRequiredService<UserManager<User>>();
+            Factory.Services.CreateScope().ServiceProvider.GetRequiredService<UserManager<User>>();
 
         protected IMapper Mapper =>
-            Factory.Services.GetRequiredService<IMapper>();
+            Factory.Services.CreateScope().ServiceProvider.GetRequiredService<IMapper>();
 
         public void Dispose()
         {
