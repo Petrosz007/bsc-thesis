@@ -10,7 +10,7 @@ export default ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <nav className={`navbar ${className}`}>
             <div className="navLeft">
-                <p>Időpontfoglaló Webes Alkalmazás</p>
+                <p>Időpont foglaló Webes Alkalmazás</p>
                 <div className="navLinks">
                     <NavLink to="/" exact={true}>Kezdőlap</NavLink>
                     <NavLink to="/contractor">Vállalkozók</NavLink>

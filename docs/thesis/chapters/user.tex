@@ -15,13 +15,23 @@ Az alkalmazást legegyszerűbben Docker\footnote{\url{https://www.docker.com/} (
 A Dockeres telepítéshez szükséges a Docker\footnote{\url{https://www.docker.com/get-started} (utolsó elérés: 2021.05.10)} és Docker Compose\footnote{\url{https://docs.docker.com/compose/install/} (utolsó elérés: 2021.05.10)} telepítése.
 
 A fő mappában a \textit{docker-compse.yml} fájlban találhatók meg a konténerek konfigurációi. Három konténerből áll, egy MariaDB \footnote{\url{https://mariadb.org/} (utolsó elérés: 2021.05.10)} adatbázisból, a backend REST API-ból és a frontendből.
-A yml fájlban a konfigurációs lehetőségek az \ref{tab:config} táblázatban találhatók.
+A yml fájlban a konfigurációs lehetőségek az \ref{tab:config} táblázatban találhatók. A \textit{docker-compose build} paranccsal a Docker létrehozza megfelelően a konténereket, ez eltarthat egy-két percig, mert első futtatásra a Dockernek le kell töltenie a megfelelő alap konténereket az internetről és utána létre kell hozni ezeket a konténereket a forráskódból.
 
-Az alap beállításokkal a \textit{http://localhost:8100}-on érhető el az alkalmazás. HTTPS-t és tűzfalat érdemes bekonfigurálni egy Reverse Proxy\cite{nginxReverseProxy}-val, például Nginx-el.
+Windows-on a Docker Desktop beállításaiban a Resources > File Sharing alatt hozzá kell adni az alkalmazás fő mappáját, hogy a docker ki tudja írni az adatbázis adatait és a profilképeket.
 
-Az alkalmazást ez után a \textit{docker-compose up} paranccsal indíthatjuk el. Első futtatásra ez eltarthat pár percig, mert a Dockernek le kell töltenie a megfelelő alap konténereket az internetről és utána létre kell hozni ezeket a konténereket a forráskódból.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{docker_config}
+    \caption{Docker mappa megosztás beállítása}
+\end{figure}
+
+Az alkalmazást ez után a \textit{docker-compose up} paranccsal indíthatjuk el. A \textit{docker-compose down} paranccsal törölhetjük ki a konténereket. Fontos megjegyezni, hogy ez az alkalmazás adatait nem törli, csak a konténereket amikben fut az alkalmazás.
+
+Ha bármikor probléma lépne fel futtatásnál, akkor a \textit{docker-compose down}, utána \textit{docker-compose build}, a db\_data és avatar mappa kitörlése és utána \textit{docker-compose up} parancs valószínűleg megoldja.
 
 További docker-compose parancsok a docker-compose dokumentációjában\footnote{\url{https://docs.docker.com/compose/reference/} (utolsó elérés: 2021.05.10)} találhatók.
+
+Az alap beállításokkal a \textit{http://127.0.0.1:8100}-on érhető el az alkalmazás. HTTPS-t és tűzfalat érdemes bekonfigurálni egy Reverse Proxy\cite{nginxReverseProxy}-val, például Nginx-el.
 
 \subsection{Telepítés Docker nélkül}
 
@@ -30,6 +40,10 @@ Az alkalmazás futtatásához szükség lesz egy MariaDB szerverre és azon bel�
 A backend-hez szükséges a .NET ASP.NET Core 5.0 runtime\footnote{\url{https://dotnet.microsoft.com/download/dotnet/5.0} (utolsó elérés: 2021.05.14)} telepítése. Futtatása parancssorból az \textit{IWA\_Backend.API} futtatható fájllal lehet. A konfigurációja az \text{appsettings.json} fájlban található, kitöltése az \ref{tab:config} táblázat alapján történik. A backend így a host 80-as portján fog futni. \\ Ezt a \textit{$--$urls=http://localhost:5001/} konzoli argumentummal lehet megváltoztatni, ebben az esetben az 5001-es porton futna az alkalmazás.
 
 A frontend statikus HTML, JS és CSS fájlokból áll, ezt például Apache\footnote{\url{https://httpd.apache.org/} (utolsó elérés: 2021.05.10)} vagy Nginx\footnote{\url{https://www.nginx.com/} (utolsó elérés: 2021.05.10)} szerverekkel, vagy más hasonló webhost szolgáltatásokkal lehet kitelepíteni. A frontend konfigurációja a mappájában a \textit{config.js} fájlban történik, kitöltési útmutató az \ref{tab:config} táblázatban található.
+
+Az Nginx konfigurációra példa található az \textit{src/frontend/docker/nginx.conf} fájlban.
+
+\clearpage
 
 \section{Funkciók leírása}
 \label{sec:functionDefinitions}
