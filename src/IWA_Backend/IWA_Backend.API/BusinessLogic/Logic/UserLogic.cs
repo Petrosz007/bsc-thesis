@@ -70,7 +70,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
                 }
                 catch (NotFoundException)
                 {
-                    // TODO: log, that the file has been deleted from disk
+                    Console.WriteLine($"Before the update, the previous avatar with id '{id}' had been deleted from the disk.");
                 }
             }
         }
