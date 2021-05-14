@@ -9,13 +9,7 @@
 		\hline
 		\textbf{Konfigurációs változó} & \textbf{Alap érték} & \textbf{Megjegyzés} \\
 		\hline \hline
-		\multicolumn{3}{|l|}{db} \\
-		\hline
-		\tiny{MYSQL\_ROOT\_PASSWORD} & kebab & MariaDB root jelszava \\
-		\hline
-		\small{volumes} & \tiny{./db\_data:/var/lib/mysql} & MariaDB adatbázis perzisztens tárolása a lokális db\_data mappában  \\ \hline
-		\small{ports} & 3306:3306 & A konténer 3306-os portja a hoston a 3306-os portra forwardolása \\ \hline
-		\hline
+		
 		\multicolumn{3}{|l|}{backend} \\
 		\hline
 		\small{IWA\_CorsAllowUrls} & http://127.0.0.1:8100 & Vesszővel elválasztva az engedélyezett publikus frontend url-ek felsorolása. Pl.: \url{https://andipeter.me} \\ \hline
@@ -28,13 +22,32 @@
 		\small{IWA\_MYSQL\_PASS} & kebab & MariaDB felhasználójának jelszava \\ \hline
 		\small{volumes} & \tiny{./avatars:/app/AvatarData} & A profilképek perzisztens tárolása a lokális avatars mappában  \\ \hline
 		\small{ports} & 5000:80 & A konténer 80-as portja a hoston az 5000-es portra forwardolása \\
+		\hline
+	\end{tabular}
+	\caption{Konfigurációs változók beállításai 1}
+	\label{tab:config}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{ | m{0.25\textwidth} | m{0.25\textwidth} | m{0.45\textwidth} | }
+		\hline
+		\textbf{Konfigurációs változó} & \textbf{Alap érték} & \textbf{Megjegyzés} \\
 		\hline \hline
+		\multicolumn{3}{|l|}{db} \\
+		\hline
+		\tiny{MYSQL\_ROOT\_PASSWORD} & kebab & MariaDB root jelszava \\
+		\hline
+		\small{volumes} & \tiny{./db\_data:/var/lib/mysql} & MariaDB adatbázis perzisztens tárolása a lokális db\_data mappában  \\ \hline
+		\small{ports} & 3306:3306 & A konténer 3306-os portja a hoston a 3306-os portra forwardolása \\ \hline
+		\hline
 		\multicolumn{3}{|l|}{frontend} \\
 		\hline
 		\small{API\_URL} & http://127.0.0.1:5000 & A backend publikus elérési url-je. Pl.: \url{https://andipeter.me}/api/ \\
 		\hline
 		\small{ports} & 8100:80 & A konténer 80-as portja a hoston az 8100-es portra forwardolása \\ \hline
+				
 	\end{tabular}
-	\caption{Konfigurációs változók beállításai}
-	\label{tab:config}
+	\caption{Konfigurációs változók beállításai 2}
+	\label{tab:config2}
 \end{table}
