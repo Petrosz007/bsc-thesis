@@ -111,6 +111,7 @@ jobs:
           cp -R .github/workflows/build_and_test.yml ./build/src/.github/workflows/build_and_test.yml
           cp ./docker-compose.yml ./build/
           cp ./docs/thesis/thesis.pdf ./build/thesis.pdf
+          cp ./docs/formal-requirements/eredetiség_nyilatkozat.pdf ./build/eredetiség_nyilatkozat.pdf
           cp ./docs/formal-requirements/témabejelentő.pdf ./build/témabejelentő.pdf
 
       - name: Restore frontend build
