@@ -135,6 +135,6 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ANDI_PÉTER_S6ALXC_SZAKDOLGOZAT
+          name: ANDI_PETER_S6ALXC_SZAKDOLGOZAT
           path: ./build
 
