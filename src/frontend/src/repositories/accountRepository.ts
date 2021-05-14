@@ -1,6 +1,6 @@
 import { LoginDTO, RegisterDTO } from "../logic/dtos";
 import { ResultPromise, Unit } from "../utilities/result";
-import { safeApiFetchWithBodyAs, safeApiFetchWithBodyAsUnit } from "./utilities";
+import { safeApiFetchWithBodyAsUnit } from "./utilities";
 import {Config} from "../config";
 
 export interface IAccountRepository {

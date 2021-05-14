@@ -1,34 +1,13 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 import { Appointment } from '../logic/entities';
 import {LoggedIn, LoggedOut, LoginContext} from './contexts/LoginProvider';
-import { Failed, Loading, useApiCall } from '../hooks/apiCallHooks';
+import { Failed, useApiCall } from '../hooks/apiCallHooks';
 import { DIContext } from './contexts/DIContext';
 import { DataContext } from './contexts/DataProvider';
-
-import './AppointmentCard.scss';
 import { NotificationContext } from './contexts/NotificationProvider';
-import {DateTime} from "luxon";
 import {DeleteIcon, EditIcon, InfoIcon} from '../SVGs';
 
-const HourDuration = ({ startTime, endTime }: { startTime: Date, endTime: Date }) => {
-    const minutes = Math.floor((endTime.getTime() - startTime.getTime()) / (1000 * 60));
-    if(minutes < 60) {
-        return <>{minutes} perc</>;
-    }
-
-    const hours = (minutes / 60).toFixed(1).replace('.0','');
-    return <>{hours} óra</>;
-}
-
-const FormattedDate = ({ date }: { date: Date }) => {
-    const padNum = (x: number) => x.toFixed(0).padStart(2, '0');
-    const year = date.getFullYear();
-    const month = padNum(date.getMonth() + 1);
-    const day = padNum(date.getDate());
-    const hour = padNum(date.getHours());
-    const minute = padNum(date.getMinutes());
-    return <>{year}.{month}.{day} {hour}:{minute}</>;
-}
+import './AppointmentCard.scss';
 
 const BookButton = ({ appointment, className }: { appointment: Appointment, className?: string }) => {
     const { loginState } = useContext(LoginContext);

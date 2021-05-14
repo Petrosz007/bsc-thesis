@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useReducer } from "react";
+import React, { createContext, useReducer } from "react";
 import Notifications from "../Notifications";
 import { v4 as uuidv4 } from 'uuid';
 

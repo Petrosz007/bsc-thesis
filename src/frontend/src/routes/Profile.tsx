@@ -1,10 +1,9 @@
 ﻿import React, {useContext, useEffect, useState} from "react";
-import {LoggedIn, LoggedOut, LoginContext} from "../components/contexts/LoginProvider";
+import {LoggedOut, LoginContext} from "../components/contexts/LoginProvider";
 import {Redirect} from "react-router";
-import DataProvider, {DataContext} from "../components/contexts/DataProvider";
-import {User, UserSelfInfo} from "../logic/entities";
-import {Failed, Idle, Loaded, Loading, useApiCall, useLogout} from "../hooks/apiCallHooks";
-import {DIContext} from "../components/contexts/DIContext";
+import DataProvider from "../components/contexts/DataProvider";
+import {UserSelfInfo} from "../logic/entities";
+import {Failed, useLogout} from "../hooks/apiCallHooks";
 import {NotificationContext} from "../components/contexts/NotificationProvider";
 import Modal from "../components/Modal";
 import {UserEditor} from "../components/editors/UserEditor";

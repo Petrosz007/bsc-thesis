@@ -1,6 +1,5 @@
-import LoginCard from "../components/LoginCard";
 import React, {useContext, useEffect, useState} from "react";
-import {LoggedIn, LoggedOut, LoginContext} from "../components/contexts/LoginProvider";
+import {LoggedIn, LoginContext} from "../components/contexts/LoginProvider";
 import {NotificationContext} from "../components/contexts/NotificationProvider";
 import {Failed, Loaded, Loading, useLogin} from "../hooks/apiCallHooks";
 import {Redirect} from "react-router";

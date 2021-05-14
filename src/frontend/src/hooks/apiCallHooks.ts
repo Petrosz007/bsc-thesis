@@ -1,10 +1,9 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { DIContext } from "../components/contexts/DIContext";
 import { LoggedOut, LoginContext } from "../components/contexts/LoginProvider";
 import { User } from "../logic/entities";
 import { ResultPromise } from "../utilities/result";
 import { DataContext } from "../components/contexts/DataProvider";
-import { useEffectAsync } from "./utilities";
 import { useHistory } from "react-router";
 
 export class Loading {} 
@@ -38,7 +37,6 @@ export const useLogin = (): [ Status<User,Error>, (userName: string, password: s
     const [status, setStatus] = useState<Status<User,Error>>(new Idle());
     const { loginDispatch } = useContext(LoginContext);
     const { userRepo, accountRepo } = useContext(DIContext);
-    const history = useHistory();
 
     const login = useCallback(async (userName: string, password: string) => {
         setStatus(new Loading());
@@ -49,7 +47,6 @@ export const useLogin = (): [ Status<User,Error>, (userName: string, password: s
             user => {
                 setStatus(new Loaded(user));     
                 loginDispatch({ type: 'login', user });
-                // history.push('/');
             },
             error => setStatus(new Failed(error)));
     }, []);
@@ -60,7 +57,7 @@ export const useLogin = (): [ Status<User,Error>, (userName: string, password: s
 export const useLogout = (): [ Status<boolean,Error>, () => void ] => {
     const [status, setStatus] = useState<Status<boolean,Error>>(new Idle());
     const { loginState, loginDispatch } = useContext(LoginContext);
-    const { dataState, dataDispatch } = useContext(DataContext);
+    const { dataDispatch } = useContext(DataContext);
     const { accountRepo } = useContext(DIContext);
     const history = useHistory();
 

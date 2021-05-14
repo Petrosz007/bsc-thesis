@@ -4,7 +4,6 @@ import { User } from "../../logic/entities";
 import { setValue } from "../../utilities/listExtensions";
 import { DIContext } from "../contexts/DIContext";
 import { NotificationContext } from "../contexts/NotificationProvider";
-import {ResultPromise} from "../../utilities/result";
 import UserName from "../UserName";
 import UserSelector from "../inputs/UserSelector";
 

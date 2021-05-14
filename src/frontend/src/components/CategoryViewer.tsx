@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import {Appointment, Category} from "../logic/entities";
+import {Category} from "../logic/entities";
 import UserName from "./UserName";
 
 import './DetailViewer.scss';

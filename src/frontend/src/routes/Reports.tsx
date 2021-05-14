@@ -9,15 +9,13 @@ import { Failed, Idle, Loaded, Loading, useApiCall } from "../hooks/apiCallHooks
 import {Appointment, Category, Report, User} from "../logic/entities";
 import { downloadReportPdf } from "../logic/pdfReportGenerator";
 import { createReport } from "../logic/reportGenerator";
-import { Dictionary, groupBy, uniques } from "../utilities/listExtensions";
-import Select from "react-select";
-
-import './Report.scss';
-import UserName from "../components/UserName";
+import { uniques } from "../utilities/listExtensions";
 import {DateTime, Interval} from "luxon";
-import {DatePicker, DateRangePicker} from "../components/inputs/DatePicker";
+import {DateRangePicker} from "../components/inputs/DatePicker";
 import UserSelector from "../components/inputs/UserSelector";
 import {BillIcon} from "../SVGs";
+
+import './Report.scss';
 
 const ReportTable = ({ report }: { report: Report }) => {
     const totalPrice = report.entries.reduce((acc, x) =>

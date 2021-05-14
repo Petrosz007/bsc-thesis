@@ -39,9 +39,7 @@
         .report-table {
             margin-top: 20px;
             border-collapse: collapse;
-            //border-radius: 10px;
-            border-style: hidden; /* hide standard table (collapsed) border */
-            //box-shadow: 0 0 0 2px #c8c8c8; /* this draws the table border  */
+            border-style: hidden;
 
             td {
                 border-bottom: 2px solid #e8e8e8;

@@ -1,8 +1,7 @@
 import React, {useContext} from "react";
 import { Link } from "react-router-dom";
-
+import {LoggedOut, LoginContext} from "../components/contexts/LoginProvider";
 import './Home.scss';
-import {LoggedIn, LoggedOut, LoginContext} from "../components/contexts/LoginProvider";
 
 export default () => {
     const { loginState } = useContext(LoginContext);

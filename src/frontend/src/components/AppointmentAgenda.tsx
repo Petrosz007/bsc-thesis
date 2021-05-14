@@ -1,4 +1,4 @@
-import React, {ReactElement, useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import { Appointment, Category } from "../logic/entities";
 import {Dictionary, groupBy, uniques} from "../utilities/listExtensions";
 import {AppointmentCard, AppointmentCardEditable} from "./AppointmentCard";
@@ -7,8 +7,8 @@ import Select from 'react-select';
 import './AppointmentAgenda.scss';
 import Modal from "./Modal";
 import { AppointmentEditorUpdate } from "./editors/AppointmentEditor";
-import {DateTime, Duration, Interval} from "luxon";
-import {DatePicker, DateRangePicker} from "./inputs/DatePicker";
+import {DateTime, Interval} from "luxon";
+import {DateRangePicker} from "./inputs/DatePicker";
 import AppointmentViewer from "./AppointmentViewer";
 
 const AppointmentAgendaBase = ({ appointments, categories, editable, showFull }: { 

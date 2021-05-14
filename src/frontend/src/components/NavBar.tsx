@@ -1,14 +1,11 @@
-import { Failed, Loaded, Loading, useLogout } from "../hooks/apiCallHooks";
-import React, { useContext, useEffect } from "react";
-import { NavLink, Redirect, useHistory } from "react-router-dom";
-import { User } from "../logic/entities";
-import { LoggedIn, LoggedOut, LoginContext } from "./contexts/LoginProvider";
+import React, { useContext } from "react";
+import { NavLink } from "react-router-dom";
+import { LoggedIn, LoginContext } from "./contexts/LoginProvider";
 
 import './NavBar.scss';
 
 export default ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
     const { loginState } = useContext(LoginContext);
-    const history = useHistory();
 
     return (
         <nav className={`navbar ${className}`}>
@@ -34,8 +31,6 @@ export default ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
                 {loginState instanceof LoggedIn
                     ? <NavLink to="/profile">{loginState.user.name}</NavLink>
                     : <>
-                        {/*<button className="buttonBase inverted" onClick={()=>history.push('/login')}>Bejelentkezés</button>*/}
-                        {/*<button className="buttonBase" onClick={()=>history.push('/register')}>Regisztráció</button>*/}
                         <NavLink to="/login">Bejelentkezés</NavLink>
                         <NavLink to="/register">Regisztráció</NavLink>
                     </>

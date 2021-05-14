@@ -1,4 +1,4 @@
-﻿import {Appointment, User} from "../logic/entities";
+﻿import {User} from "../logic/entities";
 import React, {useContext} from "react";
 
 import './ContractorCard.scss';

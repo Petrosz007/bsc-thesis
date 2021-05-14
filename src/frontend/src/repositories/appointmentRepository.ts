@@ -3,7 +3,7 @@ import { Appointment } from "../logic/entities";
 import { ResultPromise, Unit } from "../utilities/result";
 import { ICategoryRepository } from "./categoryRepository";
 import { IUserRepository } from "./userRepository";
-import { parseResponseAs, safeApiFetchAs, safeApiFetchAsUnit, safeApiFetchWithBodyAs, safeApiFetchWithBodyAsUnit } from "./utilities";
+import { safeApiFetchAs, safeApiFetchAsUnit, safeApiFetchWithBodyAs, safeApiFetchWithBodyAsUnit } from "./utilities";
 import {Config} from "../config";
 import {DateTime} from "luxon";
 

@@ -19,8 +19,6 @@ const createPdfDocDefinition = (report: Report) => {
         acc + x.count * x.category.price
         , 0);
 
-    const numberOfRows = report.entries.length + 2;
-
     const docDefinition: TDocumentDefinitions = {
         content: [
             {
@@ -72,7 +70,6 @@ const createPdfDocDefinition = (report: Report) => {
         styles: {
             header: {
                 fontSize: 30,
-                // margin: [0,0,0,30],
                 alignment: 'center',
             },
             headerDate: {

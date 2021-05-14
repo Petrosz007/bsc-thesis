@@ -10,10 +10,10 @@ import Modal from "../components/Modal";
 import { AppointmentEditorCreate } from "../components/editors/AppointmentEditor";
 import { NotificationContext } from "../components/contexts/NotificationProvider";
 import {CategoriesEditable} from "../components/CategoryCard";
+import {CategoryEditorCreate} from "../components/editors/CategoryEditor";
+import {PlusIcon} from "../SVGs";
 
 import './OwnAppointments.scss'
-import {CategoryEditorCreate} from "../components/editors/CategoryEditor";
-import {EditIcon, PlusIcon} from "../SVGs";
 
 const OwnAppointments = ({ user }: { user: User }) => {
     const { dataState, dataDispatch } = useContext(DataContext);

@@ -1,7 +1,5 @@
-﻿import React, {useCallback, useContext, useEffect, useState} from "react"
-import {safeApiFetchWithBodyAsUnit} from "../../repositories/utilities";
+﻿import React, {useCallback, useContext, useState} from "react"
 import {DIContext} from "../contexts/DIContext";
-import {Failed, useApiCall} from "../../hooks/apiCallHooks";
 import {NotificationContext} from "../contexts/NotificationProvider";
 import {EditorBase} from "./EditorBase";
 import {useHandleChange} from "../../hooks/useEditorForm";

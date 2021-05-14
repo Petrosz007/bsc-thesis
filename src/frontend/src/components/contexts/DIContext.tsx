@@ -1,4 +1,3 @@
-import React from "react";
 import { createContext } from "react";
 import { AccountRepository, IAccountRepository } from "../../repositories/accountRepository";
 import { AppointmentRepository, IAppointmentRepository } from "../../repositories/appointmentRepository";

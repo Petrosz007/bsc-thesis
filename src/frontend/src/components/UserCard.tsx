@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import { User } from '../logic/entities';
 
 import './UserCard.scss';

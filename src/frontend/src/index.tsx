@@ -3,29 +3,26 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import LoginProvider from './components/contexts/LoginProvider';
 import NavBar from './components/NavBar';
-import DataProvider from './components/contexts/DataProvider';
 import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link
   } from "react-router-dom";
 import Home from './routes/Home';
 import Contractor from './routes/Contractor';
 import Login from './routes/Login';
-import { Failed, Idle, Loading, useLogin } from './hooks/apiCallHooks';
+import { Failed, Idle, Loading } from './hooks/apiCallHooks';
 import Booked from './routes/Booked';
 import OwnAppointments from './routes/OwnAppointments';
-  
-import './index.scss';
 import { useCookieLogin } from './hooks/useCookieLogin';
-import { useEffectAsync, useLayoutEffectAsync } from './hooks/utilities';
+import { useEffectAsync } from './hooks/utilities';
 import Register from './routes/Register';
-import Report from './routes/Reports';
 import Reports from './routes/Reports';
 import NotificationProvider, { NotificationContext } from './components/contexts/NotificationProvider';
 import Profile from "./routes/Profile";
 import NotFound from "./routes/NotFound";
+
+import './index.scss';
 
 const App = () => {
     return (

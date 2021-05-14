@@ -10,6 +10,7 @@ import Select from "react-select";
 import {DateTimePicker} from "../inputs/DatePicker";
 import {NotificationContext} from "../contexts/NotificationProvider";
 import {DIContext} from "../contexts/DIContext";
+import { useHandleChange } from "../../hooks/useEditorForm";
 
 interface AppointmentEditdata {
     id: number;
@@ -45,16 +46,7 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
     const [users, setUsers] = useState<User[]>(initialAppointment.attendees);
     const [state, setState] = useState(initialAppointmentEditorState);
 
-    const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.type === 'checkbox' 
-            ? event.target.checked
-            : event.target.value;
-
-        setState(prevState => ({
-            ...prevState,
-            [event.target.name]: value,
-        }));
-    }, [setState]);
+    const handleChange = useHandleChange(setState);
     
     const editorStateToDto = useCallback((editData: AppointmentEditdata): AppointmentDTO => ({
         ...editData,
@@ -73,7 +65,7 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
         return [...state.category.allowedUsers, state.category.owner];
     }, [state]);
     
-    const validator = useCallback((editData: AppointmentEditdata) => {
+    const validator = useCallback((_editData: AppointmentEditdata) => {
         const allAllowed = users.map(user => {
             if(allowedUsers === undefined || allowedUsers.some(u => u.userName === user.userName)) {
                 return true;

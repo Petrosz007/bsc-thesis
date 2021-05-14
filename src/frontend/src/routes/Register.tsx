@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { DIContext } from "../components/contexts/DIContext";
 import { LoggedIn, LoginContext } from "../components/contexts/LoginProvider";
@@ -124,7 +124,7 @@ const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => 
     
                 <div>
                     <label htmlFor="isContractor">Regisztráció vállalkozóként?
-                        <input type="checkbox" name="isContractor" checked={isContractor} onChange={e => setIsContractor(prevState => !prevState)} />
+                        <input type="checkbox" name="isContractor" checked={isContractor} onChange={_e => setIsContractor(prevState => !prevState)} />
                     </label>
                 </div>
     
