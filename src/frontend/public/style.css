@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'Noto Sans';
+    src: 
+        /* url('fonts/NotoSans-Bold.ttf')       format('truetype'), */
+        /* url('fonts/NotoSans-BoldItalic.ttf') format('truetype'), */
+        /* url('fonts/NotoSans-Italic.ttf')     format('truetype'), */
+        url('fonts/NotoSans-Regular.ttf')    format('truetype');
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -10,7 +19,17 @@
     box-sizing:border-box;
 }
 
+html {
+    min-height: 100%;
+    display: flex;
+}
+
 body {
     font-family: 'Noto Sans', sans-serif;
     font-size: 1rem;
+    flex: 1;
+}
+
+div#root {
+    height: 100%;
 }

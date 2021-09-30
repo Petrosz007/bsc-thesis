@@ -9,14 +9,13 @@ import { Failed, Idle, Loaded, Loading, useApiCall } from "../hooks/apiCallHooks
 import {Appointment, Category, Report, User} from "../logic/entities";
 import { downloadReportPdf } from "../logic/pdfReportGenerator";
 import { createReport } from "../logic/reportGenerator";
-import { Dictionary, groupBy, uniques } from "../utilities/listExtensions";
-import Select from "react-select";
+import { uniques } from "../utilities/listExtensions";
+import {DateTime, Interval} from "luxon";
+import {DateRangePicker} from "../components/inputs/DatePicker";
+import UserSelector from "../components/inputs/UserSelector";
+import {BillIcon} from "../SVGs";
 
 import './Report.scss';
-import UserName from "../components/UserName";
-import {DateTime, Interval} from "luxon";
-import {DatePicker, DateRangePicker} from "../components/inputs/DatePicker";
-import UserSelector from "../components/inputs/UserSelector";
 
 const ReportTable = ({ report }: { report: Report }) => {
     const totalPrice = report.entries.reduce((acc, x) =>
@@ -27,9 +26,9 @@ const ReportTable = ({ report }: { report: Report }) => {
         <table className="report-table">
             <thead>
             <tr>
-                <th>Kategória</th>
-                <th>Ár / alkalom</th>
-                <th>Alkalom</th>
+                <th>Megnevezés</th>
+                <th>Egységár</th>
+                <th>Darab</th>
                 <th>Összesen</th>
             </tr>
             </thead>
@@ -72,18 +71,28 @@ const ReportDisplay = ({ owner, users, appointments, categories }: { owner: User
         [usersAppointments, categories, owner, selectedUser]);
 
     return (
-        <div>
-            Ügyfél:
-            <UserSelector selectedUser={selectedUser} setSelectedUser={setSelectedUser} users={users} />
-
-            <DateRangePicker value={dateInterval} onChange={setDateInterval} />
-            <ReportTable report={report} />
-            <ul>
-            {usersAppointments.map(a => 
-                <li key={a.id}>{a.startTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)} - {a.category.name}</li>
-            )}
-            </ul>
-            <button onClick={() => downloadReportPdf(report)}>Számla letöltése</button>
+        <div className="reportCard">
+            <h2>Számlázás</h2>
+            <div className="reportContent">
+                <p>Ügyfél:</p>
+                <UserSelector selectedUser={selectedUser} setSelectedUser={setSelectedUser} users={users} />
+            
+                <p>Intervallum:</p>
+                <DateRangePicker value={dateInterval} onChange={setDateInterval} />
+                
+                <ReportTable report={report} />
+                <button className="reportGeneratorButton" onClick={() => downloadReportPdf(report)}><BillIcon className="billIcon"/>Számla letöltése</button>
+                
+                <h3>Számlázott időpontok</h3>
+                <ul className="reportAppointmentList">
+                {usersAppointments.map(a => 
+                    <li key={a.id}>
+                        <span className="reportTime">{a.startTime.toFormat('yyyy.MM.dd, cccc')}</span>
+                        <span className="reportCategory">{a.category.name}</span>
+                    </li>
+                )}
+                </ul>
+            </div>
         </div>
     );
 }
@@ -108,7 +117,7 @@ const Reports = ({ user }: { user: User }) => {
     useEffect(() => {
         if(state instanceof Failed) {
             console.error("Error in Report.tsx, appointment state result match", state.error);
-            notificationDispatch({ type: 'addError', message: `Error in Report: ${state.error}` });
+            notificationDispatch({ type: 'addError', message: `${state.error}` });
         }
         else if(state instanceof Idle) {
             refreshData();
@@ -125,7 +134,7 @@ const Reports = ({ user }: { user: User }) => {
         
         {state instanceof Loaded && 
             (users.length === 0
-                ? <div>No users attended your appointments.</div>
+                ? <p className="noUsersToReport">Egy ügyfél se foglalt időpontot még.</p>
                 : <ReportDisplay owner={user} users={users} appointments={appointments} categories={categories} />
             )}
         </>

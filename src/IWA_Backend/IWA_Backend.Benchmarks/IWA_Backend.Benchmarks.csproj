@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
+
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\IWA_Backend.Tests\IWA_Backend.Tests.csproj" />
+    </ItemGroup>
+
+</Project>

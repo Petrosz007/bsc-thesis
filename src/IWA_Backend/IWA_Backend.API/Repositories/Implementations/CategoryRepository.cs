@@ -35,7 +35,7 @@ namespace IWA_Backend.API.Repositories.Implementations
         public Category GetById(int id) =>
             Context.Categories
                 .FirstOrDefault(category => category.Id == id)
-                ?? throw new NotFoundException($"Category with id '{id}' not found.");
+                ?? throw new NotFoundException($"'{id}' azonosítójú kategória nem található.");
 
         public IEnumerable<Category> GetUsersCategories(string? userName) =>
             Context.Categories

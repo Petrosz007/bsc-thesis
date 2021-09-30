@@ -10,9 +10,10 @@ import Modal from "../components/Modal";
 import { AppointmentEditorCreate } from "../components/editors/AppointmentEditor";
 import { NotificationContext } from "../components/contexts/NotificationProvider";
 import {CategoriesEditable} from "../components/CategoryCard";
+import {CategoryEditorCreate} from "../components/editors/CategoryEditor";
+import {PlusIcon} from "../SVGs";
 
 import './OwnAppointments.scss'
-import {CategoryEditorCreate} from "../components/editors/CategoryEditor";
 
 const OwnAppointments = ({ user }: { user: User }) => {
     const { dataState, dataDispatch } = useContext(DataContext);
@@ -34,7 +35,7 @@ const OwnAppointments = ({ user }: { user: User }) => {
 
     useEffect(() => {
         if(state instanceof Failed) {
-            notificationDispatch({ type: 'addError', message: `Hiba: ${state.error.message}` });
+            notificationDispatch({ type: 'addError', message: `${state.error.message}` });
         }
         else if(state instanceof Idle) {
             refreshData();
@@ -49,24 +50,29 @@ const OwnAppointments = ({ user }: { user: User }) => {
         {state instanceof Loading && <div>Loading...</div>}
         
         {state instanceof Loaded && 
-        <>
-                <Modal isOpen={isCategoryModalOpen}>
-                    <CategoryEditorCreate owner={user} onClose={() => setIsCategoryModalOpen(false)} />
-                </Modal>
-                <Modal isOpen={isAppointmentModalOpen}>
-                    <AppointmentEditorCreate categories={categories} onClose={() => setIsAppointmentModalOpen(false)} />
-                </Modal>
-
-            <button onClick={() => setIsCategoryModalOpen(true)}>Új kategória</button>
-            {categories.length === 0
-                ? <p>Hozz létre egy kategóriát, hogy hirdethess időpontokat!</p>
-                : <button onClick={() => setIsAppointmentModalOpen(true)}>Új időpont</button>
-            }
+        <div className="ownAppointments">
+            <Modal isOpen={isCategoryModalOpen}>
+                <CategoryEditorCreate owner={user} onClose={() => setIsCategoryModalOpen(false)} />
+            </Modal>
+            <Modal isOpen={isAppointmentModalOpen}>
+                <AppointmentEditorCreate categories={categories} onClose={() => setIsAppointmentModalOpen(false)} />
+            </Modal>
             
-
-            <CategoriesEditable owner={user} categories={categories} />
-            <AppointmentAgendaEditable appointments={appointments} categories={categories} />
-        </>
+            <div className="newButtons">
+                <button onClick={() => setIsCategoryModalOpen(true)}><PlusIcon className="plusSVG" />Új kategória</button>
+                {categories.length === 0 ||
+                    <button onClick={() => setIsAppointmentModalOpen(true)}><PlusIcon className="plusSVG" />Új időpont</button>
+                }
+            </div>
+            
+            {categories.length === 0
+                ? <p className="noCategoriesFound">Hozz létre egy kategóriát, hogy hirdethess időpontokat!</p>
+                : <>
+                <CategoriesEditable owner={user} categories={categories} />
+                <AppointmentAgendaEditable appointments={appointments} categories={categories} />
+                </>
+            }
+        </div>
         }
         </>
     );

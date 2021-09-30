@@ -1,0 +1,77 @@
+﻿.userAdder {
+  .userAdderInputs {
+    display: inline-flex;
+    width: 100%;
+    gap: 5px;
+    
+    .userSelector {
+      flex: 75%;
+    }
+    
+    .addButton {
+      flex: 25%;
+      letter-spacing: 0.5px;
+      font-size: 1.05rem;
+      padding: 5px;
+      border-radius: 12px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: #333;
+      
+      transition: all 50ms ease-in-out;
+      
+      &:not([disabled]):hover {
+        background-color: #2d2d2d;
+        color: white;
+      }
+      
+      &:disabled {
+        cursor: default;
+      }
+    }
+  }
+  
+  .userAdderUsers {
+    margin-top: 10px;
+    overflow-y: auto;
+    max-height: 150px;
+
+    p.noUserInUserAdder {
+      text-align: center;
+      font-size: 1.1rem;
+      color: gray;
+      padding: 10px;
+      font-style: italic;
+    }
+    
+    li {
+      list-style: none;
+      display: inline-flex;
+      width: 100%;
+      
+      > span {
+        flex: 90%;
+      }
+      
+      > button {
+        flex: 10%;
+        padding: 5px;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+          
+        .deleteIcon {
+          width: 1rem;
+          height: 1rem;
+
+          fill: #b5b5b5;
+          
+          &:hover {
+            fill: black;
+          }
+        }
+      }
+    }
+  }
+}

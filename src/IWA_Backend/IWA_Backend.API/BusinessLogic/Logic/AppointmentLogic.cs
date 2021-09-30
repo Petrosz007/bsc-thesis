@@ -45,7 +45,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             var appointment = AppointmentRepository.GetById(id);
 
             if(!HasReadAccess(appointment, userName))
-                throw new UnauthorisedException("You are unauthorized to view this appointment.");
+                throw new UnauthorisedException("Nem vagy jogosult megtekinteni ezt az időpontot.");
 
             return appointment;
         }
@@ -53,7 +53,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
         public IEnumerable<Appointment> GetContractorsAppointments(string contractorUserName, string? userName)
         {
             if (!UserRepository.Exists(contractorUserName))
-                throw new NotFoundException($"Contractor with username {contractorUserName} not found.");
+                throw new NotFoundException($"Vállalkozó '{contractorUserName}' felhasználónévvel nem található.");
 
             var appointments = AppointmentRepository.GetContractorsAllAppointments(contractorUserName)
                 .Where(a => HasReadAccess(a, userName));
@@ -68,10 +68,10 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             var appointment = AppointmentRepository.GetById(appointmentId);
 
             if (!HasReadAccess(appointment, userName))
-                throw new UnauthorisedException("You are unauthorized to view this appointment.");
+                throw new UnauthorisedException("Nem vagy jogosult megtekinteni ezt az időpontot.");
 
             if (appointment.Attendees.Any(u => u.UserName == userName))
-                throw new AlreadyBookedException("Appointment already booked.");
+                throw new AlreadyBookedException("Már lefoglaltad ezt az időpontot.");
 
             if (appointment.Attendees.Count >= appointment.MaxAttendees)
                 throw new InvalidOperationException("Ez az időpont már betelt, nem lehet foglalni rá.");
@@ -87,10 +87,10 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             var appointment = AppointmentRepository.GetById(appointmentId);
 
             if (!HasReadAccess(appointment, userName))
-                throw new UnauthorisedException("You are unauthorized to view this appointment.");
+                throw new UnauthorisedException("Nem vagy jogosult megtekinteni ezt az időpontot.");
 
             if (appointment.Attendees.All(u => u.UserName != userName))
-                throw new NotBookedException("Appointment not booked.");
+                throw new NotBookedException("Még nem foglaltad le ezt az időpontot.");
 
             appointment.Attendees.RemoveAll(u => u.UserName == userName);
 
@@ -104,7 +104,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
                 .Select(UserRepository.GetByUserName);
             
             if (!HasWriteAccess(category, userName))
-                throw new UnauthorisedException("Unauthorised to create this appointment.");
+                throw new UnauthorisedException("Nem vagy jogosult létrehozni ezt az időpontot.");
             
             var appointment = AppointmentMapper.IntoEntity(appointmentDto, category, attendees);
             
@@ -121,7 +121,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
                 .Select(UserRepository.GetByUserName);
             
             if (!HasWriteAccess(appointment.Category, userName) || !HasWriteAccess(newCategory, userName))
-                throw new UnauthorisedException("Unauthorised to update this appointment");
+                throw new UnauthorisedException("Nem vagy jogosult frissíteni ezt az időpontot.");
 
             AppointmentMapper.OntoEntity(appointment, appointmentDto, newCategory, attendees);
             
@@ -133,7 +133,7 @@ namespace IWA_Backend.API.BusinessLogic.Logic
             var appointment = AppointmentRepository.GetById(appointmentId);
 
             if (!HasWriteAccess(appointment.Category, userName))
-                throw new UnauthorisedException("Unauthorised to delete this appointment");
+                throw new UnauthorisedException("Nem vagy jogosult törölni ezt az időpontot.");
 
             await AppointmentRepository.DeleteAsync(appointment);
         }

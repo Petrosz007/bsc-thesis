@@ -1,0 +1,279 @@
+\chapter{Felhasználói történetek}
+\label{ch:stories}
+
+\subsubsection{Be nem jelentkezett felhasználó}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|m{0.1\linewidth}|m{0.75\linewidth}|m{0.06\linewidth}|}
+		\hline
+		& \textbf{Leírás} & \textbf{Kód} \\
+		\hline
+		GIVEN & Nincs bejelentkezve & \multirow{3}{*}{A01} \\ \cline{1-2}
+		WHEN  & Bejelentkezéshez kötött oldalt nyitna meg & \\ \cline{1-2}
+		THEN  & Visszairányítódik a főoldalra & \\ 
+		\hline
+		GIVEN & Rossz felhasználónevet és/vagy jelszót ír be & \multirow{3}{*}{A02} \\ \cline{1-2}
+		WHEN  & Be akar jelentkezni & \\ \cline{1-2}
+		THEN  & Nem tud bejelentkezni, hibát kap & \\ 
+		\hline
+		GIVEN & Jó felhasználónevet és jelszót ír be & \multirow{3}{*}{A03} \\ \cline{1-2}
+		WHEN  & Be akar jelentkezni & \\ \cline{1-2}
+		THEN  & Bejelentkezik & \\ 
+		\hline
+		GIVEN & Nem megfelelően tölti ki a mezőket & \multirow{3}{*}{A04} \\ \cline{1-2}
+		WHEN  & Regisztrálni akar & \\ \cline{1-2}
+		THEN  & Nem regisztrál, hibát kap & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{A05} \\ \cline{1-2}
+		WHEN  & Vállalkozókat böngész & \\ \cline{1-2}
+		THEN  & Megjelennek az oldalra regisztrált vállalkozók & \\ 
+		\hline
+
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|m{0.1\linewidth}|m{0.75\linewidth}|m{0.06\linewidth}|}
+		\hline
+		& \textbf{Leírás} & \textbf{Kód} \\
+		\hline
+		GIVEN &  & \multirow{3}{*}{A06} \\ \cline{1-2}
+		WHEN  & Egy vállalkozó oldalát nézi & \\ \cline{1-2}
+		THEN  & Megjelennek a vállalkozó időpontjai a mostani hónapban & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{A07} \\ \cline{1-2}
+		WHEN  & Egy vállalkozó oldalát nézi & \\ \cline{1-2}
+		THEN  & Csak a vállalkozó nyílt időpontjai jelennek meg & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{A08} \\ \cline{1-2}
+		WHEN  & Egy vállalkozó időpontjait nézi & \\ \cline{1-2}
+		THEN  & Nem jelenik meg a foglalás / lemondás gomb & \\ 
+		\hline
+		GIVEN & Valamilyen kategóriák alapján szűr & \multirow{3}{*}{A09} \\ \cline{1-2}
+		WHEN  & Egy vállalkozó időpontjait nézi & \\ \cline{1-2}
+		THEN  & Csak az adott kategóriájú időpontok láthatók & \\ 
+		\hline
+		GIVEN & Semmilyen kategóra alapján nem szűr & \multirow{3}{*}{A10} \\ \cline{1-2}
+		WHEN  & Egy vállalkozó időpontjait nézi & \\ \cline{1-2}
+		THEN  & Az összes kategória időpontja látható & \\ 
+		\hline
+		GIVEN & Valamilyen intervallum alapján szűr & \multirow{3}{*}{A11} \\ \cline{1-2}
+		WHEN  & Egy vállalkozó időpontjait nézi & \\ \cline{1-2}
+		THEN  & Csak az intervallumba eső kezdő dátumú időpontokat láthatja & \\ 
+		\hline
+		GIVEN & Egy időponton nincs szabad hely & \multirow{3}{*}{A12} \\ \cline{1-2}
+		WHEN  & Egy vállalkozó időpontjait nézi & \\ \cline{1-2}
+		THEN  & Nem jelenik meg az az időpont & \\ 
+		\hline
+		GIVEN & Egy időponton más napon végződik mint kezdődik & \multirow{3}{*}{A13} \\ \cline{1-2}
+		WHEN  & Egy vállalkozó időpontjait nézi & \\ \cline{1-2}
+		THEN  & Az időpont befejezésének hónapja és napja is megfjelenik & \\ 
+		\hline
+		GIVEN & Egy időponton más évben végződik mint kezdődik & \multirow{3}{*}{A14} \\ \cline{1-2}
+		WHEN  & Egy vállalkozó időpontjait nézi & \\ \cline{1-2}
+		THEN  & Az időpont befejezésének éve, hónapja és napja is megfjelenik & \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\subsubsection{Bejelentkezett felhasználó}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|m{0.1\linewidth}|m{0.75\linewidth}|m{0.06\linewidth}|}
+		\hline
+		& \textbf{Leírás} & \textbf{Kód} \\
+		\hline
+		GIVEN & Bejelentkezett egy másik lapon & \multirow{3}{*}{B01} \\ \cline{1-2}
+		WHEN  & Új lapon megnyija az oldalt & \\ \cline{1-2}
+		THEN  & Alapból be lesz jelentkezve & \\ 
+		\hline
+		GIVEN & Profil oldalon van & \multirow{3}{*}{B02} \\ \cline{1-2}
+		WHEN  & Megnyomja a kijelentkezés gombot & \\ \cline{1-2}
+		THEN  & Kijelentkezik az oldalról, visszairányítódik a főoldalra & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{B03} \\ \cline{1-2}
+		WHEN  & Elmegy a bejelnetkező oldalra URL alapján & \\ \cline{1-2}
+		THEN  & Visszairányítódik a főoldalra & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{B04} \\ \cline{1-2}
+		WHEN  & Elmegy a regisztrációs oldalra URL alapján & \\ \cline{1-2}
+		THEN  & Visszairányítódik a főoldalra & \\ 
+		\hline
+		GIVEN & Bármilyen oldalon van & \multirow{3}{*}{B05} \\ \cline{1-2}
+		WHEN  & Megnézi a navigációs sávot & \\ \cline{1-2}
+		THEN  & Bejelentkezés és Regisztráció linkek helyezz a felhasználó neve szerepel a jobb földő sarokban & \\ 
+		\hline
+		GIVEN & Profil oldalon van & \multirow{3}{*}{B06} \\ \cline{1-2}
+		WHEN  & Megnyomja a szerkesztés gombot & \\ \cline{1-2}
+		THEN  & Megnyílik a profil szerkesztő & \\ 
+		\hline
+		GIVEN & Profilját szerkeszti, valamilyen mezőt nem helyesen töltött ki & \multirow{3}{*}{B07} \\ \cline{1-2}
+		WHEN  & Megnyomja a mentés gombot & \\ \cline{1-2}
+		THEN  & Nem mentődik el, hibát kap & \\ 
+		\hline
+		GIVEN & Profilját szerkeszti, minden mezőt helyesen töltött ki & \multirow{3}{*}{B08} \\ \cline{1-2}
+		WHEN  & Megnyomja a mentés gombot & \\ \cline{1-2}
+		THEN  & Elmentődik, bezáródik a szerkesztő & \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\subsubsection{Ügyfél}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|m{0.1\linewidth}|m{0.75\linewidth}|m{0.06\linewidth}|}
+		\hline
+		& \textbf{Leírás} & \textbf{Kód} \\
+		\hline
+		GIVEN & Vállalkozó időpontjait látja, nincs szabad hely & \multirow{3}{*}{C01} \\ \cline{1-2}
+		WHEN  & Lefoglalna egy időpontot & \\ \cline{1-2}
+		THEN  & Nincs Lefoglal gomb & \\ 
+		\hline
+		GIVEN & Vállalkozó időpontjait látja, nem foglalta le az időpontot még, van szabad hely & \multirow{3}{*}{C02} \\ \cline{1-2}
+		WHEN  & Rányom a lefoglal gombra & \\ \cline{1-2}
+		THEN  & Lefoglalja az időpontot & \\ 
+		\hline
+		GIVEN & Vállalkozó időpontjait látja, lefoglalta már az időpontot & \multirow{3}{*}{C03} \\ \cline{1-2}
+		WHEN  & Rányom a lemondás gombra & \\ \cline{1-2}
+		THEN  & Lemondja az időpontot & \\ 
+		\hline
+		GIVEN & Engedélyezett felhasználó egy nem nyílt kategórián & \multirow{3}{*}{C04} \\ \cline{1-2}
+		WHEN  & Vállalkozó időpontjait nézi & \\ \cline{1-2}
+		THEN  & Látja a kategóriát és az ahhoz tartozó időpontokat & \\ 
+		\hline
+		GIVEN & Nem engedélyezett felhasználó egy nem nyílt kategórián, le van foglalva egy olyan kategóriájú időpont & \multirow{3}{*}{C05} \\ \cline{1-2}
+		WHEN  & Vállalkozó időpontjait nézi & \\ \cline{1-2}
+		THEN  & Látja az időpontot, de a kategória többi időpontját nem & \\ 
+		\hline
+		GIVEN & Nincs szabad hely egy időponton, de az ügyfél lefoglalta & \multirow{3}{*}{C06} \\ \cline{1-2}
+		WHEN  & Vállalkozó időpontjait nézi & \\ \cline{1-2}
+		THEN  & Látja az időpontot & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{C07} \\ \cline{1-2}
+		WHEN  & Foglalt időpontjait nézi & \\ \cline{1-2}
+		THEN  & Ugyan úgy tud szűrni, mint a vállalkozó oldalán & \\ 
+		\hline
+		GIVEN & Foglalt időpontjait nézi & \multirow{3}{*}{C08} \\ \cline{1-2}
+		WHEN  & Lemondja az egyik időpontot & \\ \cline{1-2}
+		THEN  & Eltűnik a foglalt időpontok közül & \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+
+\subsubsection{Vállalkozó}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|m{0.1\linewidth}|m{0.75\linewidth}|m{0.06\linewidth}|}
+		\hline
+		& \textbf{Leírás} & \textbf{Kód} \\
+		\hline
+		GIVEN & Nincs kategóriája & \multirow{3}{*}{D01} \\ \cline{1-2}
+		WHEN  & Vállalkozói oldalra megy & \\ \cline{1-2}
+		THEN  & Nincs Új Időpont gomb, nincsen kategória és időpont lista & \\ 
+		\hline
+		GIVEN & Van kategóriája & \multirow{3}{*}{D02} \\ \cline{1-2}
+		WHEN  & Vállalkozói oldalra megy & \\ \cline{1-2}
+		THEN  & Látja a kategóriáit, időpontjait & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{D03} \\ \cline{1-2}
+		WHEN  & Időpontjait akarja szűrni & \\ \cline{1-2}
+		THEN  & Ugyan úgy tudja szűrni mint a vállalkozó oldalán & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{D04} \\ \cline{1-2}
+		WHEN  & Kategóriáit nézi & \\ \cline{1-2}
+		THEN  & Van megtekintés és szerkesztés gomb & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{D05} \\ \cline{1-2}
+		WHEN  & Időpontjait nézi & \\ \cline{1-2}
+		THEN  & Van megtekintés, szerkesztés és törlés gomb & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{D06} \\ \cline{1-2}
+		WHEN  & Rányom egy kategória /időpont megtekintés gombjára & \\ \cline{1-2}
+		THEN  & Előjön a kategória / időpont megtekintő ablak & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{D07} \\ \cline{1-2}
+		WHEN  & Rányom egy kategória / időpont szerkesztés gombjára & \\ \cline{1-2}
+		THEN  & Előjön a kategória / időpont szerkesztő ablak & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{D08} \\ \cline{1-2}
+		WHEN  & Rányom az új kategória gombra & \\ \cline{1-2}
+		THEN  & Előjön az új kategória ablak & \\ 
+		\hline
+		GIVEN & Egy kategóriát vagy időpontot hoz létre vagy módosít, nem töltött ki minden mezőt helyesen & \multirow{3}{*}{D09} \\ \cline{1-2}
+		WHEN  & Rányom a Mentés / Létrehozás gombra & \\ \cline{1-2}
+		THEN  & Nem mentődik el, hibát kap & \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|m{0.1\linewidth}|m{0.75\linewidth}|m{0.06\linewidth}|}
+		\hline
+		& \textbf{Leírás} & \textbf{Kód} \\
+		\hline
+		GIVEN & Egy kategóriát vagy időpontot hoz létre vagy módosít, minden mezőt helyesen töltött ki & \multirow{3}{*}{D10} \\ \cline{1-2}
+		WHEN  & Rányom a Mentés / Létrehozás gombra & \\ \cline{1-2}
+		THEN  & Elmentődik, bezáródik a szekesztő ablak, ha nem marad tovább szerkeszteni & \\ 
+		\hline
+		GIVEN &  & \multirow{3}{*}{D11} \\ \cline{1-2}
+		WHEN  & Rányom egy időpont törlés gombjára & \\ \cline{1-2}
+		THEN  & Felugrik egy megerősítő ablak, ha elfogadja, kitörlődik az időpont & \\ 
+		\hline
+		GIVEN & Nem foglalt egy ügyfél se időpontot nála & \multirow{3}{*}{D12} \\ \cline{1-2}
+		WHEN  & Számlázás oldalon van & \\ \cline{1-2}
+		THEN  & Nem látja a számlázás oldalt, csak azt a szöveget, hogy nem foglalták még le egy időpontját se & \\ 
+		\hline
+		GIVEN & Számlázás oldalon van & \multirow{3}{*}{D13} \\ \cline{1-2}
+		WHEN  & Kiválasztana egy ügyfelet & \\ \cline{1-2}
+		THEN  & Azok közül az ügyfelek közül tud választani, akik foglaltak nála időpontot & \\ 
+		\hline
+		GIVEN & & \multirow{3}{*}{D14} \\ \cline{1-2}
+		WHEN  & Kiválaszt egy ügyfelet számlázáshoz & \\ \cline{1-2}
+		THEN  & Megjelennek alul az ügyfél foglalt időpontjai, a táblázatban kategóriánként helyesen összesítve, korrekt összegekkel & \\ 
+		\hline
+		GIVEN & Kiválasztott egy ügyfelet számlázáshoz & \multirow{3}{*}{D15} \\ \cline{1-2}
+		WHEN  & Módosítja az intervallumot szűrésnél & \\ \cline{1-2}
+		THEN  & Csak az intervallumon belüli időpontok jelennek meg a számlázásban  & \\ 
+		\hline
+		GIVEN & Kiválasztott egy ügyfelet számlázáshoz & \multirow{3}{*}{D16} \\ \cline{1-2}
+		WHEN  & Rákattint a Számla letöltése gombra & \\ \cline{1-2}
+		THEN  & A böngésző letölti a szűrők alapján ugyan azokkal a számlázási információkkal kitöltött PDF dokumentumot  & \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|m{0.1\linewidth}|m{0.75\linewidth}|m{0.06\linewidth}|}
+		\hline
+		& \textbf{Leírás} & \textbf{Kód} \\
+		\hline
+		GIVEN & Profilképét szerkeszti, nem töltött fel fájlt & \multirow{3}{*}{D17} \\ \cline{1-2}
+		WHEN  & Rányom a Profilkép Frissítése gombra & \\ \cline{1-2}
+		THEN  & Nem frissül a profilkép, hibát ad & \\ 
+		\hline
+		GIVEN & Profilképét szerkeszti, rossz formátumú fájlt töltene fel & \multirow{3}{*}{D18} \\ \cline{1-2}
+		WHEN  & Rányom a Profilkép Frissítése gombra & \\ \cline{1-2}
+		THEN  & Nem frissül a profilkép, hibát ad & \\ 
+		\hline
+		GIVEN & Profilképét szerkeszti, túl nagy fájlt töltene fel & \multirow{3}{*}{D19} \\ \cline{1-2}
+		WHEN  & Rányom a Profilkép Frissítése gombra & \\ \cline{1-2}
+		THEN  & Nem frissül a profilkép, hibát ad & \\ 
+		\hline
+		GIVEN & Profilképét szerkeszti, megfelelő fájlt tölt fel & \multirow{3}{*}{D20} \\ \cline{1-2}
+		WHEN  & Rányom a Profilkép Frissítése gombra & \\ \cline{1-2}
+		THEN  & Frissül a profilkép & \\ 
+		\hline
+		GIVEN & Kategóriát hoz létre vagy töröl, már létezik neki olyan nevű kategóriája & \multirow{3}{*}{D21} \\ \cline{1-2}
+		WHEN  & Rányom a Létrehozás / Mentés gombra & \\ \cline{1-2}
+		THEN  & Nem mentődik el, hibát kap & \\ 
+		\hline
+	\end{tabular}
+\end{table}

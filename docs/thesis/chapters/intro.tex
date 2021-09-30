@@ -7,7 +7,6 @@ Szakdolgozatom célja egy időpont foglaló webes alkalmazás létrehozása. A m
 Én programozásban mindig is webes alkalmazások fejlesztését élveztem a legjobban, így amikor felvetette az ötletet, hogy lehetne egy időpont foglaló alkalmazást csinálni, le is csaptam rá. Ezzel nem csak az egész eddigi összes webes tudásomat tesztelhetem és fejleszthetem, hanem segíthetek is unokatestvéremnek, aki nagyon sokat segített rajtam is.
 
 \section{Megvalósítandó alkalmazás leírása}
-\todo{Közérthető leírás alatt ezt érti, vagy ez már túl specifikus?}
 Az alkalmazásnak két fő felhasználói köre van, a vállalkozók és az ügyfelek.
 
 Az ügyfelek tudnak a vállalkozók között böngészni, egyes vállalkozók időpontjait megnézni, szűrni és lefoglalni. Megnézhetik a lefoglalt időpontjaikat, melyeket lemondhatnak.
@@ -17,6 +16,6 @@ A vállalkozók létrehozhatnak kategóriákat (pl.: személyi edzés, angol kor
 \section{Kedvhozó az architektúrához}
 A dolgozatomban nem csak a programra koncentráltam, hanem, hogy a mögöttes architektúra és kód minőségi és bővíthető legyen.
 
-A backendem Uncle Bob Clean Architecture\todo{Irodalomjegyzékben jó a citation?} \cite{cleanArchitecturePost} elvén alapuló objektum orientált kód. Ezzel moduláris, elkülönített hatáskörű osztályokból áll a REST API-om, mellyel a Dependency Inversion Principle miatt egyszerűen és hatékonyan unit- és integrációs tesztelhető az alkalmazás.
+A backendem Uncle Bob Clean Architecture\cite{cleanArchitecturePost} elvén alapuló objektum orientált kód. Ezzel moduláris, elkülönített hatáskörű osztályokból áll a REST API-om, mellyel a Dependency Inversion Principle miatt egyszerűen és hatékonyan unit- és integrációs tesztelhető az alkalmazás.
 
-A frontendemen React.js-t\footnote{React.js - \href{https://reactjs.org/}{https://reactjs.org/}} használok Typescript-el, e miatt erős fordítási idejű garanciát kapok, hogy a kódom helyes. Továbbá a Typescript erős típusrendszere miatt a megjelenítés mögött funkcionális paradigmájú kód van. Ez azt jelenti, hogy nincs destruktív értékadás, összeg típusokkal és egy saját aszikron Result monád típus miatt nem kivételeket kezelek, hanem típus szintű konstrukciókkal garantálom, hogy minden hiba megfelelően le legyen kezelve és programozói hibából ne lehessen inkonzisztens állapotban levő adathoz hozzáférni.
+A frontendemen React.js-t\footnote{\url{https://reactjs.org/} (utolsó elérés: 2021.05.10)} használok Typescript-el, e miatt erős fordítási idejű garanciát kapok, hogy a kódom helyes. Továbbá a Typescript erős típusrendszere miatt a megjelenítés mögött funkcionális paradigmájú kód van. Ez azt jelenti, hogy nincs destruktív értékadás, összeg típusokkal és egy saját aszinkron Result monád típus miatt nem kivételeket kezelek, hanem típus szintű konstrukciókkal garantálom, hogy minden hiba megfelelően le legyen kezelve és programozói hibából ne lehessen inkonzisztens állapotban levő adathoz hozzáférni.

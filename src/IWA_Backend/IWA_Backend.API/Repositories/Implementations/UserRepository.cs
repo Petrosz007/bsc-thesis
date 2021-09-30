@@ -24,7 +24,7 @@ namespace IWA_Backend.API.Repositories.Implementations
         public User GetByUserName(string? id) =>
             Context.Users
                 .FirstOrDefault(user => user.UserName == id)
-                ?? throw new NotFoundException($"User with user name '{id}' not found.");
+                ?? throw new NotFoundException($"'{id}' felhasználónevű felhasználó nem található.");
 
         public IEnumerable<User> GetContractors() =>
             Context.Users

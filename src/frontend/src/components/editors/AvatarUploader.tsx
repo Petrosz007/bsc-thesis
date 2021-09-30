@@ -1,57 +1,84 @@
-﻿import React, {useCallback, useContext, useEffect, useState} from "react"
-import {safeApiFetchWithBodyAsUnit} from "../../repositories/utilities";
+﻿import React, {useCallback, useContext, useState} from "react"
 import {DIContext} from "../contexts/DIContext";
-import {Failed, useApiCall} from "../../hooks/apiCallHooks";
 import {NotificationContext} from "../contexts/NotificationProvider";
+import {EditorBase} from "./EditorBase";
+import {useHandleChange} from "../../hooks/useEditorForm";
+import {User} from "../../logic/entities";
 
-export default () => {
-    const { userRepo } = useContext(DIContext);
+import './AvatarUploader.scss';
+
+interface AvatarEditData {
+    avatarFile?: File|undefined,
+    createAnother: boolean
+}
+
+export default ({ onClose, user }: {
+    onClose: () => void,
+    user: User,
+}) => {
+    const { userRepo, config } = useContext(DIContext);
     const { notificationDispatch } = useContext(NotificationContext);
-    const [selectedFile, setSelectedFile] = useState<File|undefined>(undefined);
+    const [state, setState] = useState<AvatarEditData>({
+        avatarFile: undefined,
+        createAnother: false,
+    });
     
-    const [updateState, updateAvatar] = useApiCall((formData: FormData) =>
+    const updateAvatar = useCallback((formData: FormData) =>
         userRepo.updateAvatar(formData)
-            .sideEffect(_ => {
-                notificationDispatch({ type: 'addSuccess', message: `Profilkép sikeresen frissítve!` });
-            })
-    , []);
+    , [userRepo]);
     
-    useEffect(() => {
-        if(updateState instanceof Failed) {
-            notificationDispatch({ type: 'addError', message: `Hiba: ${updateState.error.message}` });
+    const editorStateToDto = useCallback((editData: AvatarEditData) => {
+        const formData = new FormData();
+        formData.append('file', editData.avatarFile ?? new Blob());
+        return formData;
+    }, []);
+    
+    const validator = useCallback(({ avatarFile: selectedFile }: AvatarEditData) => {
+        if(selectedFile === undefined) {
+            notificationDispatch({ type: 'addError', message: `Nincs kiválasztva fájl!` });
+            return false;
         }
-    }, [updateState]);
-    
-    const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if(selectedFile === undefined)
-            return;
         
         if(selectedFile.size > 2_000_000) {
-            notificationDispatch({ type: 'addError', message: `Maximum 2MB lehet a profilkép, a feltöltött fájl ${(selectedFile.size / 1_000_000).toFixed(2)}MB!` });
-            return;
+            notificationDispatch({ 
+                type: 'addError', 
+                message: `Maximum 2MB lehet a profilkép, a feltöltött fájl ${(selectedFile.size / 1_000_000).toFixed(2)}MB!` 
+            });
+            return false;
         }
         
         if(!['image/png','image/jpeg'].includes(selectedFile.type)) {
             notificationDispatch({ type: 'addError', message: `Csak PNG és JPEG típusú lehet a profilkép, '${selectedFile.type}' nem!` });
-            return;
+            return false;
         }
         
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-
-        await updateAvatar(formData);
-    }, [selectedFile]);
+        return true;
+    }, [notificationDispatch]);
+    
+    const handleChange = useHandleChange<AvatarEditData>(setState);
     
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <input type="file"
-                       accept=".png, .jpg, .jpeg"
-                       onChange={e => setSelectedFile(e.target.files?.[0])}/>
-                <input type="submit" value={"Profilkép frrisítése"} />
-            </form>
-            {selectedFile !== undefined && <img src={URL.createObjectURL(selectedFile)} alt="Profilkép megtekintő"/>}
-        </div>
+        <EditorBase state={state}
+                    editorStateToDto={editorStateToDto}
+                    apiCall={updateAvatar}
+                    onClose={onClose}
+                    handleChange={handleChange}
+                    labels={{
+                        header: 'Profilkép szerkesztése',
+                        createAnother: 'Maradok szerkeszteni',
+                        submit: 'Profilkép frissítése',
+                    }}
+                    validator={validator}
+        >
+            <input type="file"
+                   accept=".png, .jpg, .jpeg"
+                   name="avatarFile"
+                   onChange={e => setState(prevState => ({ ...prevState, avatarFile: e.target.files?.[0] }))}/>
+            <img className="avatarEditorPreview" 
+                 src={state.avatarFile !== undefined
+                    ? URL.createObjectURL(state.avatarFile)
+                    : `${config.apiUrl}/User/Avatar/${user.userName}`}
+                 alt="Profilkép megtekintő"/>
+        </EditorBase>
     )
 }

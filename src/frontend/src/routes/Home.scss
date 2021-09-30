@@ -1,0 +1,53 @@
+﻿@use "../components/styles/variables.scss" as var;
+
+.homePage {
+  display: grid;
+  grid-template-columns: 45% 65%;
+  grid-template-rows: 100px 400px 200px;
+  gap: 50px;
+  
+  .introText {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    text-align: center;
+    
+    h1 {
+      color: var.$mainDark;
+      font-size: 3rem;
+      margin-bottom: 40px;
+    }
+    
+    p {
+      margin-bottom: 20px;
+      padding: 15px;
+    }
+    
+    .registerButton {
+      width: 150px;
+      margin: 0 auto;
+
+      background: transparent;
+      color: var.$mainDark;
+      padding: 8px 16px;
+      border: 2px solid var.$mainDark;
+      border-radius: 15px;
+      text-decoration: none;
+      
+      box-shadow: var.$cardShadow;
+
+      transition: all 50ms ease-in-out;
+
+      &:hover {
+        background: var.$mainDark;
+        color: white;
+        border-color: var.$mainDark;
+      }
+    }
+  }
+  
+  img {
+    grid-column: 2 / 3;
+    grid-row: 1 / 4;
+    align-self: center;
+  }
+}

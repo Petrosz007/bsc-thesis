@@ -9,6 +9,8 @@ import { NotificationContext } from "../components/contexts/NotificationProvider
 import {AppointmentAgenda} from "../components/AppointmentAgenda";
 import {ContractorCard} from "../components/ContractorCard";
 
+import './Contractor.scss';
+
 const ContractorPage = () => {
     const { contractorUserName } = useParams<{ contractorUserName: string }>();
     const { loginState } = useContext(LoginContext);
@@ -32,7 +34,7 @@ const ContractorPage = () => {
     
     useEffect(() => {
         if(state instanceof Failed) {
-            notificationDispatch({ type: 'addError', message: `Hiba: ${state.error.message}` });
+            notificationDispatch({ type: 'addError', message: `${state.error.message}` });
         }
         else if(state instanceof Idle) {
             refreshData();
@@ -44,10 +46,10 @@ const ContractorPage = () => {
         {state instanceof Loading && <div>Loading...</div>}
         
         {state instanceof Loaded && 
-        <>
+        <div className="contractorLayout">
             <ContractorCard contractor={state.value[1]}/>
             <AppointmentAgenda appointments={dataState.appointments} showFull={false} />
-        </>
+        </div>
         }
         </>
     );
@@ -63,7 +65,7 @@ const ContractorBrowser = () => {
 
     useEffect(() => {
         if(state instanceof Failed) {
-            notificationDispatch({ type: 'addError', message: `Hiba: ${state.error.message}` });
+            notificationDispatch({ type: 'addError', message: `${state.error.message}` });
         }
         else if(state instanceof Idle) {
             refreshData();
@@ -75,11 +77,13 @@ const ContractorBrowser = () => {
             {state instanceof Loading && <div>Loading...</div>}
 
             {state instanceof Loaded &&
-            <>
-                {state.value.map(contractor =>
-                    <ContractorCard contractor={contractor}/>
+            <div className="contractorBrowser">
+                {state.value.length === 0
+                    ? <p className="noContractorsToShow">Még egy vállalkozó sem regisztrált a weboldalra.</p>
+                    : state.value.map(contractor =>
+                        <ContractorCard contractor={contractor} key={contractor.userName}/>
                 )}
-            </>
+            </div>
             }
         </>
     );

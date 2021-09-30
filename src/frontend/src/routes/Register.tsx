@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { DIContext } from "../components/contexts/DIContext";
 import { LoggedIn, LoginContext } from "../components/contexts/LoginProvider";
@@ -7,6 +7,8 @@ import { Failed, Loaded, Loading, useApiCall, useLogin } from "../hooks/apiCallH
 import { useEffectAsync } from "../hooks/utilities";
 import { RegisterDTO } from "../logic/dtos";
 import { ContractorPage } from "../logic/entities";
+
+import './Register.scss';
 
 const ContractorPageInputs = ({ state, setState }: { state: ContractorPage, setState: React.Dispatch<React.SetStateAction<ContractorPage>> }) => {
     const handleContractorChange = (event: React.ChangeEvent<HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement>) => {
@@ -18,16 +20,29 @@ const ContractorPageInputs = ({ state, setState }: { state: ContractorPage, setS
 
     return (
     <>
-        <label htmlFor="title">Foglalkozás</label>
-        <input type="text" name="title" value={state.title} required={true} onChange={handleContractorChange}/><br/>
+        <div>
+            <label htmlFor="title">Foglalkozás</label>
+            <input type="text" name="title" value={state.title} required
+                   pattern="\S(.*\S)?"
+                   maxLength={50}
+                   title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                   placeholder="Angol tanár, Személyi edző..." onChange={handleContractorChange}/>
+        </div>
 
-        <label htmlFor="bio">Magamról</label>
-        <textarea name="bio" value={state.bio} required={true} onChange={handleContractorChange} rows={3}/><br/>
+        <div>
+            <label htmlFor="bio">Magamról</label>
+            <textarea name="bio" value={state.bio} required
+                      // pattern="\S(.*\S)?"
+                      maxLength={500}
+                      title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                      placeholder="Rövid profil leírás, amit az ügyfelek elolvashatnak..." onChange={handleContractorChange} rows={3}/>
+        </div>
     </>
     );
 }
 
 const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => {
+    const { notificationDispatch } = useContext(NotificationContext);
     const [isContractor, setIsContractor] = useState(false);
     const [contractorPageState, setContractorPageState] = useState<ContractorPage>({
         title: '',
@@ -51,39 +66,75 @@ const RegisterForm = ({ onSubmit }: { onSubmit: (_x: RegisterDTO) => void }) => 
     };
 
     const handleSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        
+        if(state.password !== state.passwordConfirmation) {
+            notificationDispatch({ type: 'addError', message: 'Nem egyezik a jelszó és jelszó ismétlés!' });
+            return;
+        }
         onSubmit({
             ...state,
             contractorPage: isContractor ? contractorPageState : null,
         });
-        event.preventDefault();
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="userName">Felhasználónév</label>
-            <input type="text" name="userName" value={state.userName} required={true} onChange={handleChange} /><br/>
-
-            <label htmlFor="email">Email</label>
-            <input type="email" name="email" value={state.email} required={true} onChange={handleChange} /><br/>
-
-            <label htmlFor="name">Név</label>
-            <input type="text" name="name" value={state.name} required={true} onChange={handleChange} /><br/>
-
-            <label htmlFor="password">Jelszó</label>
-            <input type="password" name="password" value={state.password} required={true} autoComplete="new-password" onChange={handleChange} /><br/>
-
-            <label htmlFor="passwordConfirmation">Jelszó megerősítés</label>
-            <input type="password" name="passwordConfirmation" value={state.passwordConfirmation} required={true} onChange={handleChange} /><br/>
-
-            <label htmlFor="isContractor">Regisztráció vállalkozóként? </label>
-            <input type="checkbox" name="isContractor" checked={isContractor} onChange={e => setIsContractor(prevState => !prevState)} /><br/>
-
-            {isContractor &&
-                <ContractorPageInputs state={contractorPageState} setState={setContractorPageState} />
-            }
-
-            <input type="submit" value="Regisztráció"/>
-        </form>
+        <div className="registerPage">
+            <h2>Regisztráció</h2>
+            <form className="registerForm" onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="userName">Felhasználónév</label>
+                    <input type="text" name="userName" value={state.userName} required
+                           placeholder="felhasznalo42" 
+                           onChange={handleChange}
+                           pattern="[a-zA-Z0-9_]{3,25}"
+                           title="3-25 karakter, a-z kisebetű, A-Z nagybetű, 0-9 szám"
+                    />
+                </div>
+    
+                <div>
+                    <label htmlFor="email">Email</label>
+                    <input type="email" name="email" value={state.email} required placeholder="felhasznalo@example.com" onChange={handleChange} />
+                </div>
+    
+                <div>
+                    <label htmlFor="name">Név</label>
+                    <input type="text" name="name" value={state.name} required
+                           pattern="\S(.*\S)?"
+                           maxLength={50}
+                           title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                           placeholder="Felhasználó Ferenc" onChange={handleChange} />
+                </div>
+    
+                <div>
+                    <label htmlFor="password">Jelszó</label>
+                    <input type="password" name="password" value={state.password} required 
+                           placeholder=" " autoComplete="new-password" onChange={handleChange} 
+                           minLength={5}
+                    />
+                </div>
+    
+                <div>
+                    <label htmlFor="passwordConfirmation">Jelszó megerősítés</label>
+                    <input type="password" name="passwordConfirmation" value={state.passwordConfirmation} required 
+                           placeholder=" " onChange={handleChange}
+                           minLength={5}
+                    />
+                </div>
+    
+                <div>
+                    <label htmlFor="isContractor">Regisztráció vállalkozóként?
+                        <input type="checkbox" name="isContractor" checked={isContractor} onChange={_e => setIsContractor(prevState => !prevState)} />
+                    </label>
+                </div>
+    
+                {isContractor &&
+                    <ContractorPageInputs state={contractorPageState} setState={setContractorPageState} />
+                }
+    
+                <input type="submit" value="Regisztráció"/>
+            </form>
+        </div>
     );
 }
 
@@ -104,7 +155,7 @@ export default () => {
 
     useEffectAsync(async () => {
         if(registerStatus instanceof Failed) {
-            notificationDispatch({ type: 'addError', message: `Error while registering: ${registerStatus.error}` });
+            notificationDispatch({ type: 'addError', message: `HIba regisztráció közben: ${registerStatus.error}` });
         }
         if(registerStatus instanceof Loaded) {
             await login(registerStatus.value.userName, registerStatus.value.password);

@@ -25,7 +25,7 @@ namespace IWA_Backend.API.Repositories.Implementations
         public async Task<(byte[] Bytes, AvatarFileTypes FileType)> GetByIdAsync(string id)
         {
             if (!Exists(id))
-                throw new NotFoundException($"Avatar not found with id: '{id}'");
+                throw new NotFoundException($"'{id}' azonosítójú profilkép nem található.");
             
             var filePath = PathFromId(id);
             var extension = AvatarFileTypesExtensions.FromExtension(Path.GetExtension(filePath));
@@ -51,7 +51,7 @@ namespace IWA_Backend.API.Repositories.Implementations
         {
             if (!Exists(id))
             {
-                throw new NotFoundException($"Avatar not found with id: '{id}'");
+                throw new NotFoundException($"'{id}' azonosítójú profilkép nem található.");
             }
             
             var filePath = PathFromId(id);

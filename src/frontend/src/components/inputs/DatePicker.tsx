@@ -1,6 +1,9 @@
-﻿import {InputHTMLAttributes, useCallback, useDebugValue, useEffect, useState} from "react";
+﻿import {InputHTMLAttributes, useCallback} from "react";
 import {DateTime, Interval} from "luxon";
 import React from "react";
+import {RightArrow} from "../../SVGs";
+
+import './DatePicker.scss';
 
 interface DatePickerProps extends InputHTMLAttributes<HTMLInputElement> {
     valueDate: DateTime,
@@ -25,8 +28,46 @@ export const DatePicker = ({ valueDate, onChangeDate, minDate, maxDate, ...props
                value={valueDate.toISODate()}
                onChange={handleChange}
                min={minDate?.toISODate()} 
-               max={maxDate?.toISODate()} 
+               max={maxDate?.toISODate()}
+               required
         />
+    );
+}
+
+export const DateTimePicker = ({ valueDate, onChangeDate, minDate, maxDate, ...props}: DatePickerProps) => {
+    const handleDateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const date = DateTime.fromISO(e.target.value).set({ hour: valueDate.hour, minute: valueDate.minute });
+        if(!date.isValid) return;
+
+        onChangeDate(date);
+    }, [onChangeDate, minDate, maxDate]);
+    
+    const handleTimeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const date = DateTime.fromFormat(`${valueDate.toFormat('yyyy.MM.dd')} ${e.target.value}`, 'yyyy.MM.dd HH:mm');
+        if(!date.isValid) return;
+
+        onChangeDate(date);
+    }, [valueDate, onChangeDate, minDate, maxDate]);
+
+    return (
+        <div className="dateTimePicker">
+            <input {...props}
+                   type="date"
+                   value={valueDate.toISODate()}
+                   onChange={handleDateChange}
+                   min={minDate?.toISODate()}
+                   max={maxDate?.toISODate()}
+                   required
+            />
+            <input {...props}
+                   type="time"
+                   value={valueDate.toFormat('HH:mm')}
+                   onChange={handleTimeChange}
+                   min={minDate?.hasSame(valueDate, 'day') ? minDate?.toFormat('HH:mm') : undefined}
+                   max={minDate?.hasSame(valueDate, 'day') ? maxDate?.toFormat('HH:mm') : undefined}
+                   required
+            />
+        </div>
     );
 }
 
@@ -42,10 +83,10 @@ export const DateRangePicker = ({ value, onChange }: { value: Interval, onChange
     }, [value, onChange]);
     
     return (
-        <>
-        <DatePicker valueDate={value.start} onChangeDate={onStartDateChange} maxDate={value.end} />
-        {'->'}
-        <DatePicker valueDate={value.end} onChangeDate={onEndDateChange} minDate={value.start} />
-        </>
+        <div className="dateRange">
+            <DatePicker valueDate={value.start} onChangeDate={onStartDateChange} maxDate={value.end} />
+            <RightArrow className="rightArrow"/>
+            <DatePicker valueDate={value.end} onChangeDate={onEndDateChange} minDate={value.start} />
+        </div>
     );
 }

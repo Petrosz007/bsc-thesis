@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IWA_Backend.API", "IWA_Back
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IWA_Backend.Tests", "IWA_Backend.Tests\IWA_Backend.Tests.csproj", "{0916C7D6-2A60-4B4B-A9E0-CBF066D01BBD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IWA_Backend.Benchmarks", "IWA_Backend.Benchmarks\IWA_Backend.Benchmarks.csproj", "{ABD96EF9-B44F-474C-9619-DDEB5216D7F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0916C7D6-2A60-4B4B-A9E0-CBF066D01BBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0916C7D6-2A60-4B4B-A9E0-CBF066D01BBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0916C7D6-2A60-4B4B-A9E0-CBF066D01BBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABD96EF9-B44F-474C-9619-DDEB5216D7F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABD96EF9-B44F-474C-9619-DDEB5216D7F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABD96EF9-B44F-474C-9619-DDEB5216D7F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABD96EF9-B44F-474C-9619-DDEB5216D7F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

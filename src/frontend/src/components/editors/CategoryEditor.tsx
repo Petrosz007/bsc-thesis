@@ -7,8 +7,6 @@ import UserAdder from "./UserAdder";
 import {ResultPromise} from "../../utilities/result";
 import {EditorBase} from "./EditorBase";
 
-import './CategoryEditor.scss';
-
 interface CategoryEditdata {
     id: number;
     name: string;
@@ -26,6 +24,7 @@ const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose, labels }
     owner: User,
     onClose: () => void,
     labels: {
+        header: string,
         createAnother: string,
         submit: string,
     },
@@ -56,16 +55,36 @@ const CategoryEditorBase = ({ initialCategory, apiCall, owner, onClose, labels }
             onClose={onClose}
             dataDispatchAction={category => ({ type: 'updateCategory', category })}
         >
-            <label htmlFor="name">Név</label>
-            <input type="text" name="name" value={state.name} required={true} onChange={handleChange} />
-            <label htmlFor="description">Leírás</label>
-            <input type="text" name="description" value={state.description} required={true} onChange={handleChange} />
-            <label htmlFor="everyoneAllowed">Nyílt esemény</label>
-            <input type="checkbox" name="everyoneAllowed" checked={state.everyoneAllowed} onChange={handleChange} />
-            <label htmlFor="maxAttendees">Max résztvevők</label>
-            <input type="number" name="maxAttendees" value={state.maxAttendees} min="1" onChange={handleChange} />
-            <label htmlFor="price">Ár</label>
-            <input type="number" name="price" value={state.price} min="0" onChange={handleChange} />
+            <div className="editorGroup">
+                <label htmlFor="name">Név</label>
+                <input type="text" name="name" value={state.name} 
+                       required
+                       pattern="\S(.*\S)?"
+                       maxLength={50}
+                       title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                       onChange={handleChange} />
+            </div>
+            <div className="editorGroup">
+                <label htmlFor="description">Leírás</label>
+                <input type="text" name="description" value={state.description} required
+                       pattern="\S(.*\S)?"
+                       maxLength={50}
+                       title="Ez a mező kötelező, nem lehet üres hely az elején és/vagy a végén"
+                       onChange={handleChange} />
+            </div>
+            <div className="editorGroup">
+                <label htmlFor="everyoneAllowed">Nyílt esemény 
+                    <input type="checkbox" name="everyoneAllowed" checked={state.everyoneAllowed} onChange={handleChange} />
+                </label>
+            </div>
+            <div className="editorGroup">
+                <label htmlFor="maxAttendees">Max résztvevők</label>
+                <input type="number" name="maxAttendees" value={state.maxAttendees} min="1" max={10000000} onChange={handleChange} />
+            </div>
+            <div className="editorGroup">
+                <label htmlFor="price">Ár</label>
+                <input type="number" name="price" value={state.price} min="0" max={10000000} onChange={handleChange} />
+            </div>
             {!state.everyoneAllowed && <>
                 <label htmlFor="allowedUsers">Engedélyezett résztvevők</label>
                 <UserAdder users={users} setUsers={setUsers} />
@@ -96,7 +115,7 @@ export const CategoryEditorCreate = ({ owner, onClose }: {
             apiCall={categoryRepo.create}
             owner={owner}
             onClose={onClose}
-            labels={{ createAnother: 'Több létrehozása', submit: 'Létrehozás' }}
+            labels={{ header: 'Új Kategória', createAnother: 'Több létrehozása', submit: 'Létrehozás' }}
         />
     );
 }
@@ -119,7 +138,7 @@ export const CategoryEditorUpdate = ({ category, owner, onClose }: {
             initialCategory={category}
             owner={owner}
             onClose={onClose}
-            labels={{ createAnother: 'Maradok szerkeszteni', submit: 'Mentés' }}
+            labels={{ header: 'Kategória szerkesztése', createAnother: 'Maradok szerkeszteni', submit: 'Mentés' }}
         />
     );
 }

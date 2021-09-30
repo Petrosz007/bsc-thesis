@@ -9,7 +9,7 @@ namespace IWA_Backend.Tests.Utilities
 {
     public class TestStartup : Startup
     {
-        protected override ISeedData SeedData => new UnitTestData();
+        protected override ISeedData SeedData => new IntegrationTestData();
 
         public TestStartup(IConfiguration configuration) : base(configuration) { }
 

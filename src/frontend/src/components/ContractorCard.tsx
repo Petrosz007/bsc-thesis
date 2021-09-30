@@ -1,4 +1,4 @@
-﻿import {Appointment, User} from "../logic/entities";
+﻿import {User} from "../logic/entities";
 import React, {useContext} from "react";
 
 import './ContractorCard.scss';
@@ -10,11 +10,10 @@ export const ContractorCard = ({ contractor }: { contractor: User }) => {
     
     return (
         <div className="contractor-card">
-            <Link to={`/contractor/${contractor.userName}`} className="contractor-header">{contractor.name}</Link>
-            <div className="contractor-description">
-                <p>{contractor.contractorPage?.title}</p>
-                <p>{contractor.contractorPage?.bio}</p>
-                <img src={`${config.apiUrl}/User/Avatar/${contractor.userName}`} alt={`${contractor.name} profilképe`} />
+            <img src={`${config.apiUrl}/User/Avatar/${contractor.userName}`} alt={`${contractor.name} profilképe`} />
+            <div className="contractorInfo">
+                <Link to={`/contractor/${contractor.userName}`} className="contractor-header">{contractor.name}</Link> - <span className="contractor-description-title">{contractor.contractorPage?.title}</span>
+                <p className="contractor-description-bio">{contractor.contractorPage?.bio}</p>
             </div>
         </div>
     );

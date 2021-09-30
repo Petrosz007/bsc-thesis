@@ -1,26 +1,22 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { useApiCall, Failed, Loaded } from "../../hooks/apiCallHooks";
-import { useHandleChange } from "../../hooks/useEditorForm";
+import React, {useCallback, useContext, useMemo, useState} from "react";
 import { AppointmentDTO } from "../../logic/dtos";
 import { Appointment, Category, User } from "../../logic/entities";
-import {DataAction, DataContext} from "../contexts/DataProvider";
-import { DIContext } from "../contexts/DIContext";
+import {DataAction} from "../contexts/DataProvider";
 import UserAdder from "./UserAdder";
-
-import './AppointmentEditor.scss';
-import { NotificationContext } from "../contexts/NotificationProvider";
 import { ResultPromise } from "../../utilities/result";
 import {DateTime} from "luxon";
 import {EditorBase} from "./EditorBase";
 import Select from "react-select";
+import {DateTimePicker} from "../inputs/DatePicker";
+import {NotificationContext} from "../contexts/NotificationProvider";
+import {DIContext} from "../contexts/DIContext";
+import { useHandleChange } from "../../hooks/useEditorForm";
 
 interface AppointmentEditdata {
     id: number;
-    startTimeDate: string;
-    startTimeTime: string;
-    endTimeDate: string;
-    endTimeTime: string;
-    categoryId: number;
+    startTime: DateTime;
+    endTime: DateTime;
+    category: Category;
     maxAttendees: number;
 
     createAnother: boolean;
@@ -31,59 +27,59 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
     apiCall: (_x: AppointmentDTO) => ResultPromise<Appointment,Error>,
     categories: Category[],
     onClose: () => void,
-    labels: {
-      createAnother: string,
-      submit: string,
+    labels: { 
+        header: string,
+        createAnother: string,
+        submit: string,
     },
 }) => {
+    const { notificationDispatch } = useContext(NotificationContext);
     const initialAppointmentEditorState: AppointmentEditdata = {
         ...initialAppointment,
-        startTimeDate: initialAppointment.startTime.toISODate(),
-        startTimeTime: initialAppointment.startTime.toFormat('HH:mm'),
-        endTimeDate: initialAppointment.endTime.toISODate(),
-        endTimeTime: initialAppointment.endTime.toFormat('HH:mm'),
-        categoryId: initialAppointment.category.id,
+        startTime: initialAppointment.startTime,
+        endTime: initialAppointment.endTime,
+        category: initialAppointment.category,
+        maxAttendees: initialAppointment.maxAttendees,
         createAnother: false,
     };
     
     const [users, setUsers] = useState<User[]>(initialAppointment.attendees);
     const [state, setState] = useState(initialAppointmentEditorState);
 
-    const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.type === 'checkbox' 
-            ? event.target.checked
-            : event.target.value;
-
-        if(event.target.name === 'startTimeDate') {
-            setState(prevState => ({
-                ...prevState,
-                endTimeDate: event.target.value,
-            }))
-        }
-
-        setState(prevState => ({
-            ...prevState,
-            [event.target.name]: value,
-        }));
-    }, [setState]);
+    const handleChange = useHandleChange(setState);
     
-    const editorStateToDto = useCallback((editData: AppointmentEditdata) => ({
+    const editorStateToDto = useCallback((editData: AppointmentEditdata): AppointmentDTO => ({
         ...editData,
-        startTime: DateTime.fromISO(`${editData.startTimeDate}T${editData.startTimeTime}`).toUTC().toISO(),
-        endTime: DateTime.fromISO(`${editData.endTimeDate}T${editData.endTimeTime}`).toUTC().toISO(),
+        categoryId: editData.category.id,
+        startTime: editData.startTime.toUTC().toISO(),
+        endTime: editData.endTime.toUTC().toISO(),
         attendeeUserNames: users.map(user => user.userName),
-    }), [users, state]);
+    }), [users]);
 
     const dataDispatchAction = useCallback((appointment: Appointment) => ({ type: 'updateAppointment', appointment } as DataAction), []);
     
-    const allowedUsers = useCallback((): User[]|undefined => {
-        if(initialAppointment === undefined) return undefined;
-        if(initialAppointment.category.everyoneAllowed) return undefined;
+    const allowedUsers = useMemo((): User[]|undefined => {
+        if(state === undefined) return undefined;
+        if(state.category.everyoneAllowed) return undefined;
 
-        return [...initialAppointment.category.allowedUsers, initialAppointment.category.owner];
-    }, [initialAppointment]);
+        return [...state.category.allowedUsers, state.category.owner];
+    }, [state]);
     
-    const selectOptions = categories.map(c => ({ value: c.id, label: c.name }));
+    const validator = useCallback((_editData: AppointmentEditdata) => {
+        const allAllowed = users.map(user => {
+            if(allowedUsers === undefined || allowedUsers.some(u => u.userName === user.userName)) {
+                return true;
+            }
+            notificationDispatch({ type: 'addError', message: `${user.name} nem engedélyezett résztvevő a kategórián. Szekeszd a kategóriát, ha hozzá szeretnéd adni.` });
+            return false;
+        });
+        
+        if(!allAllowed.every(x => x)) return false;
+        
+        return true;
+    }, [users, allowedUsers, notificationDispatch]);
+    
+    const selectOptions = useMemo(() => categories.map(c => ({ value: c, label: c.name })), [categories]);
 
     return (
         <EditorBase
@@ -94,29 +90,50 @@ const AppointmentEditorBase = ({ initialAppointment, apiCall, categories, onClos
             labels={labels}
             onClose={onClose}
             dataDispatchAction={dataDispatchAction}
+            validator={validator}
          >
-            <label htmlFor="startTimeDate">Kezdés</label>
-            <div>
-                <input type="date" name="startTimeDate" value={state.startTimeDate} onChange={handleChange} />
-                <input type="time" name="startTimeTime" value={state.startTimeTime} onChange={handleChange} />
+            <div className="editorGroup">
+                <label htmlFor="startTimeDate">Kezdés</label>
+                <div>
+                    <DateTimePicker valueDate={state.startTime} 
+                                    onChangeDate={x => setState(prevState => ({ 
+                                        ...prevState, 
+                                        startTime: x,
+                                        endTime: prevState.endTime.set({ year: x.year, month: x.month, day: x.day })
+                                    }))}
+                    />
+                </div>
             </div>
-            <label htmlFor="startTimeDate">Vége</label>
-            <div>
-                <input type="date" name="endTimeDate" value={state.endTimeDate} min={state.startTimeDate} onChange={handleChange} />
-                <input type="time" name="endTimeTime" value={state.endTimeTime} onChange={handleChange} />
+            <div className="editorGroup">
+                <label htmlFor="startTimeDate">Vége</label>
+                <div>
+                    <DateTimePicker valueDate={state.endTime}
+                                    onChangeDate={x => setState(prevState => ({ ...prevState, endTime: x }))}
+                                    minDate={state.startTime}
+                    />
+                </div>
             </div>
-            <label htmlFor="categoryId">Kategória</label>
-            <Select options={selectOptions}
-                    value={selectOptions.find(x => x.value === state.categoryId)}
-                    onChange={x => {
-                        if(x === null) return;
-                        setState({ ...state, categoryId: x.value });
-                    }} 
-            />
-            <label htmlFor="maxAttendees">Max résztvevők</label>
-            <input type="number" name="maxAttendees" value={state.maxAttendees} min={Math.max(1, users.length)} onChange={handleChange} /><br/>
-            <label htmlFor="attendees">Résztvevők</label>
-            <UserAdder users={users} setUsers={setUsers} allowedUsers={allowedUsers()} max={state.maxAttendees} />
+            <div className="editorGroup">
+                <label htmlFor="categoryId">Kategória</label>
+                <Select options={selectOptions}
+                        value={selectOptions.find(x => x.value.id === state.category.id)}
+                        onChange={x => {
+                            if(x === null) return;
+                            setState({ ...state, category: x.value, maxAttendees: x.value.maxAttendees });
+                        }} 
+                />
+            </div>
+            <div className="editorGroup">
+                <label htmlFor="maxAttendees">Max résztvevők</label>
+                <input type="number" name="maxAttendees" value={state.maxAttendees} 
+                       min={Math.max(1, users.length)}
+                       max={10000000}
+                       onChange={handleChange} />
+            </div>
+            <div className="editorGroup">
+                <label htmlFor="attendees">Résztvevők</label>
+                <UserAdder users={users} setUsers={setUsers} allowedUsers={allowedUsers} max={state.maxAttendees} />
+            </div>
         </EditorBase>
     );
 }
@@ -132,7 +149,7 @@ export const AppointmentEditorCreate = ({ categories, onClose }: {
         endTime: DateTime.now().plus({ hours: 1 }),
         category: categories[0],
         attendees: [],
-        maxAttendees: 1,
+        maxAttendees: categories[0].maxAttendees,
     };
     
     return (
@@ -141,7 +158,7 @@ export const AppointmentEditorCreate = ({ categories, onClose }: {
             apiCall={appointmentRepo.create}
             categories={categories}
             onClose={onClose}
-            labels={{ createAnother: 'Több létrehozása', submit: 'Létrehozás' }}
+            labels={{ header: 'Új Időpont', createAnother: 'Több létrehozása', submit: 'Létrehozás' }}
         />
     );
 }
@@ -164,7 +181,7 @@ export const AppointmentEditorUpdate = ({ appointment, categories, onClose }: {
             initialAppointment={appointment}
             categories={categories}
             onClose={onClose}
-            labels={{ createAnother: 'Maradok szerkeszteni', submit: 'Mentés' }}
+            labels={{ header: 'Időpont Szerkesztése',createAnother: 'Maradok szerkeszteni', submit: 'Mentés' }}
         />
     );
 }

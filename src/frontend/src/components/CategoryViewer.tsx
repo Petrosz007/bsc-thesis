@@ -1,33 +1,43 @@
 ﻿import React from "react";
-import {Appointment, Category} from "../logic/entities";
-
-import './CategoryViewer.scss';
+import {Category} from "../logic/entities";
 import UserName from "./UserName";
-import {DateTime} from "luxon";
+
+import './DetailViewer.scss';
 
 export default ({ category, onClose }: { category: Category, onClose: () => void }) => {
     return (
-        <div className="category-viewer">
+        <div className="detailViewer">
+            <span className="viewer-header">{category.name}</span>
             <div className="viewer-content">
-                <span className="appointment-header">{category.name}</span>
-                <p>{category.description}</p>
-                <p>{category.price} Ft</p>
-                <p>Max résztvevők: {category.maxAttendees}</p>
+                <div>
+                    <span>Leírás</span>
+                    <p>{category.description}</p>
+                </div>
+                <div>
+                    <span>Ár</span>
+                    <p>{category.price} Ft</p>
+                </div>
+                <div>
+                    <span>Ajánlott max résztvevők</span>
+                    <p>{category.maxAttendees} fő</p>
+                </div>
+                <div>
                 {category.everyoneAllowed
-                    ? <p>Nyílt esemény</p>
-                    :
-                    <>
-                        <p>Engedélyezett felhasználók: {category.allowedUsers.length} fő</p>
-                        <ul>
+                    ? <span>Nyílt esemény</span>
+                    : <>
+                        <span>Engedélyezett ügyfelek</span>
+                        <p>{category.allowedUsers.length} fő</p>
+                        <ul className="allowedUsersList">
                             {category.allowedUsers.map(user =>
                                 <li key={user.userName}><UserName user={user} /></li>
                             )}
                         </ul>
                     </>
                 }
+                </div>
             </div>
             <div className="viewer-footer">
-                <button className="viewer-footer" onClick={e => {e.preventDefault(); onClose();}}>Mégse</button>
+                <button className="viewer-footer" onClick={e => {e.preventDefault(); onClose();}}>Bezárás</button>
             </div>
         </div>
     );

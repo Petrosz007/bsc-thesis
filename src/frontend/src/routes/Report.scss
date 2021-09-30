@@ -1,8 +1,142 @@
-.report-table {
-    border-collapse: collapse;
+@use "../components/styles/variables" as var;
 
-    td {
-        border: 1px solid black;
-        padding: 5px;
+.noUsersToReport {
+    text-align: center;
+    font-size: 1.1rem;
+    color: gray;
+    padding: 10px;
+    font-style: italic;
+}
+
+.reportCard {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: var.$cardShadow;
+    overflow: hidden;
+
+    > h2 {
+        padding: 20px;
+        line-height: 2rem;
+        font-size: 2rem;
+
+        border-bottom: 2px solid var.$mainDark;
+        background-color: white;
+        color: var.$mainDark;
+    }
+    
+    .reportContent {
+        padding: 25px;
+        
+        > p {
+            color: #5b5b5b;
+            margin-bottom: 5px;
+
+            &:not(:first-child) {
+                margin-top: 10px;
+            }
+        }
+        
+        .report-table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            border-style: hidden;
+
+            td {
+                border-bottom: 2px solid #e8e8e8;
+            }
+            
+            th, td {
+                padding: 10px;
+            }
+            
+            tr td:first-child {
+                width: 100%;
+            }
+            
+            tr td:nth-child(2) {
+                min-width: 150px;
+            }
+            
+            tbody tr:last-child td {
+                border: none;
+            }
+            
+            thead tr:last-child th {
+                border-bottom: 2px solid #6c6c6c;
+                
+                &:first-child {
+                    text-align: left;
+                }
+            }
+        }
+        
+        .reportGeneratorButton {
+            $color: #707070;
+            $hoverColor: black;
+
+            margin-top: 20px;
+            margin-right: 20px;
+            padding: 10px;
+            font-size: 1rem;
+
+            color: $color;
+            background-color: white;
+            cursor: pointer;
+            border-radius: 20px;
+            border: 2px solid #d9d9d9;
+            box-shadow: var.$cardShadow;
+
+            transition: all 50ms ease-in-out;
+
+            &:hover {
+                color: $hoverColor;
+                border-color: $hoverColor;
+
+                .billIcon {
+                    fill: $hoverColor;
+                }
+            }
+
+            .billIcon {
+                height: 1rem;
+                width: 1rem;
+                fill: $color;
+                margin-right: 3px;
+                padding-top: 3px;
+
+                transition: fill 50ms ease-in-out;
+            }
+        }
+        
+        > h3 {
+            font-size: 1.2rem;
+            color: var.$mainDark;
+            margin-top: 50px;
+            margin-bottom: 15px;
+        }
+        
+        .reportAppointmentList {
+            display: flex;
+            flex-direction: column;
+            
+            gap: 10px;
+            
+            > li {
+                list-style: none;
+                display: grid;
+                grid-template-columns: 200px auto;
+                
+                .reportTime {
+                    grid-column: 1 / 2;
+                    color: gray;
+                }
+                
+                .reportCategory {
+                    grid-column: 2 / 3;
+                    color: gray;
+                }
+            }
+        }
     }
 }
+

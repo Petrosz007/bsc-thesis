@@ -1,8 +1,27 @@
 \chapter{Összegzés} % Conclusion
 \label{ch:sum}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. In eu egestas mauris. Quisque nisl elit, varius in erat eu, dictum commodo lorem. Sed commodo libero et sem laoreet consectetur. Fusce ligula arcu, vestibulum et sodales vel, venenatis at velit. Aliquam erat volutpat. Proin condimentum accumsan velit id hendrerit. Cras egestas arcu quis felis placerat, ut sodales velit malesuada. Maecenas et turpis eu turpis placerat euismod. Maecenas a urna viverra, scelerisque nibh ut, malesuada ex.
+Összességében szerintem sikerült specifikációnak megfelelően implementálnom az alkalmazást. Nem először csináltam ilyen architectúrával fullstack webes alkalmazást, így az alapok megtanulása helyett a jó architektúrális döntésekbe fektethettem sok időt, így egy könnyen bővíthető, könnyen skálázható programot tudtam létrehozni.
 
-Aliquam suscipit dignissim tempor. Praesent tortor libero, feugiat et tellus porttitor, malesuada eleifend felis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam eleifend imperdiet lorem, sit amet imperdiet metus pellentesque vitae. Donec nec ligula urna. Aliquam bibendum tempor diam, sed lacinia eros dapibus id. Donec sed vehicula turpis. Aliquam hendrerit sed nulla vitae convallis. Etiam libero quam, pharetra ac est nec, sodales placerat augue. Praesent eu consequat purus.
+A szoftverfejlesztési folyamatot is próbáltam minél mondernebb eszközökkel könnyíteni. A CI/CD és a jó teszt lefedettség miatt hamar felszínre kerültek a fejlesztés közbeni hibák. Docker konténerekkel egyszerűen és platform függetlenül deploy-olható lett az alkalmazás, egy egyszerű konfogurációval. Git és Github miatt a kód verziókövetve és a felhőben biztonságosan volt tárolva.
 
-\todo{Kéne am egy összefoglaló}
+Az egyetemen tanult tudásomat is a lehető legjobban kihasználtam: Webes Alkalmazások Fejlesztésétől a Bevezetés a DevOps tárgyon át a Funkcionális programozás és Haladó Haskell órák anyagait mind hasznosítani tudtam. Ezeken kívül az egyetem mellett tanult technológiáknak is nagy szerepe volt a projektben, Typescript és React.js tudásomat is kamatoztatni tudtam.
+
+Szeretnék köszönetet nyilvánítani Gyimesi Kristófnak, Szalai Patriknak és Hajdu Marcellnek, amiért egész félévben kíméletlenül bombázhattam őket kérdéseimmel, és segítettek a véleményükkel, hogy a lehető legjobb programot tudjam kiadni a kezeim közül.
+
+\clearpage
+
+\section{További fejlesztői lehetőségek}
+Az Időpont foglaló webes alkalmazás már így is nagyon sok funkcióval bír, viszont, mint egy jó alkalmazás, soha sem állhat meg a fejlődésben. A következő jövőbeli fejlesztési ötletek kivitelezésében gondolkom:
+
+\begin{compactitem}
+    \item Email service, ami regisztrációnál megerősíti a fiókot, jelszó emlékeztetőt tud küldeni, esetleg időpont változásnál értesítést
+    \item Mobilra optimalizált frontend
+    \item Mobil optimalizált alkalmazások. Akár Progresszív Web Applikáció, akár natív pl.: React Native keretrendszerrel
+    \item Adószám és számlázási információ kezelése, hogy lehessen érvényes számlát kiállítani, esetleg fizetési rendszert integrálni, akár Számlázz.hu-n keresztül
+    \item Lemondás X időn (pl.: 24 órán) belül nem lehetséges, ezt kategóriánként lehetne megadni
+    \item Email címet használni felhasználónév helyett az alkalmazásban, mellette egy egyedi felhasználói azonosító
+    \item CD, Kubernetes deployment, Selenium automatizált end-to-end tesztek
+\end{compactitem}
+
+

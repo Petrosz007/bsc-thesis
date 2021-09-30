@@ -23,7 +23,7 @@ const BookedAppointments = ({ user }: { user: User }) => {
     useEffect(() => {
         if(state instanceof Failed) {
             console.error("Error in Booked.tsx, appointment state result match", state.error);
-            notificationDispatch({ type: 'addError', message: `Error in Booked: ${state.error}` });
+            notificationDispatch({ type: 'addError', message: `${state.error}` });
         }
         else if(state instanceof Idle) {
             refreshData();

@@ -1,6 +1,12 @@
-﻿span.username-display {
+﻿@use "./styles/variables" as var;
+
+span.username-display {
   i {
     font-style: italic;
     font-size: 0.9rem;
+  }
+  
+  &.invalid {
+    color: var.$red;
   }
 }

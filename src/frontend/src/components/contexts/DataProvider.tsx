@@ -37,7 +37,6 @@ export type DataAction =
     | { type: 'logout'};
 
 const reducer = (state: DataState, action: DataAction): DataState => {
-    console.log('datacontext', state, action);
     switch(action.type) {
         case 'updateAppointment':
             return {

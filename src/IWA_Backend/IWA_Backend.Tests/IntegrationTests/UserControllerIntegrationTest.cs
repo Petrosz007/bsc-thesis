@@ -110,7 +110,6 @@ namespace IWA_Backend.Tests.IntegrationTests
                 {
                     AllowAutoRedirect = false,
                 });
-                var userName = "Fake User";
                 var user = new UserUpdateDTO
                 {
                     Email = "newmail@example.com",

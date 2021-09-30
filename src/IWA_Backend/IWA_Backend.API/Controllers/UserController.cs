@@ -41,7 +41,7 @@ namespace IWA_Backend.API.Controllers
         }
         
         [HttpGet("Avatar/{userName}")]
-        public async Task<ActionResult<UserInfoDTO>> GetAvatar(string userName)
+        public async Task<ActionResult> GetAvatar(string userName)
         {
             try
             {
@@ -54,11 +54,11 @@ namespace IWA_Backend.API.Controllers
         [HttpPost("Avatar")]
         [Authorize(Roles = "Contractor")]
         [RequestSizeLimit(3_000_000)]
-        public async Task<ActionResult<UserInfoDTO>> PostAvatar(IFormFile file)
+        public async Task<ActionResult> PostAvatar(IFormFile file)
         {
             try
             {
-                await Logic.UpdateAvatar(file, CurrentUserName!);
+                await Logic.UpdateAvatarAsync(file, CurrentUserName!);
                 return Ok();
             }
             catch (NotFoundException ex) { return NotFound(ex.Message); }
@@ -66,7 +66,7 @@ namespace IWA_Backend.API.Controllers
         }
         
         [HttpGet("Contractors")]
-        public ActionResult<UserInfoDTO> GetContractors()
+        public ActionResult<IEnumerable<UserInfoDTO>> GetContractors()
         {
             var contractors = Logic.GetContractors();
             var contractorDTOs = contractors.Select(c => Mapper.Map<UserInfoDTO>(c));
@@ -74,7 +74,7 @@ namespace IWA_Backend.API.Controllers
         }
         
         [HttpGet("All")]
-        public ActionResult<UserInfoDTO> GetAllUsers()
+        public ActionResult<IEnumerable<UserInfoDTO>> GetAllUsers()
         {
             var users = Logic.GetAllUsers();
             var userDTOs = users.Select(c => Mapper.Map<UserInfoDTO>(c));
@@ -97,7 +97,7 @@ namespace IWA_Backend.API.Controllers
         
         [HttpGet("SelfInfo")]
         [Authorize]
-        public ActionResult<IsLoggedInDTO> GetSelfInfo()
+        public ActionResult<UserSelfInfoDTO> GetSelfInfo()
         {
             var user = Logic.GetUserByUserName(CurrentUserName!);
             var userDto = Mapper.Map<UserSelfInfoDTO>(user);

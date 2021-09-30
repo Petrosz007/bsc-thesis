@@ -1,21 +1,75 @@
-.agenda-table {
-    border: 2px solid black;
-    border-collapse: collapse;
-}
+@use "./styles/variables" as var;
 
-.agenda-date {
-    vertical-align: top;
-    border: 1px solid black;
-    padding: 10px;
-}
+.appointmentAgenda {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: var.$cardShadow;
+    overflow: hidden;
+    
+    > h2 {
+        padding: 20px;
+        line-height: 2rem;
+        font-size: 2rem;
 
-.agenda-time {
-    border: 1px solid black;
-    padding: 10px;
-    text-align: center;
-}
+        border-bottom: 2px solid var.$mainDark;
+        background-color: white;
+        color: var.$mainDark;
+    }
+    
+    .agendaContent {
+        padding: 30px 20px;
+    }
+    
+    .agendaFilters {
+        margin-bottom: 30px;
+        
+        p {
+            margin-bottom: 5px;
+            color: #5b5b5b;
+            
+            &:not(:first-child) {
+                margin-top: 10px;
+            }
+        }
+    }
+    
 
-.agenda-detail {
-    border: 1px solid black;
-    padding: 10px;
+    .agenda-date {
+        border-bottom: 3px solid #0000001c;
+        padding-left: 10px;
+        padding-bottom: 5px;
+
+        font-size: 1.1rem;
+        color: #1a1a1a;
+    }
+    
+    .noAppointmentsFound {
+        text-align: center;
+        font-size: 1.1rem;
+        color: gray;
+        padding: 10px;
+        font-style: italic;
+    }
+    
+    .agendaDayCards {
+        display: flex;
+        flex-direction: column;
+        row-gap: 10px;
+        
+        padding: 15px;
+        
+        > div {
+            margin: 4px 0;
+        }
+        
+        hr {
+            width: 100%;
+            color: #0000001c;
+            margin: 0 auto;
+            
+            &:last-child {
+                display: none;
+            }
+        }
+    }
 }

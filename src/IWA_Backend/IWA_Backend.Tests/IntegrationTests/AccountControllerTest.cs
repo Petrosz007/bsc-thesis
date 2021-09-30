@@ -40,7 +40,21 @@ namespace IWA_Backend.Tests.IntegrationTests
                 var response = await client.PostAsJsonAsync("/Account/Login", login);
 
                 // Assert
-                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            }
+            
+            [Fact]
+            public async Task WrongPassword()
+            {
+                // Arrange
+                var client = Factory.CreateClient();
+                var login = new LoginDTO { UserName = "contractor1", Password = "not_kebab" };
+
+                // Act
+                var response = await client.PostAsJsonAsync("/Account/Login", login);
+
+                // Assert
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             }
         }
 

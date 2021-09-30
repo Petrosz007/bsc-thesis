@@ -1,0 +1,31 @@
+﻿.dateRange {
+  display: inline-flex;
+  justify-content: space-between;
+  
+  border: 1px solid hsl(0, 0%, 70%);
+  border-radius: 5px;
+  padding: 5px;
+  gap: 7px;
+  
+  input {
+    border: none;
+  }
+  
+  .rightArrow {
+    width: 1rem;
+  }
+}
+
+.dateTimePicker {
+  display: inline-flex;
+  justify-content: space-between;
+
+  border: 1px solid hsl(0, 0%, 70%);
+  border-radius: 5px;
+  padding: 5px;
+  gap: 5px;
+
+  input {
+    border: none;
+  }
+}
